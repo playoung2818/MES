@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="planning-workspace">
+<input type="hidden" id="planning-csrf" value="{{ planning_csrf }}">
+{% if error %}<div class="alert alert-warning">{{ error }}</div>{% endif %}
+<p class="data-note">Source: approved_work_orders data and your chosen item order. Picked status and quantities come from saved WO Details (including partial WOs). Schedule saves are shared with MRP; they do not create WOs. Past dates do not confirm completion.</p>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <div class="workspace-title">Production Planning</div>
+      <div class="text-muted small">Loaded {{ loaded_at }}</div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap justify-content-end">
+      <button id="schedule-save" class="btn btn-sm btn-primary" type="button" disabled>Save Schedule</button>
+      <span id="schedule-save-msg" class="schedule-save-msg" role="status" aria-live="polite"></span>
+      <a class="btn btn-sm btn-outline-success" href="/production_planning">Recalculate Labor</a>
+      <a class="btn btn-sm btn-outline-primary" href="/production_planning">Reload</a>
+    </div>
+  </div>
+
+  {% if pending_so_count %}<div class="alert alert-info">{{ pending_so_count }} SO(s) need review. Only approved, active SOs are used for planning and new WO generation.</div>{% endif %}
+  {% if capacity_weeks or passed_lt_orders %}
+    <div class="mb-4">
+      <div class="d-flex justify-content-between align-items-end mb-2">
+        <div>
+          <div class="h5 m-0">Weekly Labor Capacity</div>
+          <div class="text-muted small">Nuvo / NRU / SEMIL / F: 1 hr/unit; POC: 0.5. Capacity: 90 hrs/week. Unknown models require review.</div>
+        </div>
+      </div>
+      <div class="capacity-grid">
+        {% for week in capacity_weeks %}
+          <div class="capacity-card">
+            <div class="capacity-head mb-2">
+              <div>
+                <div class="capacity-week">{{ week.week_start }} to {{ week.week_end }}</div>
+                <div class="capacity-sub">
+                  {{ week.so_count }} SO(s)
+                  {% if week.unknown_count %}
+                    |
+                    <span class="review-hover">
+                      <span class="review-pill" tabindex="0">{{ week.unknown_count }} Pack &amp; Go</span>
+                      <span class="review-panel">
+                        <span class="capacity-sub text-uppercase fw-bold mb-1 d-block">WOs needing review</span>
+                        {% for so in week.review_sos %}
+                          <span class="review-row">
+                            <span>
+                              <span class="review-main d-block">
+                                {{ so.qb_num }}{% if so.customer %} | {{ so.customer }}{% endif %}{% if so.terms %} | <span class="order-terms">{{ so.terms }}</span>{% endif %}
+                              </span>
+                              {% if so.ship_date %}<span class="review-meta d-block">Ship: {{ so.ship_date }}</span>{% endif %}
+                              <span class="review-meta d-block">{{ so.first_item or 'No item found' }}</span>
+                            </span>
+                            <span class="text-end">
+                              <span class="review-main d-block">{{ so.total_units_str }}</span>
+                              <span class="review-meta d-block">units</span>
+                            </span>
+                          </span>
+                        {% endfor %}
+                      </span>
+                    </span>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="text-end">
+                <div class="capacity-metric">{{ week.used_hours_str }} / {{ week.capacity_hours_str }} hrs</div>
+                <div class="capacity-sub">
+                  {% if week.remaining_hours < 0 %}
+                    Over by {{ (0 - week.remaining_hours)|round(1) }} hrs
+                  {% else %}
+                    {{ week.remaining_hours_str }} hrs open
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="family-counts">
+              {% for family in week.family_counts %}
+                <div class="family-count">
+                  <div class="family-label">{{ family.label }}</div>
+                  <div class="family-value">{{ family.units_str }}</div>
+                </div>
+              {% endfor %}
+            </div>
+            <div class="capacity-bar-area mb-3">
+              <div class="capacity-track">
+                <div class="capacity-fill capacity-{{ week.status }}" style="width:{{ week.used_pct }}%"></div>
+              </div>
+              <div class="large-so-panel">
+                {% if week.large_sos %}
+                  <div class="capacity-sub text-uppercase fw-bold mb-1">SOs over 20 units</div>
+                  {% for so in week.large_sos %}
+                    <div class="large-so">
+                      <div>
+                        <div class="large-so-main">
+                          {{ so.qb_num }}{% if so.customer %} | {{ so.customer }}{% endif %}{% if so.terms %} | <span class="order-terms">{{ so.terms }}</span>{% endif %} | {{ so.family }}
+                        </div>
+                        {% if so.ship_date %}<div class="large-so-meta">Ship: {{ so.ship_date }}</div>{% endif %}
+                        <div class="large-so-meta">{{ so.first_item }}</div>
+                      </div>
+                      <div class="text-end">
+                        <div class="fw-bold">{{ so.total_units_str }} units</div>
+                        <div class="large-so-meta">{{ so.labor_hours_str }} hrs</div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <div class="text-muted small">No SOs over 20 units this week.</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+        <div class="capacity-card unassigned-lt-card">
+            <div class="capacity-head mb-2">
+              <div>
+                <div class="capacity-week">Finished Goods / Past Dates</div>
+                <div class="capacity-sub">
+                  {{ passed_lt_orders|length }} SO(s)
+                  {% if passed_lt_summary.unknown_count %}
+                    | {{ passed_lt_summary.unknown_count }} review
+                  {% endif %}
+                </div>
+              </div>
+              <div class="text-end">
+                <div class="capacity-metric">{{ passed_lt_summary.known_hours_str }} hrs</div>
+                <div class="capacity-sub">estimated labor</div>
+              </div>
+            </div>
+            <div class="unassigned-lt-grid order-list" data-target-area="finished_goods">
+              {% for o in passed_lt_orders %}
+                <div class="order-line {% if o.wo_status == 'Picked' %}order-picked{% else %}order-na{% endif %}" data-wo="{{ o.qb_num }}" data-return-production-date="{{ o.production_date }}" data-ship-date="{{ o.ship_date }}" data-schedule-units="{{ o.remaining_units_str }}" data-schedule-hours="{{ o.labor_hours if o.labor_hours is not none else '' }}">
+                  <div class="me-2">
+                    <div class="order-main">
+                      {{ o.qb_num }}{% if o.customer %} | {{ o.customer }}{% endif %}{% if o.terms %} | <span class="order-terms">{{ o.terms }}</span>{% endif %}
+                      {% if o.ship_date %}<span class="order-ship-date">Ship: {{ o.ship_date }}</span>{% endif %}
+                    </div>
+                    {% include 'planning_pick_status.html' %}
+                    <div class="order-sub">
+                      {{ o.line or '-' }} | Est: {{ o.labor_hours_str }} hrs | Remaining: {{ o.remaining_units_str }} units
+                    </div>
+                  </div>
+                  {% if o.pdf_url %}
+                    <a class="order-link" href="{{ o.pdf_url }}" target="_blank">PDF</a>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if not date_groups %}
+    <div class="alert alert-info">No production data available.</div>
+  {% else %}
+    <div class="row g-3">
+      {% for group in date_groups if group.orders %}
+        <div class="col-12 col-md-6 col-xl-4">
+          <div class="card-lite day-card p-3 h-100">
+            <div class="day-header mb-2">{{ group.date }}</div>
+            <div class="day-summary mb-2">
+              <span><strong class="day-order-count">{{ group.orders|length }}</strong> order(s)</span>
+              <span><strong class="day-unit-total">{{ group.total_units_str }}</strong> units</span>
+              <span><strong class="day-hour-total">{{ group.labor_hours_str }}</strong> hrs<span class="day-review-count">{% if group.unknown_hours_count %} + {{ group.unknown_hours_count }} review{% endif %}</span></span>
+            </div>
+            {% if group.orders %}
+              <div class="order-list d-flex flex-column gap-1" data-production-date="{{ group.date }}">
+                {% for o in group.orders %}
+                  <div class="order-line {% if o.wo_status == 'Picked' %}order-picked{% else %}order-na{% endif %}{% if o.lt_matches_production_date %} lt-same-day{% endif %}" data-wo="{{ o.qb_num }}" data-production-date="{{ group.date }}" data-ship-date="{{ o.ship_date }}" data-schedule-units="{{ o.remaining_units_str }}" data-schedule-hours="{{ o.labor_hours if o.labor_hours is not none else '' }}">
+                    <div class="me-2">
+                      <div class="order-main">
+                        {{ o.qb_num }}{% if o.customer %} | {{ o.customer }}{% endif %}{% if o.terms %} | <span class="order-terms">{{ o.terms }}</span>{% endif %}
+                        {% if o.ship_date %}<span class="order-ship-date">Ship: {{ o.ship_date }}</span>{% endif %}
+                      </div>
+                      {% include 'planning_pick_status.html' %}
+                      <div class="order-sub">
+                        {{ o.line or '-' }}
+                      </div>
+                    </div>
+                    {% if o.pdf_url %}
+                      <a class="order-link" href="{{ o.pdf_url }}" target="_blank">PDF</a>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="order-list text-muted small" data-production-date="{{ group.date }}">No orders on this date.</div>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if unassigned_lt_orders %}
+    <div id="unassigned-lt-orders" class="capacity-card unassigned-lt-card mt-4">
+      <div class="capacity-head mb-2">
+        <div>
+          <div class="capacity-week">Unassigned L/T SO</div>
+          <div class="capacity-sub">
+            {{ unassigned_lt_orders|length }} SO(s) with placeholder, missing, or weekend L/T
+            {% if unassigned_lt_summary.unknown_count %}
+              | {{ unassigned_lt_summary.unknown_count }} Pack &amp; Go
+            {% endif %}
+          </div>
+        </div>
+        <div class="text-end">
+          <div class="capacity-metric">{{ unassigned_lt_summary.known_hours_str }} hrs</div>
+          <div class="capacity-sub">estimated labor</div>
+        </div>
+      </div>
+      <div class="family-counts">
+        {% for family in unassigned_lt_summary.family_counts %}
+          <div class="family-count">
+            <div class="family-label">{{ family.label }}</div>
+            <div class="family-value">{{ family.units_str }}</div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="unassigned-lt-grid">
+        {% for o in unassigned_lt_orders %}
+          <div class="unassigned-lt-row order-line {% if o.wo_status == 'Picked' %}order-picked{% else %}order-na{% endif %}" data-wo="{{ o.qb_num }}" data-ship-date="{{ o.lead_time }}" data-schedule-units="{{ o.remaining_qty_str }}" data-schedule-hours="{{ o.labor_hours if o.labor_hours is not none else '' }}">
+            <div>
+              <div class="unassigned-lt-main">
+                {{ o.qb_num }}{% if o.customer %} | {{ o.customer }}{% endif %}{% if o.terms %} | <span class="order-terms">{{ o.terms }}</span>{% endif %}
+                {% if o.lead_time %}<span class="order-ship-date">Ship: {{ o.lead_time }}</span>{% endif %}
+              </div>
+              {% include 'planning_pick_status.html' %}
+              <div class="unassigned-lt-meta">{{ o.line or '-' }}</div>
+            </div>
+            <div class="text-end">
+              <div class="unassigned-lt-main">{{ o.lead_time }}</div>
+              <div class="unassigned-lt-meta">{{ o.labor_hours_str }} hrs</div>
+              {% if o.pdf_url %}
+                <a class="order-link" href="{{ o.pdf_url }}" target="_blank">PDF</a>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+  
+
+</div>
+<script src="{{ url_for('static', filename='planning.js') }}?v=2" defer></script>
+{% endblock %}

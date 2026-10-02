@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="workspace-breadcrumb"><a href="{{ url_for('main.index') }}">Workspace</a><span>/</span><span>{% if editing %}Revise {{ editing.document_number }}{% else %}New Blank WO{% endif %}</span></div>
+<p class="data-note">Manual entry — no Google Sheet required. Quantities are operator-defined; SO remaining-quantity limits are not checked. Actual serial numbers must still be unique.</p>
+<form method="post" id="manual-form">
+{% if preview_token %}<input type="hidden" name="preview_token" value="{{ preview_token }}">{% endif %}
+<div class="metric-grid">
+  <div class="metric"><label class="label" for="customer">Customer</label><input id="customer" class="form-control" name="customer" value="{{ data.customer or '' }}" maxlength="200" required></div>
+  <div class="metric"><label class="label" for="customer-po">Customer PO#</label><input id="customer-po" class="form-control" name="customer_po" value="{{ data.customer_po or '' }}" maxlength="120"></div>
+  <div class="metric"><label class="label" for="sales-order">NTA Order ID</label><input id="sales-order" class="form-control" name="sales_order" value="{{ data.sales_order }}" maxlength="80" placeholder="SO-20261457" required {% if editing %}readonly{% endif %}></div>
+</div>
+<div class="card-lite mb-3">
+  <div class="compact-card-header"><span>Manual WO items</span><button type="button" id="add-item" class="btn btn-outline-secondary">Add item</button></div>
+  <div class="table-responsive">
+    <table class="table table-sm"><thead><tr><th>Item</th><th style="width:7rem">Qty</th><th>Serial Numbers</th><th>Notes/Deviation</th><th></th></tr></thead>
+    <tbody id="manual-items">
+    {% for line in data['items'] %}
+      {% include 'manual_row.html' %}
+    {% endfor %}
+    </tbody></table>
+  </div>
+</div>
+<div class="data-toolbar"><span class="data-note">Preview does not write DB.</span><div><button class="btn btn-primary" name="action" value="preview">Generate Table</button>{% if show_table %} <button class="btn btn-success" name="action" value="push">Push to DB</button>{% endif %}</div></div>
+{% if show_table %}
+<section id="generated-table" class="card-lite mt-3">
+  <div class="compact-card-header"><span>Preview table</span><span class="badge text-bg-warning">Not pushed to DB</span></div>
+  {% with order=data, sales_order=data.sales_order, lines=data['items'] %}
+    {% include 'word_export.html' %}
+  {% endwith %}
+</section>
+{% endif %}
+</form>
+<template id="blank-row">{% set line = {'item': '', 'quantity': 1, 'serials': [], 'notes': ''} %}{% include 'manual_row.html' %}</template>
+<script>
+const body = document.getElementById('manual-items');
+document.getElementById('add-item').addEventListener('click', () => {
+  body.appendChild(document.getElementById('blank-row').content.cloneNode(true));
+});
+body.addEventListener('click', event => {
+  if (event.target.closest('.remove-row') && body.children.length > 1) event.target.closest('tr').remove();
+});
+</script>
+{% endblock %}

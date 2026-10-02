@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="workspace-breadcrumb"><a href="{{ url_for('main.index') }}">Workspace</a><span>/</span><span>Open Sales Orders</span></div>
+<header class="workspace-header">
+  <div><h1 class="workspace-title">Open Sales Orders</h1><p class="workspace-description">Approved SOs from approved_work_orders. Planning and WO generation use the same reviewed item order.</p></div>
+  <div class="workspace-header-actions">
+    <a class="btn btn-outline-secondary" href="{{ url_for('main.manual_wo') }}">New Blank WO</a>
+    <a class="btn btn-primary" href="{{ url_for('main.so_review_list') }}">Assign Production Date</a>
+  </div>
+</header>
+<form class="workspace-search row g-2">
+  <div class="col"><input class="form-control" name="q" value="{{ q }}" placeholder="Search SO / customer / PO / item"></div>
+  <div class="col-auto"><button class="btn btn-outline-secondary">Search</button></div>
+</form>
+<div class="card-lite">
+  <div class="compact-card-header"><span>Sales order list</span><span class="data-note">{{ sales_orders|length }} rows</span></div>
+  <div class="table-responsive">
+    <table class="table table-sm table-hover align-middle">
+      <thead><tr><th>SO</th><th>Customer</th><th>Customer PO</th><th>Part</th><th></th></tr></thead>
+      <tbody>
+      {% for so in sales_orders %}
+        <tr>
+          <td class="fw-semibold">{{ so.sales_order }}</td><td>{{ so.customer or '' }}</td><td>{{ so.customer_po or '' }}</td><td>{{ so.part or '' }}</td>
+          <td class="text-end"><a class="btn btn-sm btn-primary" href="{{ url_for('main.so_detail', sales_order=so.sales_order) }}">Open</a></td>
+        </tr>
+      {% else %}
+        <tr><td colspan="5" class="text-muted text-center">No approved sales orders found. Sync and approve SOs in Production Planning first.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

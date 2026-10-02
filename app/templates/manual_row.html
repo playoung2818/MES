@@ -1,0 +1,7 @@
+<tr>
+  <td><input class="form-control" name="item" value="{{ line.item }}" placeholder="Product number" maxlength="200" required aria-label="Item"></td>
+  <td><input class="form-control" type="number" name="quantity" value="{{ line.quantity }}" min="0" step="1" required aria-label="Qty"></td>
+  <td><textarea class="form-control font-monospace" name="serials" rows="3" aria-label="Serial Numbers" placeholder="Scan / paste serial numbers">{{ line.serial_text if line.serial_text is defined else line.serials|join('\n') }}</textarea></td>
+  <td><textarea class="form-control" name="notes" rows="3" aria-label="Notes/Deviation">{{ line.notes }}</textarea></td>
+  <td><button type="button" class="btn btn-outline-secondary remove-row" aria-label="Remove item">Remove</button></td>
+</tr>

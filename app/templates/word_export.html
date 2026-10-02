@@ -1,0 +1,43 @@
+{% if preview_token %}
+<div class="word-copy-toolbar no-print">
+  <span><b>Document Number:</b> {{ word_document_number }}</span>
+  <span class="data-note">{% if editing %}Existing WO number — unchanged on revision.{% else %}Estimated, not reserved. Final number is assigned on Push to DB.{% endif %}</span>
+</div>
+{% endif %}
+<div class="word-copy-toolbar no-print">
+  <span class="data-note">Paste in Word with <b>Keep Source Formatting</b>. Copy each area separately.</span>
+  <span id="word-copy-status" role="status" aria-live="polite" class="data-note"></span>
+</div>
+<div class="word-copy-area">
+  <div class="data-toolbar no-print"><strong>1. Customer details</strong><button type="button" class="btn btn-outline-secondary" data-copy-values-only data-copy-word="word-header">Copy header for Word</button></div>
+  <div id="word-header" style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#000;background:#fff;">
+    <table style="border-collapse:collapse;width:100%;font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#000;" border="1" cellpadding="5">
+      <tbody>
+        <tr><td style="border:1px solid #000;width:30%;">Customer</td><td style="border:1px solid #000;">{{ order.customer or '' }}</td></tr>
+        <tr><td style="border:1px solid #000;">Customer PO #</td><td style="border:1px solid #000;">{{ order.customer_po or '' }}</td></tr>
+        <tr><td style="border:1px solid #000;">NTA Order ID</td><td style="border:1px solid #000;">{{ sales_order }}</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="word-copy-area">
+  <div class="data-toolbar no-print"><strong>2. Configuration Details and Picking</strong><button type="button" class="btn btn-outline-secondary" data-copy-table-data-only data-copy-word="word-picking">Copy picking table for Word</button></div>
+  <div id="word-picking" style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#000;background:#fff;">
+    <p style="margin:0 0 6pt;font-weight:bold;">Configuration Details and Picking</p>
+    <table style="border-collapse:collapse;width:100%;font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#000;" border="1" cellpadding="5">
+      <thead><tr>{% for heading in ['Product Number', 'QTY', 'S/N', 'Notes/Deviation', 'Check'] %}<th style="border:1px solid #000;text-align:left;font-weight:bold;">{{ heading }}</th>{% endfor %}</tr></thead>
+      <tbody>
+      {% for line in lines %}
+        <tr>
+          <td style="border:1px solid #000;">{{ line.item }}</td>
+          <td style="border:1px solid #000;">{{ line.quantity }}</td>
+          <td style="border:1px solid #000;">{% for serial in line.serials %}{{ serial }}{% if not loop.last %}<br>{% endif %}{% endfor %}</td>
+          <td style="border:1px solid #000;">{% for note_line in (line.notes or '').split('\n') %}{{ note_line }}{% if not loop.last %}<br>{% endif %}{% endfor %}</td>
+          <td style="border:1px solid #000;">&nbsp;</td>
+        </tr>
+      {% endfor %}
+        <tr data-copy-exclude><td colspan="5" style="border:1px solid #000;text-align:center;">End of Part</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>

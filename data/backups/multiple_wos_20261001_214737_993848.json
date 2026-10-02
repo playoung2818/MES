@@ -1,0 +1,11 @@
+[
+  {
+    "sales_order": "SO-20261207",
+    "customer": null,
+    "customer_po": null,
+    "items": "[{\"id\":1,\"item\":\"Part\",\"quantity\":5,\"serials\":[\"ABC\"],\"notes\":\"Keep\"}]",
+    "pushed_at": "2026-09-29 10:00:00",
+    "Generated Date": "2026-09-29 10:00:00",
+    "Document #": "WO-2609-0127"
+  }
+]

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<header class="workspace-header"><div><h1 class="workspace-title">Review {{ order.sales_order }}</h1><p class="workspace-description">Publish approved SO data to approved_work_orders. Existing saved WOs stay unchanged.</p></div><a class="btn btn-outline-secondary" href="{{ url_for('main.so_review_list') }}">Back to review list</a></header>
+<div class="row g-3 mb-3">
+  <div class="col-md-6"><div class="card-lite"><div class="compact-card-header">Changes since previous sync</div><div class="card-body">{% for change in sync_changes %}<div>{{ change }}</div>{% else %}<span class="data-note">No changes since prior sync.</span>{% endfor %}</div></div></div>
+  <div class="col-md-6"><div class="card-lite"><div class="compact-card-header">Changes since last approval</div><div class="card-body">{% for change in pending_changes %}<div>{{ change }}</div>{% else %}<span class="data-note">{{ 'No approval required — excluded from new WO generation.' if order.synced_at and not order.google_present else 'Reapproval required before this reappearing SO can generate new WOs.' if order.google_present and order.approved_at and not order.is_active else 'Legacy SO must be synced and approved.' if not order.approved_at else 'No pending source changes. You can still change the approved item order.' }}</span>{% endfor %}</div></div></div>
+</div>
+<p class="data-note">Synced: {{ order.synced_at or 'Never' }} · Approved: {{ order.approved_at or 'Never' }} · Approved revision: {{ order.revision }}</p>
+<form method="post" id="so-approval-form">
+  <input type="hidden" name="csrf_token" value="{{ planning_csrf }}">
+  <input type="hidden" name="source_revision" value="{{ order.source_revision }}">
+  <input type="hidden" name="revision" value="{{ order.revision }}">
+  <input type="hidden" name="item_order" id="approved-item-order" value="{{ items|map(attribute='id')|join(',') }}">
+    <div class="metric-grid">
+      <div class="metric"><div class="label">Customer</div><div class="value">{{ review_source.customer or '' }}</div></div>
+      <div class="metric"><div class="label">Customer PO #</div><div class="value">{{ review_source.customer_po or '' }}</div></div>
+      <div class="metric"><div class="label">{{ 'L/T (Google Sheet)' if order.google_present else 'L/T (last published)' }}</div><div class="value">{{ review_source.ship_date or 'Not assigned' }}</div></div>
+      <div class="metric"><div class="label">Terms</div><div class="value">{{ review_source.terms or '' }}</div></div>
+      <div class="metric"><div class="label">Earliest Material Ready Date</div><div class="value">{{ material_readiness.date or material_readiness.message }}</div><div class="data-note mt-1">Read-only · Source: so_material_readiness</div></div>
+      {% if order.google_present %}<div class="metric">
+        <label class="label" for="review-production-date">Production Date</label>
+        <input class="form-control" type="date" id="review-production-date" name="production_date" min="{{ today }}" value="{{ selected_date }}">
+        <div class="data-note mt-1">{% if schedule %}Stored date: {{ schedule.production_date or 'Not assigned' }}{% if schedule.is_finished_goods %} · Finished goods. Assigning a date returns this SO to production.{% endif %}{% else %}No assigned date; planning defaults to approved L/T when applicable.{% endif %}</div>
+        <div class="data-note mt-1">Optional. Choose today or a future weekday. Blank keeps the existing schedule. Saved with Push Approved SO.</div>
+      </div>{% endif %}
+    </div>
+  {% if order.google_present %}
+    {% if duplicates %}<div class="alert alert-warning">Repeated product/configuration/site lines have no unique Google row ID. Matching uses occurrence order; verify quantities and ordering carefully.</div>{% endif %}
+    <div class="data-toolbar"><span class="data-note">Drag the handle or use ↑ / ↓. Previously approved order is preserved; newly added items are appended for review.</span><button class="btn btn-outline-secondary" type="button" id="restore-sheet-order">Use Google item order</button></div>
+    <div class="card-lite"><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Order</th><th>Item</th><th>Qty</th><th>Configuration</th><th>Site</th><th></th></tr></thead><tbody id="approved-items">
+      {% for item in items %}<tr data-item-id="{{ item.id }}"><td><span class="approval-drag" draggable="true" title="Drag to reorder">☰</span> <span class="approval-number">{{ loop.index }}</span></td><td>{{ item.item }}</td><td>{{ item.quantity }}</td><td style="white-space:pre-wrap">{{ item.configuration }}</td><td>{{ item.inventory_site }}</td><td><button type="button" class="btn btn-outline-secondary approval-up" aria-label="Move {{ item.item }} up">↑</button> <button type="button" class="btn btn-outline-secondary approval-down" aria-label="Move {{ item.item }} down">↓</button></td></tr>{% endfor %}
+    </tbody></table></div></div>
+    <script type="application/json" id="sheet-item-order">{{ order.latest_snapshot['items']|map(attribute='id')|list|tojson }}</script>
+    <div class="workspace-header-actions mt-3"><button class="btn btn-primary" name="action" value="approve">Push Approved SO</button></div>
+  {% elif order.synced_at %}
+    <div class="alert alert-info">This SO is absent from the latest Google snapshot and is automatically excluded from Open SOs, production planning, and new WO generation. No review or retirement approval is required. Its stored data and saved WOs are preserved.</div>
+  {% else %}
+    <div class="alert alert-info">This is a preserved legacy SO. Sync Google Sheet from the review list before approving.</div>
+  {% endif %}
+</form>
+{% if order.items %}<details class="card-lite mt-3"><summary class="p-2">{{ 'Current approved item order' if order.approved_at else 'Preserved legacy items (not approved)' }}</summary><ol>{% for item in order.items %}<li>{{ item.item }} — Qty {{ item.quantity }}</li>{% endfor %}</ol></details>{% endif %}
+<script src="{{ url_for('static', filename='so-review.js') }}?v=2" defer></script>
+{% endblock %}

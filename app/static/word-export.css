@@ -1,0 +1,5 @@
+.word-copy-toolbar{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line)}
+.word-copy-area{padding:14px;overflow-x:auto}
+.word-copy-area+.word-copy-area{border-top:1px solid var(--line)}
+.word-copy-area table{table-layout:auto;overflow-wrap:anywhere}
+@media print{.word-copy-area{padding:8px 0;overflow:visible}.word-copy-toolbar{display:none}}

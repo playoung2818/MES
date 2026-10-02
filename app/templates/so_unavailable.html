@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="workspace-title">{{ sales_order }}</h1>
+<p>No approved, active SO data is available. Sync and approve this SO in Production Planning first, or create a blank WO. Saved WOs can still be viewed/revised.</p>
+<a class="btn btn-outline-secondary" href="{{ url_for('main.so_review_list', q=sales_order) }}">Review SO</a>
+<a class="btn btn-primary" href="{{ url_for('main.manual_wo', sales_order=sales_order) }}">Create Blank WO</a>
+{% for release in releases %}
+<p><a href="{{ url_for('main.generated_detail', wo_id=release.id) }}">P{{ release.release_number }} · {{ release.document_number or 'WO' }}</a>
+<a class="btn btn-outline-secondary" href="{{ url_for('main.so_detail', wo_id=release.id) }}">Revise</a></p>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="workspace-breadcrumb"><a href="{{ url_for('main.index') }}">Workspace</a><span>/</span><span>WO History</span></div>
+<header class="workspace-header">
+  <div><h1 class="workspace-title">WO History</h1><p class="workspace-description">Saved records pulled directly from DB table WO Details.</p></div>
+  <div class="workspace-header-actions"><a class="btn btn-outline-secondary" href="{{ url_for('main.index') }}">Open SOs</a></div>
+</header>
+<form class="workspace-search row g-2">
+  <div class="col"><input class="form-control" name="q" value="{{ q }}" placeholder="Search saved SO / customer / PO / item / serial"></div>
+  <div class="col-auto"><button class="btn btn-outline-secondary">Search</button></div>
+</form>
+<div class="card-lite">
+  <div class="compact-card-header"><span>Saved WO records</span><span class="data-note">{{ orders|length }} rows</span></div>
+  <div class="table-responsive">
+    <table class="table table-sm table-hover align-middle">
+      <thead><tr><th>Document #</th><th>Generated Date (UTC)</th><th>SO</th><th>Release</th><th>Customer</th><th>Customer PO</th><th>Items</th><th>Serial Count</th><th>Last Push</th><th></th></tr></thead>
+      <tbody>
+      {% for order in orders %}
+        {% set serial_count = namespace(value=0) %}{% for item in order.items %}{% set serial_count.value = serial_count.value + (item.serials|default([])|length) %}{% endfor %}
+        <tr><td>{{ order.document_number or '—' }}</td><td>{{ order.generated_date.strftime('%Y-%m-%d %H:%M:%S') if order.generated_date else '—' }}</td><td class="fw-semibold">{{ order.sales_order }}</td><td>P{{ order.release_number }}</td><td>{{ order.customer or '' }}</td><td>{{ order.customer_po or '' }}</td><td>{{ order.items|length }}</td><td>{{ serial_count.value }}</td><td>{{ order.pushed_at.strftime('%Y-%m-%d %H:%M:%S') if order.pushed_at else '' }}</td><td class="text-end"><a class="btn btn-sm btn-primary" href="{{ url_for('main.generated_detail', wo_id=order.id) }}">View</a></td></tr>
+      {% else %}
+        <tr><td colspan="10" class="text-muted text-center">No generated WO details saved in DB yet.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

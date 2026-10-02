@@ -1,0 +1,8045 @@
+[
+  {
+    "sales_order": "EO-20260002",
+    "customer": "Uber Technologies, Inc.",
+    "customer_po": "DE_26003",
+    "items": [
+      {
+        "id": 1,
+        "item": "Cbl-FAKRA-ZFM-ZFM-12M",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 2,
+        "item": "M.242-SSD-256GB-PCIe34-TLC5WT-TD",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 3,
+        "item": "NRU-51V+-JON16-NS",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "EO-20260003",
+    "customer": "Uber Technologies, Inc.",
+    "customer_po": "DE_26004",
+    "items": [
+      {
+        "id": 4,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 5,
+        "item": "PA-120W-OW",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "EO-20260004",
+    "customer": "Mainspring Energy, Inc.",
+    "customer_po": "28869",
+    "items": [
+      {
+        "id": 6,
+        "item": "DDR4-32GB-WT32-TG",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 7,
+        "item": "M.280-SSD-512GB-PCIe44-TLC5WT-TD2",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 8,
+        "item": "Nuvo-7006LP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 9,
+        "item": "SSD-4TB-TLC5WT-TD1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 10,
+        "item": "i7-9700E",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "RWO-260025",
+    "customer": "Mainspring Energy, Inc.",
+    "customer_po": "RNTA260728-003",
+    "items": [
+      {
+        "id": 11,
+        "item": "Cbl-SATA7_W2.54-SATA22-9CM",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20250329",
+    "customer": "Noah Medical U.S.",
+    "customer_po": "PO208679",
+    "items": [
+      {
+        "id": 12,
+        "item": "E-2278GE",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 13,
+        "item": "DDR4-32GB-32-SM",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 14,
+        "item": "mPCIeHS-WiFi-121N",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 15,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 16,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 17,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 18,
+        "item": "Nuvo-8108GC-QD-A6",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 19,
+        "item": "GC-RTXA4500-PNY-601",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 20,
+        "item": "SSD-1920GB-TLC-SO",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 21,
+        "item": "PCIe-AIO-ML-601",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20250331",
+    "customer": "Noah Medical U.S.",
+    "customer_po": "PO208679",
+    "items": [
+      {
+        "id": 22,
+        "item": "Nuvo-8108GC-QD-A6",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 23,
+        "item": "E-2278GE",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 24,
+        "item": "DDR4-32GB-32-SM",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 25,
+        "item": "mPCIeHS-WiFi-121N",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 26,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 27,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 28,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 29,
+        "item": "GC-RTXA4500-PNY-601",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 30,
+        "item": "SSD-1920GB-TLC-SO",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 31,
+        "item": "PCIe-AIO-ML-601",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20250332",
+    "customer": "Noah Medical U.S.",
+    "customer_po": "PO208679",
+    "items": [
+      {
+        "id": 32,
+        "item": "Nuvo-8108GC-QD-A6",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 33,
+        "item": "E-2278GE",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 34,
+        "item": "DDR4-32GB-32-SM",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 35,
+        "item": "mPCIeHS-WiFi-121N",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 36,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 37,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 38,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 39,
+        "item": "GC-RTXA4500-PNY-601",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 40,
+        "item": "SSD-1920GB-TLC-SO",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 41,
+        "item": "PCIe-AIO-ML-601",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20251280",
+    "customer": "Dexterity, Inc.",
+    "customer_po": "PO5423",
+    "items": [
+      {
+        "id": 42,
+        "item": "RGS-8805GC-MB-A1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20251421",
+    "customer": "Noah Medical U.S.",
+    "customer_po": "PO209761",
+    "items": [
+      {
+        "id": 43,
+        "item": "Nuvo-8108GC-QD-A6",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 44,
+        "item": "E-2278GE",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 45,
+        "item": "GC-RTXA4500-PNY-601",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 46,
+        "item": "DDR4-32GB-32-SM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 47,
+        "item": "SSD-1920GB-TLC-IL1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 48,
+        "item": "PCIe-AIO-ML-601",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 49,
+        "item": "mPCIeHS-WiFi-121N",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 50,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 51,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 52,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20251422",
+    "customer": "Noah Medical U.S.",
+    "customer_po": "PO209761",
+    "items": [
+      {
+        "id": 53,
+        "item": "Nuvo-8108GC-QD-A6",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 54,
+        "item": "E-2278GE",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 55,
+        "item": "GC-RTXA4500-PNY-601",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 56,
+        "item": "DDR4-32GB-32-SM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 57,
+        "item": "SSD-1920GB-TLC-IL1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 58,
+        "item": "PCIe-AIO-ML-601",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 59,
+        "item": "mPCIeHS-WiFi-121N",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 60,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 61,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 62,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20251423",
+    "customer": "Noah Medical U.S.",
+    "customer_po": "PO209761",
+    "items": [
+      {
+        "id": 63,
+        "item": "Nuvo-8108GC-QD-A6",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 64,
+        "item": "E-2278GE",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 65,
+        "item": "GC-RTXA4500-PNY-601",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 66,
+        "item": "DDR4-32GB-32-SM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 67,
+        "item": "SSD-1920GB-TLC-IL1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 68,
+        "item": "PCIe-AIO-ML-601",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 69,
+        "item": "mPCIeHS-WiFi-121N",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 70,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 71,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 72,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20251424",
+    "customer": "Noah Medical U.S.",
+    "customer_po": "PO209761",
+    "items": [
+      {
+        "id": 73,
+        "item": "GC-RTXA4500-PNY",
+        "quantity": 14,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 74,
+        "item": "PCIe-AIO-ML",
+        "quantity": 60,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260314",
+    "customer": "Automated Environments",
+    "customer_po": "16701",
+    "items": [
+      {
+        "id": 75,
+        "item": "POC-610",
+        "quantity": 25,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 76,
+        "item": "DDR5-8GB-56WT-SM",
+        "quantity": 25,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 77,
+        "item": "M.280-SSD-128GB-SATA-TLC5WT-TD",
+        "quantity": 25,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 78,
+        "item": "Win11IoT24-Entry",
+        "quantity": 25,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260315",
+    "customer": "Automated Environments",
+    "customer_po": "16701",
+    "items": [
+      {
+        "id": 79,
+        "item": "POC-610",
+        "quantity": 25,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 80,
+        "item": "DDR5-8GB-56WT-SM",
+        "quantity": 25,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 81,
+        "item": "M.280-SSD-128GB-SATA-TLC5WT-TD",
+        "quantity": 25,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 82,
+        "item": "Win11IoT24-Entry",
+        "quantity": 25,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260348",
+    "customer": "CoastIPC, Inc.",
+    "customer_po": "P97492",
+    "items": [
+      {
+        "id": 83,
+        "item": "i9-13900",
+        "quantity": 50,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260349",
+    "customer": "CoastIPC, Inc.",
+    "customer_po": "P97492",
+    "items": [
+      {
+        "id": 84,
+        "item": "i9-13900",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260588",
+    "customer": "Tarracor Robotics Ltd. (Ireland)",
+    "customer_po": "5",
+    "items": [
+      {
+        "id": 85,
+        "item": "POC-751VTC",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 86,
+        "item": "DDR5-16GB-48WT-SM",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 87,
+        "item": "M.280-SSD-128GB-SATA-TLC5WT-TD1",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 88,
+        "item": "M.2-LTE-7455",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 89,
+        "item": "Risr-M2B-mPCIe-SIMslot",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 90,
+        "item": "Cbl-MHF4-SMAF-30CM",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 91,
+        "item": "AccsyBx-FAN-POC-700",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260743",
+    "customer": "FireFly Robotics Inc.",
+    "customer_po": "PO077037",
+    "items": [
+      {
+        "id": 92,
+        "item": "POC-712",
+        "quantity": 11,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 93,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 11,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 94,
+        "item": "M.280-SSD-256GB-PCIe44-TLC5WT-TD2",
+        "quantity": 11,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 95,
+        "item": "MezIO-V20",
+        "quantity": 11,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 96,
+        "item": "Win10IoT21-Entry",
+        "quantity": 11,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 97,
+        "item": "mPCIeHS-BTWifi-WT-6218",
+        "quantity": 11,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 98,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 11,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 99,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 22,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 100,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 22,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260750",
+    "customer": "Carnegie Robotics LLC",
+    "customer_po": "PO-0141395",
+    "items": [
+      {
+        "id": 101,
+        "item": "SEMIL-2047GC-CRL",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 102,
+        "item": "i9-13900E",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 103,
+        "item": "DDR5-32GB-ECC56WT-SM",
+        "quantity": 40,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 104,
+        "item": "M.280-SSD-2TB-PCIe44-TLC5WT-TD2",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 105,
+        "item": "SSD-512GB-TLC5WT-TD1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 106,
+        "item": "mPCIe-COM-MPG014-601",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 107,
+        "item": "mPCIe-CAN-IPEH-4047",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 108,
+        "item": "Cbl-W5M-M12A5F-40CM-PK-CANFD-TP",
+        "quantity": 80,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 109,
+        "item": "Cbl-W210M-M12A10F-40CM-CT-COM",
+        "quantity": 40,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 110,
+        "item": "DtC-M12-WP",
+        "quantity": 120,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260867",
+    "customer": "Rheinmetall Canada Inc.",
+    "customer_po": "4500049014",
+    "items": [
+      {
+        "id": 111,
+        "item": "NRU-161V-AWP",
+        "quantity": 7,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 112,
+        "item": "GC-Jetson-NX16G-Orin-Nvidia",
+        "quantity": 7,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 113,
+        "item": "M.242-SSD-256GB-PCIe34-TLC5WT-TD1",
+        "quantity": 7,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 114,
+        "item": "AC-IMX390-H120v2",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 115,
+        "item": "AC-IMX390-H190",
+        "quantity": 9,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260912",
+    "customer": "RIDGELINE ENGINEERING CO.",
+    "customer_po": "33628",
+    "items": [
+      {
+        "id": 116,
+        "item": "Nuvo-716xGC-PoE",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 117,
+        "item": "CSM-7160GC",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 118,
+        "item": "i5-8500T",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 119,
+        "item": "GC-QUADRO-P620-PNY",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 120,
+        "item": "DDR4-8GB-WT32-IK",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 121,
+        "item": "SSD-1TB-TLC-SS-EVO",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 122,
+        "item": "Win10IoT21-High",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 123,
+        "item": "DINRAIL-O",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 124,
+        "item": "PA-280W-ET3",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 125,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260913",
+    "customer": "RIDGELINE ENGINEERING CO.",
+    "customer_po": "33628",
+    "items": [
+      {
+        "id": 126,
+        "item": "Nuvo-716xGC-PoE",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 127,
+        "item": "CSM-7160GC",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 128,
+        "item": "i5-8500T",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 129,
+        "item": "GC-QUADRO-P620-PNY",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 130,
+        "item": "DDR4-8GB-WT32-IK",
+        "quantity": 8,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 131,
+        "item": "SSD-1TB-TLC-SS-EVO",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 132,
+        "item": "Win10IoT21-High",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 133,
+        "item": "DINRAIL-O",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 134,
+        "item": "PA-280W-ET3",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 135,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260923",
+    "customer": "Advanced Technology Systems Company",
+    "customer_po": "PO-12642",
+    "items": [
+      {
+        "id": 136,
+        "item": "AccsyBx-Cardholder-10208GC-5080_70_70Ti",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 137,
+        "item": "DDR5-32GB-48WT-SM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 138,
+        "item": "GC-RTX5070Ti-OC-MSI",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 139,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 140,
+        "item": "Nuvo-10208GC",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 141,
+        "item": "SSD-1TB-TLC5WT-TD1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 142,
+        "item": "Win11IoT24-High",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 143,
+        "item": "i7-14700",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260924",
+    "customer": "Advanced Technology Systems Company",
+    "customer_po": "PO-12642",
+    "items": [
+      {
+        "id": 144,
+        "item": "AccsyBx-Cardholder-10208GC-5080_70_70Ti",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 145,
+        "item": "DDR5-32GB-48WT-SM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 146,
+        "item": "GC-RTX5070Ti-OC-MSI",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 147,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 148,
+        "item": "Nuvo-10208GC",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 149,
+        "item": "SSD-1TB-TLC5WT-TD1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 150,
+        "item": "Win11IoT24-High",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 151,
+        "item": "i7-14700",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260925",
+    "customer": "Advanced Technology Systems Company",
+    "customer_po": "PO-12642",
+    "items": [
+      {
+        "id": 152,
+        "item": "AccsyBx-Cardholder-10208GC-5080_70_70Ti",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 153,
+        "item": "DDR5-32GB-48WT-SM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 154,
+        "item": "GC-RTX5070Ti-OC-MSI",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 155,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 156,
+        "item": "Nuvo-10208GC",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 157,
+        "item": "SSD-1TB-TLC5WT-TD1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 158,
+        "item": "Win11IoT24-High",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 159,
+        "item": "i7-14700",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261020",
+    "customer": "Inficon Inc.",
+    "customer_po": "41548973",
+    "items": [
+      {
+        "id": 241,
+        "item": "Nuvo-9006E-IFCN",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 242,
+        "item": "i3-12100TE",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 243,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 244,
+        "item": "SSD-1TB-TLC5ET-TD",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 245,
+        "item": "Win10IoT19-Value",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 246,
+        "item": "OPC_SW110T1MA_VIPA-20",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 247,
+        "item": "PA-160W-OW",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 248,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260926",
+    "customer": "Advanced Technology Systems Company",
+    "customer_po": "PO-12642",
+    "items": [
+      {
+        "id": 160,
+        "item": "Nuvo-10208GC",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 161,
+        "item": "i7-14700",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 162,
+        "item": "GC-RTX5070Ti-OC-MSI",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 163,
+        "item": "DDR5-32GB-48WT-SM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 164,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 165,
+        "item": "SSD-1TB-TLC5WT-TD1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 166,
+        "item": "Win11IoT24-High",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 167,
+        "item": "AccsyBx-Cardholder-10208GC-5080_70_70Ti",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260927",
+    "customer": "Advanced Technology Systems Company",
+    "customer_po": "PO-12642",
+    "items": [
+      {
+        "id": 168,
+        "item": "Nuvo-10208GC",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 169,
+        "item": "i7-14700",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 170,
+        "item": "GC-RTX5070Ti-OC-MSI",
+        "quantity": 8,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 171,
+        "item": "DDR5-32GB-48WT-SM",
+        "quantity": 8,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 172,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 173,
+        "item": "SSD-1TB-TLC5WT-TD1",
+        "quantity": 8,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 174,
+        "item": "Win11IoT24-High",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 175,
+        "item": "AccsyBx-Cardholder-10208GC-5080_70_70Ti",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260964",
+    "customer": "Rheinmetall Canada Inc.",
+    "customer_po": "4500049014",
+    "items": [
+      {
+        "id": 176,
+        "item": "NRU-161V-AWP",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 177,
+        "item": "GC-Jetson-NX16G-Orin-Nvidia",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 178,
+        "item": "M.242-SSD-256GB-PCIe34-TLC5WT-TD1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 179,
+        "item": "AC-IMX390-H120v2",
+        "quantity": 14,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260970",
+    "customer": "Rivian",
+    "customer_po": "592110-2",
+    "items": [
+      {
+        "id": 180,
+        "item": "Nuvo-10208GC",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 181,
+        "item": "i9-14900",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 182,
+        "item": "DDR5-32GB-56-SM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 183,
+        "item": "M.280-SSD-256GB-PCIe44-TLC5WT-TD2",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 184,
+        "item": "TY-NVMe-Nuvo10208GC",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 185,
+        "item": "mPCIeHS-WiFi-121N",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 186,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 187,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 188,
+        "item": "M.2-LTE-7455",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 189,
+        "item": "Risr-M2B-mPCIe-SIMslot",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 190,
+        "item": "Cbl-MHF4-SMAF-30CM",
+        "quantity": 45,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 191,
+        "item": "Dust Cover-DP",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 192,
+        "item": "Dust Cover-COM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 193,
+        "item": "Dust Cover-USB-AF",
+        "quantity": 90,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 194,
+        "item": "Dust Cover-VGA-HDB15M",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 195,
+        "item": "Dust Cover-RJ45",
+        "quantity": 45,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 196,
+        "item": "Cblkit-GPWR_Set-N10208GC",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 197,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 198,
+        "item": "Ant-SMAM-LTE",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20260981",
+    "customer": "Noah Medical U.S.",
+    "customer_po": "PO208679",
+    "items": [
+      {
+        "id": 199,
+        "item": "E-2278GE",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 200,
+        "item": "GC-RTXA4500-PNY-601",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 201,
+        "item": "DDR4-32GB-32-SM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 202,
+        "item": "SSD-1920GB-TLC-SO",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 203,
+        "item": "PCIe-AIO-ML-601",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 204,
+        "item": "mPCIeHS-WiFi-121N",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 205,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 206,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 207,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 208,
+        "item": "Nuvo-8108GC-QD-A6",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261015",
+    "customer": "FireFly Robotics Inc.",
+    "customer_po": "PO078987",
+    "items": [
+      {
+        "id": 209,
+        "item": "POC-712",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 210,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 211,
+        "item": "M.280-SSD-256GB-PCIe44-TLC5WT-TD2",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 212,
+        "item": "MezIO-V20",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 213,
+        "item": "Win10IoT21-Entry",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 214,
+        "item": "mPCIeHS-BTWifi-WT-6218",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 215,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 216,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 217,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261016",
+    "customer": "Inficon Inc.",
+    "customer_po": "41553488",
+    "items": [
+      {
+        "id": 218,
+        "item": "Nuvo-9006E-IFCN",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 219,
+        "item": "i3-12100TE",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 220,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 221,
+        "item": "SSD-1TB-TLC5ET-TD",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 222,
+        "item": "Win10IoT19-Value",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 223,
+        "item": "OPC_SW110T1MA_VIPA-20",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 224,
+        "item": "PA-160W-OW",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 225,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261018",
+    "customer": "Inficon Inc.",
+    "customer_po": "41553490",
+    "items": [
+      {
+        "id": 226,
+        "item": "Nuvo-9006E-IFCN",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 227,
+        "item": "i3-12100TE",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 228,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 229,
+        "item": "SSD-1TB-TLC5ET-TD",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 230,
+        "item": "Win10IoT19-Value",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 231,
+        "item": "OPC_SW110T1MA_VIPA-20",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 232,
+        "item": "PA-160W-OW",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 233,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261019",
+    "customer": "Inficon Inc.",
+    "customer_po": "41553491",
+    "items": [
+      {
+        "id": 234,
+        "item": "Nuvo-9006E-IFCN",
+        "quantity": 21,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 235,
+        "item": "i3-12100TE",
+        "quantity": 21,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 236,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 21,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 237,
+        "item": "SSD-1TB-TLC5ET-TD",
+        "quantity": 21,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 238,
+        "item": "Win10IoT19-Value",
+        "quantity": 21,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 239,
+        "item": "PA-160W-OW",
+        "quantity": 21,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 240,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 21,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261238",
+    "customer": "FireFly Robotics Inc.",
+    "customer_po": "PO080465",
+    "items": [
+      {
+        "id": 491,
+        "item": "SEMIL-1708-FF",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 492,
+        "item": "i7-9700E",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 493,
+        "item": "DDR4-16GB-WT32-SM-a",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 494,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 495,
+        "item": "Cbl-M12S4F-CordEnd4-180CM",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261039",
+    "customer": "Echodyne Corp.",
+    "customer_po": "PO12103",
+    "items": [
+      {
+        "id": 249,
+        "item": "SEMIL-2008",
+        "quantity": 17,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 250,
+        "item": "i9-14900",
+        "quantity": 17,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 251,
+        "item": "DDR5-32GB-48WT-SM",
+        "quantity": 34,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 252,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 17,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 253,
+        "item": "Cblkit-M12-SEMIL2008",
+        "quantity": 17,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 254,
+        "item": "PA-280W-CW6P-2P",
+        "quantity": 17,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 255,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 17,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261040",
+    "customer": "Echodyne Corp.",
+    "customer_po": "PO12103",
+    "items": [
+      {
+        "id": 256,
+        "item": "SEMIL-2008",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 257,
+        "item": "i9-14900",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 258,
+        "item": "DDR5-32GB-48WT-SM",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 259,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 260,
+        "item": "Cblkit-M12-SEMIL2008",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 261,
+        "item": "PA-280W-CW6P-2P",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 262,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261052",
+    "customer": "LASERAX INC",
+    "customer_po": "508673",
+    "items": [
+      {
+        "id": 263,
+        "item": "Nuvo-9166GC-PoE-UL",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 264,
+        "item": "i9-14900",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 265,
+        "item": "GC-L4-Nvidia",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 266,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 267,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 268,
+        "item": "SSD-4TB-TLC5WT-TD1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 269,
+        "item": "Dust Cover-DP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 270,
+        "item": "Dust Cover-COM",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 271,
+        "item": "Dust Cover-USB-AF",
+        "quantity": 8,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 272,
+        "item": "Dust Cover-USB-CF",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 273,
+        "item": "Dust Cover-DVI",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 274,
+        "item": "Dust Cover-VGA-HDB15M",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 275,
+        "item": "Dust Cover-RJ45",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 276,
+        "item": "PCIe-PoE425bt",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 277,
+        "item": "Miokit-G4P-Nuvo9160GC",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261074",
+    "customer": "Inficon Inc.",
+    "customer_po": "41548974",
+    "items": [
+      {
+        "id": 278,
+        "item": "Nuvo-9006E-IFCN",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 279,
+        "item": "i3-12100TE",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 280,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 281,
+        "item": "SSD-1TB-TLC5ET-TD",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 282,
+        "item": "Win10IoT19-Value",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 283,
+        "item": "OPC_SW110T1MA_VIPA-20",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 284,
+        "item": "PA-160W-OW",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 285,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261080",
+    "customer": "LASERAX INC",
+    "customer_po": "508714",
+    "items": [
+      {
+        "id": 286,
+        "item": "POC-410",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 287,
+        "item": "DDR4-16GB-32-IK2",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 288,
+        "item": "M.280-SSD-256GB-SATA-TLC5WT-TD",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 289,
+        "item": "Win11IoT24-Entry",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261085",
+    "customer": "Navico Group Americas LLC",
+    "customer_po": "463659",
+    "items": [
+      {
+        "id": 290,
+        "item": "SEMIL-1748GC-10G-L4-BSK(EA)",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 291,
+        "item": "E-2278GE",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 292,
+        "item": "DDR4-32GB-ECC26WT-DL",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 293,
+        "item": "M.280-SSD-2TB-PCIe44-TLC5ET-TD1",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 294,
+        "item": "Cbl-W5M-M12A5M-40CM-PK-CANFD-TP",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 295,
+        "item": "Cbl-W20F-M12A10F-40CM-IK-COM",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 296,
+        "item": "DtC-M12M-WP",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 297,
+        "item": "DtC-M12-WP",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 298,
+        "item": "mPCIe-CAN-IPEH-4047",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 299,
+        "item": "mPCIe-COM-2RS232-X203",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261098",
+    "customer": "Precitec Inc.",
+    "customer_po": "07162026SM",
+    "items": [
+      {
+        "id": 300,
+        "item": "Nuvo-10007",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 301,
+        "item": "i9-13900E",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 302,
+        "item": "DDR5-16GB-56WT-SM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261103",
+    "customer": "Inficon Inc.",
+    "customer_po": "41558539",
+    "items": [
+      {
+        "id": 303,
+        "item": "Nuvo-9006E-IFCN",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 304,
+        "item": "i3-12100TE",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 305,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 306,
+        "item": "SSD-1TB-TLC5ET-TD",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 307,
+        "item": "Win10IoT19-Value",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 308,
+        "item": "PA-160W-OW",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 309,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261104",
+    "customer": "Inficon Inc.",
+    "customer_po": "41558540",
+    "items": [
+      {
+        "id": 310,
+        "item": "Nuvo-9006E-IFCN",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 311,
+        "item": "i3-12100TE",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 312,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 313,
+        "item": "SSD-1TB-TLC5ET-TD",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 314,
+        "item": "Win10IoT19-Value",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 315,
+        "item": "PA-160W-OW",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 316,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261105",
+    "customer": "Inficon Inc.",
+    "customer_po": "41558541",
+    "items": [
+      {
+        "id": 317,
+        "item": "Nuvo-9006E-IFCN",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 318,
+        "item": "i3-12100TE",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 319,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 320,
+        "item": "SSD-1TB-TLC5ET-TD",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 321,
+        "item": "Win10IoT19-Value",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 322,
+        "item": "PA-160W-OW",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 323,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261189",
+    "customer": "Keysight Technologies, Inc.",
+    "customer_po": "9080145595",
+    "items": [
+      {
+        "id": 404,
+        "item": "Nuvo-9006LP-AUT-KS",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 405,
+        "item": "i9-13900",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 406,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 407,
+        "item": "M.280-SSD-1TB-PCIe44-TLC5-PN",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 408,
+        "item": "MezIO-AE304-KS(EA)",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 409,
+        "item": "PA-280W-ET3",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261118",
+    "customer": "Acuitus Ag, Inc.",
+    "customer_po": "1018",
+    "items": [
+      {
+        "id": 324,
+        "item": "NRU-161V-AWP",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 325,
+        "item": "GC-Jetson-NX16G-Orin-Nvidia",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 326,
+        "item": "FPnl-3Ant-of NRU-160-AWP series",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 327,
+        "item": "M.2-LTE-7455",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 328,
+        "item": "Risr-M2B-mPCIe-SIMslot",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 329,
+        "item": "Cbl-MHF4-SMAF-WP-15CM",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 330,
+        "item": "DtC-SMA-WP",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 331,
+        "item": "Cblkit-NRU-161V-AWP",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 332,
+        "item": "PA-160W-OW",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 333,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 334,
+        "item": "AC-IMX390-H120v2",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 335,
+        "item": "M.242-SSD-256GB-PCIe34-TLC5WT-TD1",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261123",
+    "customer": "Candela Technologies Inc.",
+    "customer_po": "429",
+    "items": [
+      {
+        "id": 336,
+        "item": "Nuvo-10007-CTI",
+        "quantity": 50,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 337,
+        "item": "i7-14700",
+        "quantity": 50,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 338,
+        "item": "SSD-256GB-TLC5WT-TD1",
+        "quantity": 50,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 339,
+        "item": "PA-280W-ET3",
+        "quantity": 50,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 340,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 50,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 341,
+        "item": "DDR5-32GB-56WT-SM-a",
+        "quantity": 50,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261135",
+    "customer": "Arrow Electronics Inc",
+    "customer_po": "CVS7000012000",
+    "items": [
+      {
+        "id": 342,
+        "item": "PCIe-PoE550X",
+        "quantity": 200,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261136",
+    "customer": "Arrow Electronics Inc",
+    "customer_po": "CVS7000012000",
+    "items": [
+      {
+        "id": 343,
+        "item": "PCIe-PoE550X",
+        "quantity": 250,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261137",
+    "customer": "Arrow Electronics Inc",
+    "customer_po": "CVS7000012000",
+    "items": [
+      {
+        "id": 344,
+        "item": "PCIe-PoE550X",
+        "quantity": 200,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261151",
+    "customer": "Carnegie Robotics LLC",
+    "customer_po": "PO-0142691",
+    "items": [
+      {
+        "id": 345,
+        "item": "SEMIL-2047GC",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 346,
+        "item": "AccsyBx-F_4PCAN-2CTCOM-S20-CRL",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 347,
+        "item": "i9-14900",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 348,
+        "item": "DDR5-32GB-ECC56WT-TD",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 349,
+        "item": "M.280-SSD-2TB-PCIe44-TLC5WT-TD2",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 350,
+        "item": "SSD-512GB-TLC5WT-TD1",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 351,
+        "item": "mPCIe-COM-MPG014-601",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 352,
+        "item": "mPCIe-CAN-IPEH-4047",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 353,
+        "item": "Cbl-W5M-M12A5F-40CM-PK-CANFD-TP",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 354,
+        "item": "Cbl-W210M-M12A10F-40CM-CT-COM",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 355,
+        "item": "DtC-M12-WP",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 356,
+        "item": "SEMIL-2047GC-NGC",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 357,
+        "item": "GC-L4-Nvidia",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 358,
+        "item": "SEMIL-2047GC-NGC-CRL(EA)",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261152",
+    "customer": "Carnegie Robotics LLC",
+    "customer_po": "PO-0142691",
+    "items": [
+      {
+        "id": 359,
+        "item": "SEMIL-2047GC-CRL",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 360,
+        "item": "i9-14900",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 361,
+        "item": "DDR5-32GB-ECC56WT-TD",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 362,
+        "item": "M.280-SSD-2TB-PCIe44-TLC5WT-TD2",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 363,
+        "item": "SSD-512GB-TLC5WT-TD1",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 364,
+        "item": "mPCIe-COM-MPG014-601",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 365,
+        "item": "mPCIe-CAN-IPEH-4047",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 366,
+        "item": "Cbl-W5M-M12A5F-40CM-PK-CANFD-TP",
+        "quantity": 24,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 367,
+        "item": "Cbl-W210M-M12A10F-40CM-CT-COM",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 368,
+        "item": "DtC-M12-WP",
+        "quantity": 36,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261153",
+    "customer": "Carnegie Robotics LLC",
+    "customer_po": "PO-0142691",
+    "items": [
+      {
+        "id": 369,
+        "item": "SEMIL-2047GC-CRL",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 370,
+        "item": "i9-14900",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 371,
+        "item": "DDR5-32GB-ECC56WT-TD",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 372,
+        "item": "M.280-SSD-2TB-PCIe44-TLC5WT-TD2",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 373,
+        "item": "SSD-512GB-TLC5WT-TD1",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 374,
+        "item": "mPCIe-COM-MPG014-601",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 375,
+        "item": "mPCIe-CAN-IPEH-4047",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 376,
+        "item": "Cbl-W5M-M12A5F-40CM-PK-CANFD-TP",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 377,
+        "item": "Cbl-W210M-M12A10F-40CM-CT-COM",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 378,
+        "item": "DtC-M12-WP",
+        "quantity": 18,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261166",
+    "customer": "LASERAX INC",
+    "customer_po": "508598",
+    "items": [
+      {
+        "id": 379,
+        "item": "Wmkit-V-POC300_400",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 380,
+        "item": "POC-410",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 381,
+        "item": "DDR4-16GB-32-IK2",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 382,
+        "item": "Win11IoT24-Entry",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 383,
+        "item": "M.280-SSD-256GB-SATA-TLC5WT-TD1",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261167",
+    "customer": "LASERAX INC",
+    "customer_po": "508598",
+    "items": [
+      {
+        "id": 384,
+        "item": "Nuvo-9006E-PoE-UL",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 385,
+        "item": "i9-14900",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 386,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 387,
+        "item": "SSD-512GB-TLC5WT-TD",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 388,
+        "item": "SSD-2TB-TLC5WT-TD1",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261168",
+    "customer": "LASERAX INC",
+    "customer_po": "508598",
+    "items": [
+      {
+        "id": 389,
+        "item": "Nuvo-9166GC-PoE-UL",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 390,
+        "item": "i9-14900",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 391,
+        "item": "GC-L4-Nvidia",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 392,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 393,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 394,
+        "item": "SSD-4TB-TLC5WT-TD1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 395,
+        "item": "Dust Cover-DP",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 396,
+        "item": "Dust Cover-COM",
+        "quantity": 8,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 397,
+        "item": "Dust Cover-USB-AF",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 398,
+        "item": "Dust Cover-USB-CF",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 399,
+        "item": "Dust Cover-DVI",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 400,
+        "item": "Dust Cover-VGA-HDB15M",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 401,
+        "item": "Dust Cover-RJ45",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 402,
+        "item": "PCIe-PoE425bt",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 403,
+        "item": "Miokit-G4P-Nuvo9160GC",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261191",
+    "customer": "Rivian",
+    "customer_po": "592110-2",
+    "items": [
+      {
+        "id": 410,
+        "item": "Nuvo-10208GC",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 411,
+        "item": "i9-14900",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 412,
+        "item": "DDR5-32GB-56-SM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 413,
+        "item": "TY-NVMe-Nuvo10208GC",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 414,
+        "item": "mPCIeHS-WiFi-121N",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 415,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 416,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 417,
+        "item": "M.2-LTE-7455",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 418,
+        "item": "Risr-M2B-mPCIe-SIMslot",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 419,
+        "item": "Cbl-MHF4-SMAF-30CM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 420,
+        "item": "Dust Cover-DP",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 421,
+        "item": "Dust Cover-COM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 422,
+        "item": "Dust Cover-USB-AF",
+        "quantity": 60,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 423,
+        "item": "Dust Cover-VGA-HDB15M",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 424,
+        "item": "Dust Cover-RJ45",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 425,
+        "item": "Cblkit-GPWR_Set-N10208GC",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 426,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 427,
+        "item": "Ant-SMAM-LTE",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 428,
+        "item": "M.280-SSD-256GB-PCIe44-TLC5WT-TD2",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261192",
+    "customer": "Tesla, Inc.",
+    "customer_po": "5101489752",
+    "items": [
+      {
+        "id": 429,
+        "item": "SEMIL-2048GC",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 430,
+        "item": "i9-14900",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 431,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 432,
+        "item": "M.280-SSD-2TB-PCIe44-TLC5WT-TD2",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 433,
+        "item": "SSD-2TB-TLC5WT-TD1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 434,
+        "item": "Cblkit-M12-SEMIL2008",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 435,
+        "item": "PA-600W-C4PY-4P",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261207",
+    "customer": "Tek84 Inc.",
+    "customer_po": "17611",
+    "items": [
+      {
+        "id": 436,
+        "item": "Nuvo-7505D",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 437,
+        "item": "i5-9500TE",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 438,
+        "item": "DDR4-16GB-32-SM",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 439,
+        "item": "M.280-SSD-256GB-SATA-TLC-IK",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 440,
+        "item": "Win11IoT24-Value",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261208",
+    "customer": "Tek84 Inc.",
+    "customer_po": "17611",
+    "items": [
+      {
+        "id": 441,
+        "item": "Nuvo-7505D",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 442,
+        "item": "i5-9500TE",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 443,
+        "item": "DDR4-16GB-32-SM",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 444,
+        "item": "M.280-SSD-256GB-SATA-TLC-IK",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 445,
+        "item": "Win11IoT24-Value",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261209",
+    "customer": "Tek84 Inc.",
+    "customer_po": "17611",
+    "items": [
+      {
+        "id": 446,
+        "item": "Nuvo-7505D",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 447,
+        "item": "i5-9500TE",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 448,
+        "item": "DDR4-16GB-32-SM",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 449,
+        "item": "M.280-SSD-256GB-SATA-TLC-IK",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 450,
+        "item": "Win11IoT24-Value",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261214",
+    "customer": "Echodyne Corp.",
+    "customer_po": "PO12513",
+    "items": [
+      {
+        "id": 451,
+        "item": "SEMIL-2008",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 452,
+        "item": "i9-14900",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 453,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 454,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 455,
+        "item": "Cblkit-M12-SEMIL2008",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 456,
+        "item": "PA-600W-C4PY-4P",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 457,
+        "item": "PA-280W-CW6P-2P",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 458,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 459,
+        "item": "Cbl-M12L5F-CordEnd5-180CM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261230",
+    "customer": "Inficon Inc.",
+    "customer_po": "41560363",
+    "items": [
+      {
+        "id": 460,
+        "item": "Nuvo-9006E-IFCN",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 461,
+        "item": "i3-12100TE",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 462,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 463,
+        "item": "Win10IoT19-Value",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 464,
+        "item": "OPC_SW110T1MA_VIPA-20",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 465,
+        "item": "PA-160W-OW",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 466,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 467,
+        "item": "SSD-1TB-TLC5ET-TD-a",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261233",
+    "customer": "The Fifth Lab Inc",
+    "customer_po": "QTD_mobileAPI.io_260806",
+    "items": [
+      {
+        "id": 468,
+        "item": "SEMIL-2008",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 469,
+        "item": "i9-14900",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 470,
+        "item": "DDR5-64GB-ECC64-TG",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 471,
+        "item": "SSD-1TB-TLC5WT-TD1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 472,
+        "item": "RPnl-5Ant-SEMIL20",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 473,
+        "item": "Cblkit-M12-SEMIL2008",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 474,
+        "item": "Extnd-mPCIeHS_GPS-M800_Mod_Cbl-40CM_kits",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 475,
+        "item": "M.280-SSD-256GB-PCIe44-TLC5WT-TD2",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261235",
+    "customer": "FireFly Robotics Inc.",
+    "customer_po": "PO080462",
+    "items": [
+      {
+        "id": 476,
+        "item": "SEMIL-1708-FF",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 477,
+        "item": "i7-9700E",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 478,
+        "item": "DDR4-16GB-WT32-SM-a",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 479,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 480,
+        "item": "Cbl-M12S4F-CordEnd4-180CM",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261236",
+    "customer": "FireFly Robotics Inc.",
+    "customer_po": "PO080463",
+    "items": [
+      {
+        "id": 481,
+        "item": "SEMIL-1708-FF",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 482,
+        "item": "i7-9700E",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 483,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 484,
+        "item": "Cbl-M12S4F-CordEnd4-180CM",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 485,
+        "item": "DDR4-16GB-WT32-SM",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261237",
+    "customer": "FireFly Robotics Inc.",
+    "customer_po": "PO080464",
+    "items": [
+      {
+        "id": 486,
+        "item": "SEMIL-1708-FF",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 487,
+        "item": "i7-9700E",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 488,
+        "item": "DDR4-16GB-WT32-SM-a",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 489,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 490,
+        "item": "Cbl-M12S4F-CordEnd4-180CM",
+        "quantity": 16,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261243",
+    "customer": "Maritime Applied Physics Corp- MAPC",
+    "customer_po": "PO-19493",
+    "items": [
+      {
+        "id": 496,
+        "item": "SEMIL-2047GC",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 497,
+        "item": "i9-14900",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 498,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 499,
+        "item": "SSD-2TB-TLC5WT-TD1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 500,
+        "item": "RPnl-5Ant-SEMIL20",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 501,
+        "item": "Extnd-mPCIeHS-BTWifi-WT-6218_Mod_Cbl-40CM_kits",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 502,
+        "item": "Cblkit-M12-SEMIL2000",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 503,
+        "item": "PA-280W-CW6P-2P",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 504,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 505,
+        "item": "M.280-SSD-2TB-PCIe44-TLC5WT-TD1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261262",
+    "customer": "Mainspring Energy, Inc.",
+    "customer_po": "29862",
+    "items": [
+      {
+        "id": 506,
+        "item": "Nuvo-7006LP",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 507,
+        "item": "i7-9700E",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 508,
+        "item": "DDR4-32GB-WT32-TG",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 509,
+        "item": "M.280-SSD-512GB-PCIe44-TLC5WT-TD2",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 510,
+        "item": "SSD-4TB-TLC5WT-TD1-a",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261273",
+    "customer": "Rivian",
+    "customer_po": "607171",
+    "items": [
+      {
+        "id": 511,
+        "item": "PCIe-AE304bp",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261292",
+    "customer": "Atom Computing Inc",
+    "customer_po": "PO5944",
+    "items": [
+      {
+        "id": 512,
+        "item": "Nuvo-10007",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 513,
+        "item": "i5-12500TE",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 514,
+        "item": "DDR5-16GB-48-SM",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 515,
+        "item": "SSD-128GB-TLC-IK",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 516,
+        "item": "PA-280W-ET3",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 517,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261293",
+    "customer": "Atom Computing Inc",
+    "customer_po": "PO5944",
+    "items": [
+      {
+        "id": 518,
+        "item": "Nuvo-10007",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 519,
+        "item": "i5-12500TE",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 520,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 521,
+        "item": "SSD-128GB-TLC5WT-TD",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 522,
+        "item": "PA-280W-ET3",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 523,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261297",
+    "customer": "Olympus Controls Corp",
+    "customer_po": "4500032717",
+    "items": [
+      {
+        "id": 524,
+        "item": "POC-915",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 525,
+        "item": "DDR5-32GB-56-SM",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 526,
+        "item": "M.280-SSD-256GB-PCIe4-TLCWT-IK1",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 527,
+        "item": "Win11IoT24-Value",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 528,
+        "item": "mPCIeHS-WiFi-121N",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 529,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 530,
+        "item": "MezIO-V21",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 531,
+        "item": "mPCIe-M2M",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 532,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 533,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 534,
+        "item": "M.242-SSD-256GB-PCIe34-TLC5WT-TD1",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261298",
+    "customer": "RC Mowers",
+    "customer_po": "30380",
+    "items": [
+      {
+        "id": 535,
+        "item": "NRU-172S-PPC",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 536,
+        "item": "GC-Jetson-NX16G-Orin-Nvidia",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 537,
+        "item": "M.242-SSD-256GB-PCIe34-TLC5WT-TD1",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 538,
+        "item": "FPnl-3Ant-NRU-170-PPC series",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 539,
+        "item": "Cbl-MHF4-SMAF-WP-15CM",
+        "quantity": 18,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 540,
+        "item": "DtC-SMA-WP",
+        "quantity": 18,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 541,
+        "item": "M.2-LTE-7455",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 542,
+        "item": "Risr-M2B-mPCIe-SIMslot",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261310",
+    "customer": "Honeywell International Inc (TX)",
+    "customer_po": "4423748958",
+    "items": [
+      {
+        "id": 543,
+        "item": "SEMIL-1708",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 544,
+        "item": "E-2278GE",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 545,
+        "item": "DDR4-32GB-ECC26WT-DL",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 546,
+        "item": "M.280-SSD-2TB-PCIe44-TLC5WT-TD2",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 547,
+        "item": "SSD-2TB-TLC5WT-TD1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 548,
+        "item": "Cblkit-M12-SEMIL1708",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 549,
+        "item": "PA-280W-CW6P-2P",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 550,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261324",
+    "customer": "Outrider Technologies",
+    "customer_po": "PO4004",
+    "items": [
+      {
+        "id": 551,
+        "item": "Nuvo-9166GC",
+        "quantity": 7,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 552,
+        "item": "i9-14900",
+        "quantity": 7,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 553,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 14,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 554,
+        "item": "M.280-SSD-1TB-PCIe44-TLC5WT-TD2",
+        "quantity": 7,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 555,
+        "item": "MezIO-V20-EP",
+        "quantity": 7,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 556,
+        "item": "PCIe-10G550X",
+        "quantity": 7,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261326",
+    "customer": "Kodiak AI Inc",
+    "customer_po": "QTD_Kodiak AI_260710",
+    "items": [
+      {
+        "id": 557,
+        "item": "PCIe-AE304bp",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261329",
+    "customer": "MEDATech Engineering Services Ltd.",
+    "customer_po": "86654",
+    "items": [
+      {
+        "id": 558,
+        "item": "POC-515",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 559,
+        "item": "DDR4-8GB-WT32-IK",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 560,
+        "item": "M.280-SSD-512GB-PCIe44-TLC5WT-TD2",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 561,
+        "item": "mPCIe-CAN-IPEH-4045",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 562,
+        "item": "MezIO-V20",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 563,
+        "item": "mPCIeHS-BTWifi-USBWT-6202",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 564,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 565,
+        "item": "Ant-RP_SMAM-WiFi-108MM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 566,
+        "item": "Cbl-MHF-RP_SMAF-15CM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 567,
+        "item": "Wmkit-H-POC500",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 568,
+        "item": "PA-120W-OW",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 569,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261417",
+    "customer": "Harvest Moon Automation Inc",
+    "customer_po": "QTD_Harvest Moon Automati",
+    "items": [
+      {
+        "id": 892,
+        "item": "NRU-220S",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 893,
+        "item": "GC-Jetson-AGX64GB-Orin-Nvidia",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 894,
+        "item": "Adapter-Active-DP-HDMI-BENFEI",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 895,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 896,
+        "item": "mPCIeHS-BTWifi-WT-6218",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 897,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 898,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 899,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261332",
+    "customer": "Grid Aero, Inc.",
+    "customer_po": "QTD_Grid Aero Inc._26081",
+    "items": [
+      {
+        "id": 570,
+        "item": "POC-766AWP-DEV",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 571,
+        "item": "DDR5-16GB-56WT-SM",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 572,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 573,
+        "item": "RPnl-2M12-POC-766AWP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 574,
+        "item": "mPCIe-CAN-IPEH-4046",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 575,
+        "item": "Cbl-W5M-M12A5F-40CM-PK-CANFD-TP",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 576,
+        "item": "DtC-M12-WP",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 577,
+        "item": "Cbl-M12A5M-DB9M-180CM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 578,
+        "item": "Cblkit-M12-POC-766AWP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 579,
+        "item": "PA-120W-OW",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 580,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261333",
+    "customer": "Grid Aero, Inc.",
+    "customer_po": "QTD_Grid Aero Inc._26081",
+    "items": [
+      {
+        "id": 581,
+        "item": "POC-766AWP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 582,
+        "item": "DDR5-16GB-56WT-SM",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 583,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 584,
+        "item": "RPnl-2M12-POC-766AWP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 585,
+        "item": "mPCIe-CAN-IPEH-4046",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 586,
+        "item": "Cbl-W5M-M12A5F-40CM-PK-CANFD-TP",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 587,
+        "item": "DtC-M12-WP",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 588,
+        "item": "Cbl-M12A5M-DB9M-180CM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 589,
+        "item": "Cblkit-M12-POC-766AWP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 590,
+        "item": "PA-120W-OW",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 591,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261335",
+    "customer": "CoastIPC, Inc.",
+    "customer_po": "P98489",
+    "items": [
+      {
+        "id": 592,
+        "item": "GC-Jetson-NX16G-Orin-Nvidia",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 593,
+        "item": "NRU-52S+",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261336",
+    "customer": "CoastIPC, Inc.",
+    "customer_po": "P98490",
+    "items": [
+      {
+        "id": 594,
+        "item": "NRU-52S+",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 595,
+        "item": "GC-Jetson-NX16G-Orin-Nvidia",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261338",
+    "customer": "CoastIPC, Inc.",
+    "customer_po": "P98499",
+    "items": [
+      {
+        "id": 596,
+        "item": "NRU-220S",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 597,
+        "item": "GC-Jetson-AGX64GB-Orin-Nvidia",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261339",
+    "customer": "Monteris Medical",
+    "customer_po": "9060",
+    "items": [
+      {
+        "id": 598,
+        "item": "DDR5-32GB-56-SM-a",
+        "quantity": 150,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 599,
+        "item": "M.280-SSD-512GB-PCIe44-TLC5-SC",
+        "quantity": 150,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 600,
+        "item": "SSD-2TB-TLC5ET-TD-a",
+        "quantity": 150,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 601,
+        "item": "GC-RTXPRO2000-PNY",
+        "quantity": 150,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261346",
+    "customer": "Rivian",
+    "customer_po": "610281-2",
+    "items": [
+      {
+        "id": 602,
+        "item": "Nuvo-10208GC",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 603,
+        "item": "i9-14900",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 604,
+        "item": "DDR5-32GB-56-SM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 605,
+        "item": "M.280-SSD-256GB-PCIe44-TLC5WT-TD2",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 606,
+        "item": "TY-NVMe-Nuvo10208GC",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 607,
+        "item": "mPCIeHS-WiFi-121N",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 608,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 609,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 610,
+        "item": "M.2-LTE-7455",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 611,
+        "item": "Risr-M2B-mPCIe-SIMslot",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 612,
+        "item": "Cbl-MHF4-SMAF-30CM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 613,
+        "item": "Dust Cover-DP",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 614,
+        "item": "Dust Cover-COM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 615,
+        "item": "Dust Cover-USB-AF",
+        "quantity": 60,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 616,
+        "item": "Dust Cover-VGA-HDB15M",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 617,
+        "item": "Dust Cover-RJ45",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 618,
+        "item": "Cblkit-GPWR_Set-N10208GC",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 619,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 620,
+        "item": "Ant-SMAM-LTE",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261348",
+    "customer": "Osram Sylvania Inc",
+    "customer_po": "QTD_AMS OSRAM_2608272",
+    "items": [
+      {
+        "id": 621,
+        "item": "Nuvis-7306RT-DTIO(EA)",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 622,
+        "item": "i7-9700E",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 623,
+        "item": "DDR4-16GB-32-SM",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 624,
+        "item": "M.280-SSD-1TB-PCIe44-TLC-SS",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 625,
+        "item": "Win11Pro-ENG64",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 626,
+        "item": "PCIe-PoE354at-1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 627,
+        "item": "PA-280W-ET3",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 628,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261351",
+    "customer": "LASERAX INC",
+    "customer_po": "509280",
+    "items": [
+      {
+        "id": 629,
+        "item": "Nuvo-9006E-PoE-UL",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 630,
+        "item": "i7-12700",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 631,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 632,
+        "item": "SSD-512GB-TLC5WT-TD1-a",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 633,
+        "item": "SSD-2TB-TLC5WT-TD1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261357",
+    "customer": "Rotor Technologies, Inc.",
+    "customer_po": "PO00336",
+    "items": [
+      {
+        "id": 634,
+        "item": "NRU-230V-AWP",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 635,
+        "item": "GC-Jetson-AGX64GB-Orin-Nvidia",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261360",
+    "customer": "HDT Robotics, LLC",
+    "customer_po": "4500326230",
+    "items": [
+      {
+        "id": 636,
+        "item": "NRU-230V-AWP",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 637,
+        "item": "GC-Jetson-AGX64GB-Orin-Nvidia",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 638,
+        "item": "M.280-SSD-512GB-PCIe44-TLC5WT-TD2",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 639,
+        "item": "Cblkit-FP-NRU-230V-AWP_NRU-240S-AWP",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 640,
+        "item": "Cblkit-BP-NRU-230V-AWP",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 641,
+        "item": "PA-280W-CW6P-2P",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 642,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261361",
+    "customer": "Matthews International",
+    "customer_po": "46644227",
+    "items": [
+      {
+        "id": 643,
+        "item": "POC-40",
+        "quantity": 153,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 644,
+        "item": "DDR4-8GB-WT32-SM-a",
+        "quantity": 153,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 645,
+        "item": "M.280-SSD-128GB-SATA-T5WT-TD1-a",
+        "quantity": 153,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 646,
+        "item": "Win11IoT24-Entry",
+        "quantity": 153,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 647,
+        "item": "M.230-BTWIFI-AX210",
+        "quantity": 153,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 648,
+        "item": "Cbl-MHF4-RP_SMAF-15CM",
+        "quantity": 306,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 649,
+        "item": "Ant-RP_SMAM-WiFi-108MM",
+        "quantity": 306,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 650,
+        "item": "Wmkit-V-POC300_400",
+        "quantity": 153,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261363",
+    "customer": "Navico Group Americas LLC",
+    "customer_po": "464933",
+    "items": [
+      {
+        "id": 651,
+        "item": "E-2278GE",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 652,
+        "item": "DDR4-32GB-ECC26WT-DL",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 653,
+        "item": "M.280-SSD-2TB-PCIe44-TLC5ET-TD1",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 654,
+        "item": "Cbl-W5M-M12A5M-40CM-PK-CANFD-TP",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 655,
+        "item": "Cbl-W20F-M12A10F-40CM-IK-COM",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 656,
+        "item": "DtC-M12M-WP",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 657,
+        "item": "DtC-M12-WP",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 658,
+        "item": "mPCIe-CAN-IPEH-4047",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 659,
+        "item": "mPCIe-COM-2RS232-X203",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 660,
+        "item": "SEMIL-1748GC-10G-L4-NGC-BSK(EA)",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 661,
+        "item": "GC-L4-Nvidia-LP-a",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261364",
+    "customer": "H2Ok Innovations Inc. d/b/a Laminar",
+    "customer_po": "20260831",
+    "items": [
+      {
+        "id": 662,
+        "item": "POC-715-FT-LM",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 663,
+        "item": "PA-120W-OW",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 664,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 665,
+        "item": "DDR5-8GB-56-SM",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 666,
+        "item": "M.280-SSD-128GB-SATA-T5WT-TD1-a",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261365",
+    "customer": "H2Ok Innovations Inc. d/b/a Laminar",
+    "customer_po": "20260831",
+    "items": [
+      {
+        "id": 667,
+        "item": "POC-715-FT-LM",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 668,
+        "item": "PA-120W-OW",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 669,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 670,
+        "item": "DDR5-8GB-56-SM",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 671,
+        "item": "M.280-SSD-128GB-SATA-T5WT-TD1-a",
+        "quantity": 15,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261366",
+    "customer": "Aerflite Canada Inc.",
+    "customer_po": "1042",
+    "items": [
+      {
+        "id": 672,
+        "item": "CS-RM44-601",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 673,
+        "item": "LC-XE360-SP5-601",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 674,
+        "item": "MB-GENOAD8X-2T/BCM-601",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 675,
+        "item": "9254-601",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 676,
+        "item": "RDDR5-32GB-ECC48WT-TD-601",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 677,
+        "item": "PA-HA1300R-PM-601",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 678,
+        "item": "GC-RTX4070-O12G-ASUS-601",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 679,
+        "item": "PCIe-PoE354at-1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 680,
+        "item": "M.280-SSD-2TB-P44-TLC5WT-TD-601",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261368",
+    "customer": "Ball Horticultural Company",
+    "customer_po": "090226A",
+    "items": [
+      {
+        "id": 681,
+        "item": "Nuvo-11501",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 682,
+        "item": "Core Ultra 7 265",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 683,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 684,
+        "item": "Win11IoT24-High",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 685,
+        "item": "mPCIeHS-BTWifi-WT-6218",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 686,
+        "item": "Extnd-mPCIeHS",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 687,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 688,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 689,
+        "item": "PA-280W-ET3",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 690,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 691,
+        "item": "AccsyBx-FAN-Nuvo11531_11501",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 692,
+        "item": "SSD-512GB-TLC5WT-TD1-a",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261369",
+    "customer": "CoastIPC, Inc.",
+    "customer_po": "P98521r",
+    "items": [
+      {
+        "id": 693,
+        "item": "NRU-240S-AWP",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 694,
+        "item": "GC-Jetson-AGX64GB-Orin-Nvidia",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261371",
+    "customer": "Pratt & Miller Engineering & Fabrication,",
+    "customer_po": "144354",
+    "items": [
+      {
+        "id": 695,
+        "item": "SEMIL-2008",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 696,
+        "item": "i9-14900",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 697,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 698,
+        "item": "M.280-SSD-512GB-PCIe44-TLC5WT-TD2",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261373",
+    "customer": "CoastIPC, Inc.",
+    "customer_po": "P98531",
+    "items": [
+      {
+        "id": 699,
+        "item": "NRU-220S",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 700,
+        "item": "GC-Jetson-AGX64GB-Orin-Nvidia",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261375",
+    "customer": "Leidos Dynetics, Inc.(VA)",
+    "customer_po": "P010391728",
+    "items": [
+      {
+        "id": 701,
+        "item": "Nuvo-10208GC-10G",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 702,
+        "item": "i9-14900",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 703,
+        "item": "GC-RTXPRO6000-PNY",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 704,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 705,
+        "item": "M.280-SSD-2TB-PCIe44-TLC5ET-TD1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 706,
+        "item": "TY-NVMe-Nuvo10208GC",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 707,
+        "item": "AccsyBx-FAN-Nuvo10208GC",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 708,
+        "item": "PA-1000W-MW",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 709,
+        "item": "Cbl-PC-OW3-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 710,
+        "item": "Cbl-YT-OW-Black-50CM1",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 711,
+        "item": "Cbl-YT-OW-Red-50CM1",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261377",
+    "customer": "GC Micro Corporation",
+    "customer_po": "1126090801",
+    "items": [
+      {
+        "id": 712,
+        "item": "Nuvo-9531",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 713,
+        "item": "i5-14500",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 714,
+        "item": "DDR4-8GB-WT32-IK",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 715,
+        "item": "SSD-128GB-TLC5WT-TD",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 716,
+        "item": "PA-160W-OW",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 717,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261378",
+    "customer": "Tocaro Blue Inc.",
+    "customer_po": "QTD_Tocaro Blue_260908",
+    "items": [
+      {
+        "id": 718,
+        "item": "Cbl-M12A8M-2DB9M-180CM",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261380",
+    "customer": "Goosetown Communications",
+    "customer_po": "IT_SC_20260908",
+    "items": [
+      {
+        "id": 719,
+        "item": "Nuvo-11501",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 720,
+        "item": "Core Ultra 5 245",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 721,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 722,
+        "item": "M.280-SSD-256GB-PCIe44-TLC5WT-TD2",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 723,
+        "item": "HDD-4TB-54-SE",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261381",
+    "customer": "Jet Stream Systems Inc.",
+    "customer_po": "QTD_Jetstream_260908",
+    "items": [
+      {
+        "id": 724,
+        "item": "2.5\"SATA HDD Single Bay",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261418",
+    "customer": "Foresight Data Machines Inc",
+    "customer_po": "PO-0001",
+    "items": [
+      {
+        "id": 900,
+        "item": "NRU-240S-AWP",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 901,
+        "item": "GC-Jetson-AGX64GB-Orin-Nvidia",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 902,
+        "item": "M.280-SSD-1TB-PCIe44-TLC5WT-TD2",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 903,
+        "item": "Cblkit-FP-NRU-230V-AWP_NRU-240S-AWP",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261383",
+    "customer": "Lightning Pick | Matthews International",
+    "customer_po": "46644318",
+    "items": [
+      {
+        "id": 725,
+        "item": "POC-712-UL",
+        "quantity": 13,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 726,
+        "item": "DDR5-8GB-56-SM",
+        "quantity": 13,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 727,
+        "item": "M.280-SSD-128GB-SATA-TLC5WT-TD1",
+        "quantity": 13,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 728,
+        "item": "Dust Cover-RJ45",
+        "quantity": 52,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 729,
+        "item": "Dust Cover-COM",
+        "quantity": 26,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 730,
+        "item": "Dust Cover-USB-AF",
+        "quantity": 52,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 731,
+        "item": "Dust Cover-DP",
+        "quantity": 13,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 732,
+        "item": "Dust Cover-HDMI",
+        "quantity": 13,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 733,
+        "item": "Win11IoT24-Entry",
+        "quantity": 13,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 734,
+        "item": "Wmkit-H-POC500",
+        "quantity": 13,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 735,
+        "item": "PA-60W-OW",
+        "quantity": 13,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 736,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 13,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261386",
+    "customer": "Applied Intuition (CA)",
+    "customer_po": "AIG-007212",
+    "items": [
+      {
+        "id": 737,
+        "item": "NRU-230V-AWP",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 738,
+        "item": "M.280-SSD-2TB-PCIe44-TLC5ET-TD1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 739,
+        "item": "SSD-2TB-TLC-SS-EVO",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 740,
+        "item": "Cbl-TpCPlug-UTpCF-50CM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 741,
+        "item": "Cbl-M12A8M-2U2TA-180CM2",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 742,
+        "item": "Cbl-M12A8M-2DB9M-180CM",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 743,
+        "item": "Cbl-M12X8M-RJ45F-100CM",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 744,
+        "item": "GC-JETSON-AGX64GB-ORIN-INDUSTRIAL-NVIDIA",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261388",
+    "customer": "i4 Solutions",
+    "customer_po": "6315",
+    "items": [
+      {
+        "id": 745,
+        "item": "Nuvo-6108GC",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 746,
+        "item": "i7-6700TE",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 747,
+        "item": "DDR4-32GB-32-SM",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 748,
+        "item": "HDD-500GB-54-WD",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 749,
+        "item": "Win10IoT21-High",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261389",
+    "customer": "Monteris Medical",
+    "customer_po": "9046",
+    "items": [
+      {
+        "id": 750,
+        "item": "Nuvo-9160GC",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 751,
+        "item": "i7-13700TE",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 752,
+        "item": "GC-RTXPRO2000-PNY",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 753,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 754,
+        "item": "M.280-SSD-512GB-PCIe44-TLC5WT-TD2",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 755,
+        "item": "SSD-2TB-TLC5ET-TD",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 756,
+        "item": "Win10IoT21-High",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 757,
+        "item": "Gpubr-Nuvo9160-01",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 758,
+        "item": "Dust Cover-DP",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 759,
+        "item": "Dust Cover-COM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 760,
+        "item": "Dust Cover-DVI",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 761,
+        "item": "Dust Cover-VGA-HDB15M",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 762,
+        "item": "Dust Cover-RJ45",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 763,
+        "item": "PA-600W-ENC",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 764,
+        "item": "Cbl-PC-OW3-180CM1",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 765,
+        "item": "Cbl-OW-OW2-Black-50CM1",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 766,
+        "item": "Cbl-OW-OW2-Red-50CM1",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 767,
+        "item": "POC-715-UL",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 768,
+        "item": "M.280-SSD-1TB-PCIe44-TLC5-PN",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 769,
+        "item": "PA-120W-OW",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 770,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 771,
+        "item": "DDR5-8GB-56-SM-a",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 772,
+        "item": "Dust Cover-USB-AF",
+        "quantity": 40,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 773,
+        "item": "Dust Cover-USB-CF",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261390",
+    "customer": "Alpha Technology USA Corp",
+    "customer_po": "AX-090926",
+    "items": [
+      {
+        "id": 774,
+        "item": "Nuvo-9160GC",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 775,
+        "item": "i7-14700",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 776,
+        "item": "GC-RTX5050-SOLO-ZTC",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 777,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 778,
+        "item": "M.280-SSD-256GB-PCIe44-TLC5WT-TD2",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261391",
+    "customer": "Genie Mobility",
+    "customer_po": "26-003",
+    "items": [
+      {
+        "id": 779,
+        "item": "AC-ISX031-H60",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261394",
+    "customer": "Lincode Labs Inc",
+    "customer_po": "1084",
+    "items": [
+      {
+        "id": 780,
+        "item": "Nuvo-11160GC-PoE",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 781,
+        "item": "Core Ultra 7 265",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 782,
+        "item": "DDR5-32GB-56-SM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 783,
+        "item": "M.280-SSD-2TB-PCIe44-TLC-SS",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 784,
+        "item": "Gpubr-Nuvo9160-01",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 785,
+        "item": "Miokit-G4P-Nuvo11160GC",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 786,
+        "item": "PA-600W-ENC",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 787,
+        "item": "Cbl-PC-OW3-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 788,
+        "item": "Cbl-OW-OW2-Black-50CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 789,
+        "item": "Cbl-OW-OW2-Red-50CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 790,
+        "item": "GC-RTX2000Ada-PNY",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261395",
+    "customer": "SIL4 Systems Inc.",
+    "customer_po": "SIL4-NTA26-02",
+    "items": [
+      {
+        "id": 791,
+        "item": "SEMIL-1301",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 792,
+        "item": "i7-9700E",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 793,
+        "item": "Nuvo-2610RL-H",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261396",
+    "customer": "Echodyne Corp.",
+    "customer_po": "PO12854",
+    "items": [
+      {
+        "id": 794,
+        "item": "PA-280W-CW6P-2P",
+        "quantity": 25,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 795,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 25,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 796,
+        "item": "Cbl-M12L5F-CordEnd5-180CM",
+        "quantity": 25,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261399",
+    "customer": "Ohio Gravure- Kaspar Graphic",
+    "customer_po": "40194",
+    "items": [
+      {
+        "id": 797,
+        "item": "POC-515",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 798,
+        "item": "DDR4-8GB-WT32-SM-a",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 799,
+        "item": "M.280-SSD-512GB-P44-T5WT-TD2-a",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 800,
+        "item": "PA-120W-OW",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 801,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261400",
+    "customer": "Arete Associates",
+    "customer_po": "CO-213203",
+    "items": [
+      {
+        "id": 802,
+        "item": "SEMIL-2007",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 803,
+        "item": "i9-14900",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 804,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 805,
+        "item": "RPnl-5Ant-SEMIL20",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 806,
+        "item": "Extnd-mPCIeHS-BTWifi-WT-6218_Mod_Cbl-40CM_kits",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 807,
+        "item": "Extnd-mPCIeHS_GPS-M800_Mod_Cbl-40CM_kits",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 808,
+        "item": "M.280-SSD-2TB-PCIe44-T5WT-TD2-a",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261401",
+    "customer": "Science Engineering Associates, Inc.",
+    "customer_po": "19355",
+    "items": [
+      {
+        "id": 809,
+        "item": "Nuvo-2822",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 810,
+        "item": "PA-280W-ET3",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 811,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261423",
+    "customer": "AES-Advantage Electric Supply",
+    "customer_po": "PO2026090104",
+    "items": [
+      {
+        "id": 904,
+        "item": "POC-715-UL",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 905,
+        "item": "DDR5-8GB-56-SM-a",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 906,
+        "item": "M.280-SSD-256GB-PCIe44-TLC5WT-TD2",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261424",
+    "customer": "CDS Inc.",
+    "customer_po": "14385",
+    "items": [
+      {
+        "id": 907,
+        "item": "Nuvo-9006DE-PoE-UL",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 908,
+        "item": "Miokit-G4P-Nuvo9000DE",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261425",
+    "customer": "Pratt & Miller Engineering & Fabrication,",
+    "customer_po": "144474",
+    "items": [
+      {
+        "id": 909,
+        "item": "NRU-230V-AWP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 910,
+        "item": "GC-Jetson-AGX64GB-Orin-Nvidia",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 911,
+        "item": "M.280-SSD-512GB-PCIe44-TLC5WT-TD2",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 912,
+        "item": "PA-280W-CW6P-2P",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 913,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261403",
+    "customer": "Boston Scientific",
+    "customer_po": "7000738793",
+    "items": [
+      {
+        "id": 812,
+        "item": "Nuvo-9006DE-PoE-UL",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 813,
+        "item": "i9-13900",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 814,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 815,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 816,
+        "item": "SSD-1TB-TLC-SS-EVO",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 817,
+        "item": "Dust Cover-DP",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 818,
+        "item": "Dust Cover-COM",
+        "quantity": 40,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 819,
+        "item": "Dust Cover-USB-AF",
+        "quantity": 80,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 820,
+        "item": "Dust Cover-USB-CF",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 821,
+        "item": "Dust Cover-DVI",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 822,
+        "item": "Dust Cover-VGA-HDB15M",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 823,
+        "item": "Dust Cover-RJ45",
+        "quantity": 60,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 824,
+        "item": "DINRAIL-O",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 825,
+        "item": "PA-280W-ET3",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 826,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 10,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261404",
+    "customer": "Inficon Inc.",
+    "customer_po": "41571307",
+    "items": [
+      {
+        "id": 827,
+        "item": "Nuvo-9006E-IFCN",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 828,
+        "item": "i3-12100TE",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 829,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 830,
+        "item": "SSD-1TB-TLC5ET-TD-a",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 831,
+        "item": "Win10IoT19-Value",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 832,
+        "item": "OPC_SW110T1MA_VIPA-20",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 833,
+        "item": "PA-160W-OW",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 834,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261407",
+    "customer": "Jet Stream Systems Inc.",
+    "customer_po": "QTD_Jetstream_260917",
+    "items": [
+      {
+        "id": 835,
+        "item": "Nuvo-9002LP",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 836,
+        "item": "i7-14700",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 837,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 838,
+        "item": "M.280-SSD-256GB-PCIe44-TLC5WT-TD2",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 839,
+        "item": "MezIO-D330",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 840,
+        "item": "M.242-BTWifi-WT-262A",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 841,
+        "item": "GPSkit-mPCIe_GPS-M800",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 842,
+        "item": "Ant-RP_SMAM-WiFi-196MM1",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 843,
+        "item": "Cbl-MHF-RP_SMAF-30CM",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 844,
+        "item": "Ant-SMAM-GPS-300CM",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 845,
+        "item": "Cbl-MHF-SMAF-30CM1",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261408",
+    "customer": "Nextpower Robotics and Services, Inc",
+    "customer_po": "1303",
+    "items": [
+      {
+        "id": 846,
+        "item": "NRU-240S-AWP",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 847,
+        "item": "GC-Jetson-AGX64GB-Orin-Nvidia",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 848,
+        "item": "RPnl-5Ant-NRU240S-AWP",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 849,
+        "item": "M.230-BTWIFI-AX210",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 850,
+        "item": "mPCIe-M2E",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 851,
+        "item": "DtC-SMA-WP",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 852,
+        "item": "Cblkit-FP-NRU-230V-AWP_NRU-240S-AWP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 853,
+        "item": "PA-280W-CW6P-2P",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 854,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 855,
+        "item": "Cbl-MHF4-RP_SMAF-WP-15CM",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 856,
+        "item": "M.280-SSD-2TB-PCIe44-T5WT-TD2-a",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261410",
+    "customer": "CoastIPC, Inc.",
+    "customer_po": "P98582",
+    "items": [
+      {
+        "id": 857,
+        "item": "NRU-220S",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 858,
+        "item": "GC-Jetson-AGX64GB-Orin-Nvidia",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261411",
+    "customer": "Musashi AI North America",
+    "customer_po": "4501069396",
+    "items": [
+      {
+        "id": 859,
+        "item": "Nuvo-10109GC",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 860,
+        "item": "i9-14900",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 861,
+        "item": "GC-RTX5090-OC-MSI",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 862,
+        "item": "M.280-SSD-2TB-PCIe44-TLC-SS",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 863,
+        "item": "PCIe-PoE354at-1",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 864,
+        "item": "PA-1000W-MW",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 865,
+        "item": "Cbl-PC-OW3-180CM1",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 866,
+        "item": "Cbl-YT-OW-Black-50CM1",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 867,
+        "item": "Cbl-YT-OW-Red-50CM1",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 868,
+        "item": "DDR5-48GB-64-TG",
+        "quantity": 8,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261413",
+    "customer": "Abstract Electronics, Inc",
+    "customer_po": "644215KC",
+    "items": [
+      {
+        "id": 869,
+        "item": "Nuvo-716xGC",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 870,
+        "item": "CSM-7168GC",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 871,
+        "item": "i7-9700E",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 872,
+        "item": "GC-RTX2000Ada-PNY",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 873,
+        "item": "DDR4-32GB-WT32-TG",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 874,
+        "item": "M.280-SSD-512GB-P44-T5WT-TD2-a",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 875,
+        "item": "Win11Pro-ENG64",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261414",
+    "customer": "Adaptive Micro Systems, LLC",
+    "customer_po": "PO100641",
+    "items": [
+      {
+        "id": 876,
+        "item": "POC-410",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 877,
+        "item": "DDR4-8GB-WT32-IK",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261416",
+    "customer": "Hi-Tech Controls & Automation",
+    "customer_po": "68802",
+    "items": [
+      {
+        "id": 878,
+        "item": "Nuvo-9006DE-PoE",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 879,
+        "item": "i7-14700",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 880,
+        "item": "DDR5-32GB-56-SM",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 881,
+        "item": "M.280-SSD-1TB-PCIe44-TLC-SS",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 882,
+        "item": "Win11IoT24-High",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 883,
+        "item": "Dust Cover-DP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 884,
+        "item": "Dust Cover-COM",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 885,
+        "item": "Dust Cover-USB-AF",
+        "quantity": 8,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 886,
+        "item": "Dust Cover-USB-CF",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 887,
+        "item": "Dust Cover-DVI",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 888,
+        "item": "Dust Cover-VGA-HDB15M",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 889,
+        "item": "Dust Cover-RJ45",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 890,
+        "item": "PA-280W-ET3",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 891,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261427",
+    "customer": "INFLEXION POINT, LLC",
+    "customer_po": "59364",
+    "items": [
+      {
+        "id": 914,
+        "item": "Nuvo-7006LP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 915,
+        "item": "i7-9700E",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 916,
+        "item": "DDR4-16GB-32-IK2",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 917,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 918,
+        "item": "DINRAIL-O",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 919,
+        "item": "PA-160W-OW",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 920,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261428",
+    "customer": "INFLEXION POINT, LLC",
+    "customer_po": "59348",
+    "items": [
+      {
+        "id": 921,
+        "item": "Nuvo-7006LP",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 922,
+        "item": "i7-9700E",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 923,
+        "item": "DDR4-16GB-32-IK2",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 924,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 925,
+        "item": "DINRAIL-O",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 926,
+        "item": "PA-160W-OW",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 927,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 12,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261429",
+    "customer": "INFLEXION POINT, LLC",
+    "customer_po": "59349",
+    "items": [
+      {
+        "id": 928,
+        "item": "Nuvo-7006LP",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 929,
+        "item": "i7-9700E",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 930,
+        "item": "DDR4-16GB-32-SM",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 931,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 932,
+        "item": "DINRAIL-O",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 933,
+        "item": "PA-160W-OW",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 934,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 20,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261430",
+    "customer": "Maritime Tactical Systems Inc DBA MARTAC",
+    "customer_po": "P5257-R&D",
+    "items": [
+      {
+        "id": 935,
+        "item": "SEMIL-2007",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 936,
+        "item": "i7-14700",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 937,
+        "item": "DDR5-32GB-ECC56WT-IK",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 938,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 939,
+        "item": "Cbl-TpCPlug-DPM-1M",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 940,
+        "item": "Cblkit-M12-SEMIL2000",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261431",
+    "customer": "Maritime Tactical Systems Inc DBA MARTAC",
+    "customer_po": "P5257-R&D",
+    "items": [
+      {
+        "id": 941,
+        "item": "NRU-230V-AWP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 942,
+        "item": "GC-Jetson-AGX64GB-Orin-Nvidia",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 943,
+        "item": "M.280-SSD-1TB-PCIe44-T5WT-TD2-a",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 944,
+        "item": "SSD-4TB-TLC5WT-TD1-a",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 945,
+        "item": "Cblkit-FP-NRU-230V-AWP_NRU-240S-AWP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 946,
+        "item": "Cblkit-BP-NRU-230V-AWP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261432",
+    "customer": "Maritime Tactical Systems Inc DBA MARTAC",
+    "customer_po": "P5257-R&D",
+    "items": [
+      {
+        "id": 947,
+        "item": "PA-280W-CW6P-2P",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 948,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 949,
+        "item": "AC-ISX031-H60",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261433",
+    "customer": "Inficon Inc.",
+    "customer_po": "41571308",
+    "items": [
+      {
+        "id": 950,
+        "item": "Nuvo-9006E-IFCN",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 951,
+        "item": "i3-12100TE",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 952,
+        "item": "DDR5-16GB-56-SM",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 953,
+        "item": "SSD-1TB-TLC5ET-TD-a",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 954,
+        "item": "Win10IoT19-Value",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 955,
+        "item": "PA-160W-OW",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 956,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 30,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261434",
+    "customer": "Coleman Technologies, Inc. DBA Sciotex",
+    "customer_po": "NS092126PC",
+    "items": [
+      {
+        "id": 957,
+        "item": "Nuvo-7501",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 958,
+        "item": "i7-9700TE",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 959,
+        "item": "PA-120W-OW",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 960,
+        "item": "Cbl-PC-TW-180CM1",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261437",
+    "customer": "CoastIPC, Inc.",
+    "customer_po": "P98606r",
+    "items": [
+      {
+        "id": 961,
+        "item": "NRU-52S+",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 962,
+        "item": "GC-Jetson-NX16G-Orin-Nvidia",
+        "quantity": 5,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261438",
+    "customer": "LASERAX INC",
+    "customer_po": "509377",
+    "items": [
+      {
+        "id": 963,
+        "item": "Nuvo-9166GC-PoE-UL",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 964,
+        "item": "i9-14900",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 965,
+        "item": "GC-L4-Nvidia",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 966,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 967,
+        "item": "M.280-SSD-1TB-PCIe4-TLCWT-IK1",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 968,
+        "item": "SSD-4TB-TLC5WT-TD1-a",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 969,
+        "item": "Dust Cover-DP",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 970,
+        "item": "Dust Cover-COM",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 971,
+        "item": "Dust Cover-USB-AF",
+        "quantity": 8,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 972,
+        "item": "Dust Cover-USB-CF",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 973,
+        "item": "Dust Cover-DVI",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 974,
+        "item": "Dust Cover-VGA-HDB15M",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 975,
+        "item": "Dust Cover-RJ45",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 976,
+        "item": "PCIe-PoE425bt",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 977,
+        "item": "Miokit-G4P-Nuvo9160GC",
+        "quantity": 1,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261439",
+    "customer": "LASERAX INC",
+    "customer_po": "509530",
+    "items": [
+      {
+        "id": 978,
+        "item": "Miokit-U4_3-POC400",
+        "quantity": 4,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261440",
+    "customer": "LASERAX INC",
+    "customer_po": "509474",
+    "items": [
+      {
+        "id": 979,
+        "item": "POC-400",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 980,
+        "item": "DDR4-16GB-32-IK2",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 981,
+        "item": "M.280-SSD-256GB-SATA-TLC5WT-TD",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 982,
+        "item": "Win10IoT21-Entry",
+        "quantity": 2,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261452",
+    "customer": "Qualcomm Technologies, Inc.",
+    "customer_po": "4300080945",
+    "items": [
+      {
+        "id": 983,
+        "item": "Nuvo-10208GC-10G",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 984,
+        "item": "i9-14900",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 985,
+        "item": "GC-RTXPRO6000-PNY",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 986,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 987,
+        "item": "M.280-SSD-2TB-PCIe44-TLC-SS",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 988,
+        "item": "SSD-2TB-TLC5ET-TD",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 989,
+        "item": "PCIe-10G550X",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 990,
+        "item": "PA-1000W-MW",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 991,
+        "item": "Cbl-PC-OW3-180CM1",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 992,
+        "item": "Cbl-YT-OW-Black-50CM1",
+        "quantity": 9,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 993,
+        "item": "Cbl-YT-OW-Red-50CM1",
+        "quantity": 9,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  },
+  {
+    "sales_order": "SO-20261453",
+    "customer": "Qualcomm Technologies, Inc.",
+    "customer_po": "4300080945",
+    "items": [
+      {
+        "id": 994,
+        "item": "Nuvo-10208GC-10G",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 995,
+        "item": "i9-14900",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 996,
+        "item": "GC-RTXPRO6000-PNY",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 997,
+        "item": "DDR5-32GB-56WT-SM",
+        "quantity": 6,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 998,
+        "item": "M.280-SSD-2TB-PCIe44-TLC-SS",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 999,
+        "item": "SSD-2TB-TLC5ET-TD",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 1000,
+        "item": "PCIe-10G550X",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 1001,
+        "item": "PA-1000W-MW",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 1002,
+        "item": "Cbl-PC-OW3-180CM1",
+        "quantity": 3,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 1003,
+        "item": "Cbl-YT-OW-Black-50CM1",
+        "quantity": 9,
+        "serials": [],
+        "notes": ""
+      },
+      {
+        "id": 1004,
+        "item": "Cbl-YT-OW-Red-50CM1",
+        "quantity": 9,
+        "serials": [],
+        "notes": ""
+      }
+    ]
+  }
+]

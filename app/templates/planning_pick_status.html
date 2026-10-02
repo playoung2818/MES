@@ -1,0 +1,8 @@
+<div class="order-meta">
+  WO Status:
+  <span class="status-pill {% if o.wo_status == 'Picked' %}status-picked{% else %}status-na{% endif %}">{{ o.wo_status }}</span>
+  <span title="Calculated from saved WO Details quantities">
+    <span class="picked-qty-label">Picked Qty</span> <strong>{{ o.picked_qty_str }}</strong>
+    | Remaining: <strong>{{ o.remaining_units_str }}</strong>
+  </span>
+</div>
