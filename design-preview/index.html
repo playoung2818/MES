@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="An interactive, standalone design preview for the NEOUSYS MES workspace. All records are sample data.">
+<title>Open sales orders · NEOUSYS MES</title>
+<style>
+/* The existing MES green identity, with a shared scale for type, spacing and controls. */
+:root {
+  --green: #18734d; --green-hover: #125b3c; --green-ink: #155b3e;
+  --mint: #edf6f0; --mint-line: #cbded1; --ink: #253346; --muted: #58697a;
+  --page: #f7f9f8; --surface: #fff; --line: #dfe6e2; --soft: #f3f6f4;
+  --amber: #80520c; --amber-bg: #fff5df; --red: #9b3037; --red-bg: #fff0f0;
+  --radius: 8px; --font: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scrollbar-gutter: stable; scroll-behavior: smooth; }
+body { margin: 0; color: var(--ink); background: var(--page); font: 15px/1.5 var(--font); }
+button, input, textarea, select { font: inherit; }
+button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+a { color: var(--green); text-underline-offset: 3px; }
+a:hover { color: var(--green-hover); }
+button:focus-visible, a:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+input:focus, textarea:focus, select:focus { outline: 2px solid var(--green); outline-offset: 2px; border-color: var(--green); }
+::selection { color: var(--green-ink); background: #cce9d8; }
+input, textarea { caret-color: var(--green); }
+::placeholder { color: #657585; opacity: 1; }
+* { scrollbar-width: thin; scrollbar-color: #a5b8ac var(--soft); }
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.icon { width: 18px; height: 18px; flex: none; vertical-align: middle; stroke-width: 1.7; }
+.preview-strip { background: var(--surface); border-bottom: 1px solid var(--line); font-size: 12px; color: var(--muted); padding-block: 2px; }
+#skip-link:focus { position: fixed; top: 8px; left: 8px; width: auto; height: auto; margin: 0; clip: auto; padding: 12px 18px; background: var(--surface); border: 2px solid var(--green); border-radius: 5px; z-index: 20; }
+main#content:focus { outline: none; }
+.preview-inner, .nav-inner { max-width: 1504px; margin: auto; padding-inline: 40px; }
+.preview-inner { min-height: 34px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.preview-inner > span { display: flex; align-items: center; gap: 8px; }
+.preview-inner .icon { width: 14px; height: 14px; }
+.preview-label { font-weight: 600; color: var(--ink); }
+.nav { background: var(--mint); border-top: 3px solid var(--green); border-bottom: 1px solid var(--mint-line); }
+.nav-inner { display: flex; align-items: center; min-height: 72px; gap: 48px; }
+.brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--ink); flex: none; }
+.brand-mark { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 6px; background: var(--green); color: #fff; }
+.brand-mark .icon { width: 25px; height: 25px; }
+.brand strong { display: block; font-size: 17px; letter-spacing: .065em; line-height: 1.3; }
+.brand small { display: block; font-size: 11px; letter-spacing: .085em; color: #38664b; margin-top: 3px; }
+.nav-links { display: flex; align-self: stretch; gap: 6px; }
+.nav-links a { display: flex; align-items: center; gap: 8px; padding: 0 18px; border-bottom: 2px solid transparent; font-weight: 600; font-size: 14px; text-decoration: none; color: #426052; white-space: nowrap; }
+.nav-links a:hover { background: #e1efe6; }
+.nav-links a[aria-current="page"] { color: var(--green-ink); border-bottom-color: var(--green); background: #e1efe6; }
+.nav-context { margin-left: auto; font-size: 12px; color: #38664b; display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+main { max-width: 1504px; margin: auto; padding: 32px 40px 44px; min-height: calc(100vh - 170px); }
+.breadcrumb { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; margin-bottom: 18px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb .icon { width: 13px; height: 13px; }
+.page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
+h1 { font-size: 30px; line-height: 1.2; font-weight: 650; letter-spacing: -.025em; margin: 0 0 10px; text-wrap: balance; }
+h2 { font-size: 17px; line-height: 1.4; font-weight: 650; margin: 0; }
+h3 { font-size: 15px; font-weight: 650; margin: 0; }
+p { margin: 0; }
+.description { color: var(--muted); font-size: 14px; max-width: 72ch; }
+.actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.page-head .actions { padding-top: 4px; justify-content: flex-end; }
+.btn { min-height: 40px; border: 1px solid #c8d3cd; border-radius: 6px; padding: 9px 14px; background: var(--surface); color: var(--ink); font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; line-height: 1.4; white-space: nowrap; }
+.btn:hover { background: var(--soft); border-color: #9fafA5; color: var(--ink); }
+.btn.primary { color: #fff; background: var(--green); border-color: var(--green); }
+.btn.primary:hover { background: var(--green-hover); border-color: var(--green-hover); color: #fff; }
+.btn:disabled { color: #627369; background: #e9eeeb; border-color: #d6ded9; cursor: not-allowed; }
+.btn.small { min-height: 36px; padding: 7px 11px; font-size: 12px; }
+.btn.icon-btn { min-width: 40px; padding: 9px; }
+.btn.link { border-color: transparent; background: transparent; padding-inline: 5px; color: var(--green); }
+.btn.link:hover { text-decoration: underline; }
+.btn.danger { color: var(--red); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.panel + .panel { margin-top: 24px; }
+.panel-head { min-height: 62px; padding: 17px 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--line); }
+.panel-body { padding: 22px; }
+.panel-footer { padding: 15px 22px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 12px; color: var(--muted); }
+.secondary { font-size: 12px; color: var(--muted); }
+.subline { display: block; margin-top: 4px; font-size: 12px; font-weight: 400; color: var(--muted); }
+.number { font-variant-numeric: tabular-nums; }
+.mono { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: 12px; }
+strong { font-weight: 650; }
+.toolbar { padding: 18px 22px; display: flex; gap: 12px; align-items: center; border-bottom: 1px solid var(--line); }
+.search { position: relative; flex: 1; max-width: 450px; }
+.search > .icon { position: absolute; left: 13px; top: 13px; color: var(--muted); pointer-events: none; }
+.search input { padding-left: 40px; padding-right: 40px; }
+.clear-search { position: absolute; right: 3px; top: 3px; border: 0; background: transparent; color: var(--muted); width: 36px; height: 36px; border-radius: 4px; }
+.clear-search:hover { background: var(--soft); }
+input, select, textarea { background: var(--surface); color: var(--ink); border: 1px solid #c5d1c9; border-radius: 5px; padding: 10px 12px; min-height: 42px; width: 100%; font-size: 13px; }
+select { width: auto; max-width: 100%; padding-right: 30px; }
+textarea { resize: vertical; line-height: 1.6; min-height: 100px; }
+label.field-label { display: block; font-weight: 600; font-size: 12px; margin-bottom: 7px; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; text-align: left; font-size: 13px; font-variant-numeric: tabular-nums; }
+th { font-size: 11px; color: var(--muted); font-weight: 600; padding: 12px 22px; background: #f8faf9; white-space: nowrap; border-bottom: 1px solid var(--line); }
+td { padding: 17px 22px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: 0; }
+.list-table tbody tr:hover { background: #f6faf7; }
+.order-id { font-weight: 650; color: var(--green-ink); text-decoration: none; white-space: nowrap; }
+.order-id:hover { text-decoration: underline; }
+.order-id .icon { width: 14px; margin-left: 3px; }
+.right { text-align: right; }
+.nowrap { white-space: nowrap; }
+.tag { display: inline-flex; align-items: center; gap: 5px; color: var(--green-ink); background: var(--mint); padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 11px; white-space: nowrap; }
+.tag.neutral { background: var(--soft); color: #4a5c50; }
+.tag.warning { background: var(--amber-bg); color: var(--amber); }
+.tag.danger { background: var(--red-bg); color: var(--red); }
+.tag .icon { width: 13px; height: 13px; }
+.list-count { margin-left: auto; color: var(--muted); font-size: 12px; white-space: nowrap; }
+.orders-home { max-width: 1080px; margin-inline: auto; }
+.orders-home h1 { margin-bottom: 0; }
+.orders-search { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; }
+.orders-search .search { max-width: 480px; }
+.order-picker { background: var(--surface); border-top: 1px solid var(--line); }
+.order-picker th { background: transparent; }
+.order-picker td { padding-block: 13px; }
+.order-picker tbody tr:hover { background: #f0f6f2; }
+.order-picker td:first-child { width: 26%; }
+.order-picker .row-action { width: 140px; }
+.orders-secondary { margin-top: 20px; }
+.notice { display: flex; align-items: flex-start; gap: 10px; border: 1px solid var(--mint-line); border-radius: 6px; padding: 13px 16px; font-size: 13px; color: var(--green-ink); background: var(--mint); margin-bottom: 22px; }
+.notice > .icon { margin-top: 1px; }
+.notice.warning { border-color: #e8d3a9; color: var(--amber); background: var(--amber-bg); }
+.notice.error { border-color: #e8bfc2; color: var(--red); background: var(--red-bg); }
+.notice a { color: inherit; font-weight: 600; }
+.empty { text-align: center; padding: 60px 24px; }
+.empty > .icon { width: 32px; height: 32px; color: var(--muted); margin-bottom: 12px; }
+.empty h2 { margin-bottom: 7px; }
+.empty p { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+.context-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 24px; }
+.context-cell { padding: 19px 22px; }
+.context-cell + .context-cell { border-left: 1px solid var(--line); }
+.context-cell dt { color: var(--muted); font-size: 11px; margin-bottom: 7px; }
+.context-cell dd { margin: 0; font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.context-grid input { margin-top: 1px; }
+.workflow { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; font-size: 12px; color: var(--muted); }
+.workflow span { display: inline-flex; align-items: center; gap: 7px; }
+.workflow .current { color: var(--green-ink); font-weight: 600; }
+.workflow .step { width: 22px; height: 22px; border-radius: 50%; display: inline-grid; place-items: center; background: var(--soft); color: #526458; font-variant-numeric: tabular-nums; }
+.workflow .current .step { background: var(--green); color: #fff; }
+.workflow > .icon { width: 14px; }
+.editor-item { display: grid; grid-template-columns: 40px minmax(150px,1.15fr) 88px minmax(220px,1.6fr) minmax(200px,1.3fr); gap: 20px; padding: 24px 22px; border-bottom: 1px solid var(--line); }
+.editor-item:last-child { border-bottom: 0; }
+.item-index { color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.reorder { border: 0; background: transparent; width: 32px; height: 32px; color: var(--muted); border-radius: 4px; display: grid; place-items: center; }
+.reorder:hover { background: var(--soft); color: var(--green); }
+.reorder:disabled { color: #a1aba5; cursor: default; }
+.item-info { padding-top: 2px; }
+.item-info h3 { overflow-wrap: anywhere; }
+.item-info p { font-size: 12px; color: var(--muted); margin-top: 9px; }
+.item-info .tag { margin-top: 12px; }
+.serial-hint { margin-top: 6px; font-size: 11px; color: var(--muted); }
+.serial-feedback { margin-top: 8px; font-size: 12px; overflow-wrap: anywhere; }
+.serial-feedback.error { color: var(--red); }
+.serial-feedback.match { color: var(--green-ink); }
+.serial-field textarea[aria-invalid="true"]:focus { border-color: var(--red); outline-color: var(--red); }
+@media (max-width: 700px) { .serial-field textarea { font-size: 16px; } }
+.form-error { color: var(--red); font-size: 12px; margin-top: 6px; }
+[aria-invalid="true"] { border-color: var(--red); }
+.form-bottom { padding: 20px 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.form-bottom p { color: var(--muted); font-size: 12px; }
+.preview-heading { display: flex; gap: 10px; align-items: center; }
+.word-header { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; padding: 22px; border-bottom: 1px solid var(--line); }
+.word-header p { margin-top: 5px; overflow-wrap: anywhere; }
+.saved-detail-actions { margin-top: 24px; }
+.section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 30px 0 14px; }
+.capacity-grid { display: grid; grid-template-columns: repeat(3,1fr); }
+.capacity-week { padding: 23px 24px; }
+.capacity-week + .capacity-week { border-left: 1px solid var(--line); }
+.capacity-top { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 16px; }
+.capacity-top h3 { font-size: 13px; }
+.capacity-values { display: flex; align-items: baseline; justify-content: space-between; font-size: 13px; gap: 8px; }
+.capacity-values strong { font-size: 22px; letter-spacing: -.025em; }
+.capacity-values small { color: var(--muted); font-size: 12px; }
+.capacity-track { height: 6px; background: #e4ece7; border-radius: 3px; overflow: hidden; margin: 12px 0; }
+.capacity-fill { height: 100%; border-radius: 3px; background: var(--green); }
+.capacity-fill.over { background: var(--red); }
+.capacity-breakdown { font-size: 11px; color: var(--muted); }
+.schedule-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 28px 0 14px; }
+.schedule-toolbar .actions { gap: 6px; }
+.schedule-week { margin-inline: 8px; font-size: 14px; font-weight: 600; }
+.schedule-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 12px; }
+.day { border: 1px solid var(--line); background: var(--surface); border-radius: 7px; overflow: hidden; min-width: 0; }
+.day-head { padding: 15px; border-bottom: 1px solid var(--line); background: #f8faf9; }
+.day-head h3 { display: flex; justify-content: space-between; font-size: 13px; }
+.day-head p { margin-top: 5px; font-size: 11px; color: var(--muted); }
+.schedule-order { padding: 17px 15px; border-bottom: 1px solid var(--line); font-size: 12px; }
+.schedule-order:last-child { border-bottom: 0; }
+.schedule-order.picked { background: #f0f8f2; color: var(--green-ink); }
+.schedule-order.risk { background: var(--red-bg); color: var(--red); }
+.schedule-order.picked .subline { color: #3b6b4c; }
+.schedule-order.risk .subline { color: #943940; }
+.schedule-order .order-id { color: inherit; font-size: 12px; }
+.schedule-order .customer { display: block; margin: 6px 0 3px; font-weight: 600; overflow-wrap: anywhere; }
+.schedule-order .product { font-size: 11px; overflow-wrap: anywhere; }
+.schedule-order .tag { margin-top: 10px; font-size: 11px; }
+.schedule-order .schedule-meta { margin-top: 12px; font-size: 11px; display: flex; justify-content: space-between; gap: 6px; }
+.schedule-order label { font-size: 11px; display: block; margin-top: 12px; margin-bottom: 4px; }
+.schedule-order select { width: 100%; min-height: 36px; padding: 7px 26px 7px 8px; font-size: 11px; }
+.schedule-order.is-dirty { outline: 2px solid #b58733; outline-offset: -2px; }
+.day-empty { padding: 30px 15px; color: var(--muted); font-size: 12px; }
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; font-size: 11px; color: var(--muted); margin-top: 15px; }
+.legend span { display: flex; align-items: center; gap: 6px; }
+.legend-swatch { width: 9px; height: 9px; border: 1px solid #8cae96; background: #edf6f0; border-radius: 2px; }
+.legend-swatch.red { border-color: #c88087; background: #fff0f0; }
+.legend-swatch.white { border-color: #a3aea7; background: var(--surface); }
+.details-panel { margin-top: 24px; }
+.details-panel summary { padding: 18px 22px; cursor: pointer; font-size: 14px; font-weight: 600; }
+.details-panel summary:hover { background: var(--soft); }
+.details-panel[open] summary { border-bottom: 1px solid var(--line); }
+.details-panel .explanation { padding: 16px 22px; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); }
+.review-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+.review-summary .panel { margin: 0; }
+.review-summary p { margin-top: 8px; font-size: 13px; color: var(--muted); }
+.review-summary .panel-body { padding: 20px 22px; }
+.review-date-row { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 24px; }
+.review-date-row .field-label { margin-top: 8px; }
+.review-date-row input { max-width: 300px; }
+.review-item-table td { vertical-align: top; }
+.review-item-table .btn { min-width: 36px; }
+.review-actions { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-top: 24px; }
+.app-footer { max-width: 1504px; padding: 0 40px 24px; margin: auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; color: var(--muted); font-size: 11px; }
+.app-footer > span { display: flex; align-items: center; gap: 12px; }
+.app-footer button { font-size: 11px; min-height: 32px; }
+.toast { position: fixed; right: 24px; bottom: 24px; background: #224b35; color: #fff; padding: 16px 18px; border-radius: 7px; display: flex; gap: 10px; max-width: min(460px,calc(100vw - 32px)); box-shadow: 0 8px 28px #21392b25; z-index: 10; font-size: 13px; }
+.toast.show { animation: appear .22s cubic-bezier(.16,1,.3,1); }
+.toast button { margin-left: 8px; background: transparent; color: #fff; border: 0; min-width: 32px; height: 32px; }
+@keyframes appear { from { transform: translateY(8px); opacity: .75; } to { transform: translateY(0); opacity: 1; } }
+@media (max-width: 1200px) {
+  .preview-inner, .nav-inner { padding-inline: 28px; }
+  main { padding-inline: 28px; }
+  .app-footer { padding-inline: 28px; }
+  .nav-inner { gap: 28px; }
+  .nav-context { display: none; }
+  td, th { padding-inline: 16px; }
+  .schedule-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .editor-item { grid-template-columns: 30px minmax(150px,1fr) 76px minmax(180px,1.2fr) minmax(160px,1fr); gap: 14px; }
+}
+@media (max-width: 900px) {
+  .page-head { flex-direction: column; gap: 16px; }
+  .page-head .actions { justify-content: flex-start; }
+  .nav-inner { gap: 18px; }
+  .nav-links a { padding-inline: 12px; font-size: 13px; }
+  .nav-links .icon { display: none; }
+  .context-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .context-cell:nth-child(3) { border-left: 0; }
+  .context-cell:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .editor-item { grid-template-columns: 30px 1fr 90px; }
+  .editor-item .serial-field { grid-column: 2; }
+  .editor-item .notes-field { grid-column: 2 / -1; }
+  .editor-item .serial-field { grid-column: 2 / -1; }
+  .capacity-week { padding: 20px 16px; }
+  .capacity-values { flex-direction: column; gap: 2px; }
+  .schedule-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 700px) {
+  .preview-inner, .nav-inner { padding-inline: 18px; }
+  .preview-inner { min-height: 36px; }
+  .preview-inner > .reset-note { display: none; }
+  .nav-inner { flex-wrap: wrap; gap: 0; padding-top: 16px; }
+  .brand { margin-bottom: 15px; }
+  .brand strong { font-size: 16px; }
+  .nav-links { width: 100%; gap: 0; justify-content: space-between; }
+  .nav-links a { min-height: 48px; padding: 0 10px; font-size: 12px; }
+  main { padding: 24px 18px 32px; }
+  .breadcrumb { margin-bottom: 16px; }
+  h1 { font-size: 26px; }
+  .description { font-size: 13px; }
+  .page-head { margin-bottom: 22px; }
+  .page-head .actions { gap: 8px; width: 100%; }
+  .btn { min-height: 44px; font-size: 12px; padding: 10px 12px; }
+  .btn.small { min-height: 40px; }
+  .toolbar { padding: 16px; flex-wrap: wrap; gap: 10px; }
+  .search { max-width: none; flex-basis: 100%; }
+  .list-count { font-size: 11px; }
+  .panel-head { padding: 16px; }
+  .panel-body { padding: 16px; }
+  .panel-footer { padding: 14px 16px; flex-wrap: wrap; }
+  .stack-table, .stack-table tbody { display: block; width: 100%; }
+  .stack-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+  .stack-table tr { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; padding: 20px 16px; border-bottom: 1px solid var(--line); }
+  .stack-table tr:last-child { border-bottom: 0; }
+  .stack-table td { display: block; padding: 0; border: 0; text-align: left; min-width: 0; overflow-wrap: anywhere; }
+  .stack-table td:before { content: attr(data-label); display: block; font-size: 11px; font-weight: 400; color: var(--muted); margin-bottom: 5px; }
+  .stack-table td.mobile-wide { grid-column: 1 / -1; }
+  .stack-table td.row-action { grid-column: 1 / -1; margin-top: 2px; }
+  .stack-table td.row-action:before { display: none; }
+  .stack-table .row-action .btn { width: 100%; }
+  .context-cell { padding: 16px; }
+  .context-cell dt { font-size: 11px; }
+  .context-cell dd { font-size: 12px; }
+  .context-grid.manual-context { grid-template-columns: 1fr; }
+  .manual-context .context-cell { border-left: 0; }
+  .manual-context .context-cell + .context-cell { border-top: 1px solid var(--line); }
+  .workflow { gap: 7px; font-size: 11px; }
+  .workflow .step { width: 20px; height: 20px; }
+  .workflow > .icon { width: 12px; }
+  .editor-item { padding: 20px 16px; grid-template-columns: 40px 1fr 74px; gap: 14px; }
+  .reorder { width: 40px; height: 40px; }
+  .panel-head { flex-wrap: wrap; }
+  .panel-head .btn { white-space: normal; }
+  .item-info h3 { font-size: 13px; }
+  .form-bottom { align-items: flex-start; flex-direction: column; }
+  .form-bottom .actions, .form-bottom .btn { width: 100%; }
+  .word-header { grid-template-columns: 1fr; gap: 16px; padding: 16px; }
+  .preview-heading { flex-wrap: wrap; }
+  .capacity-grid { grid-template-columns: 1fr; }
+  .capacity-week + .capacity-week { border-left: 0; border-top: 1px solid var(--line); }
+  .capacity-week { padding: 18px; }
+  .capacity-values { flex-direction: row; }
+  .capacity-top { margin-bottom: 10px; }
+  .schedule-toolbar { flex-direction: column; align-items: stretch; }
+  .schedule-toolbar > .actions { justify-content: space-between; }
+  .schedule-week { margin: 0; }
+  .schedule-grid { grid-template-columns: 1fr; }
+  .day-head h3 { font-size: 14px; }
+  .schedule-order { padding: 18px; }
+  .schedule-order .order-id, .schedule-order .customer { font-size: 13px; }
+  .schedule-order select { min-height: 42px; }
+  .review-summary, .review-date-row { grid-template-columns: 1fr; gap: 16px; }
+  .review-actions { flex-direction: column; align-items: stretch; }
+  .review-actions .btn { width: 100%; }
+  .app-footer { padding: 0 18px 18px; font-size: 11px; }
+  .app-footer .sample-date { display: none; }
+  .toast { right: 16px; bottom: 16px; }
+}
+@media (max-width: 700px) {
+  .orders-search { gap: 12px; margin-bottom: 18px; }
+  .orders-search .search { min-width: 0; flex-basis: auto; }
+  .order-picker, .order-picker tbody { display: block; width: 100%; }
+  .order-picker thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+  .order-picker tbody tr { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 5px 12px; padding: 17px 12px; border-bottom: 1px solid var(--line); }
+  .order-picker tbody tr:last-child { border-bottom: 0; }
+  .order-picker td, .order-picker td:first-child { display: block; width: auto; padding: 0; border: 0; min-width: 0; }
+  .order-picker .customer-cell { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+  .order-picker .row-action { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+}
+@media (max-width: 360px) {
+  .nav-links a { flex: 1; min-width: 0; min-height: 52px; padding-inline: 6px; white-space: normal; text-align: center; justify-content: center; font-size: 11px; }
+  .app-footer { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *:before, *:after { animation: none !important; transition: none !important; } }
+@media print {
+  .preview-strip, .nav, .app-footer, .actions, .breadcrumb, .workflow, .form-bottom, .toast, .no-print { display: none !important; }
+  body { background: #fff; }
+  main { padding: 0; }
+  .panel { border-color: #aaa; break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<a href="#content" class="sr-only" id="skip-link">Skip to content</a>
+<div class="preview-strip"><div class="preview-inner"><span><span id="preview-info-icon"></span><span><span class="preview-label">Design preview</span> · Sample data only</span></span><span class="reset-note">No database connection · Changes reset on refresh</span></div></div>
+<nav class="nav" aria-label="Main navigation"><div class="nav-inner">
+  <a class="brand" href="#orders" aria-label="NEOUSYS MES home"><span class="brand-mark" id="brand-mark"></span><span><strong>NEOUSYS</strong><small>MES / WORK ORDERS</small></span></a>
+  <div class="nav-links">
+    <a href="#orders" data-nav="orders"><span data-icon="orders"></span>Sales orders</a>
+    <a href="#history" data-nav="history"><span data-icon="file"></span>Work orders</a>
+    <a href="#planning" data-nav="planning"><span data-icon="calendar"></span>Production planning</a>
+  </div>
+  <span class="nav-context"><span data-icon="shield"></span>Internal workspace</span>
+</div></nav>
+<main id="content" tabindex="-1"></main>
+<footer class="app-footer"><span>NEOUSYS · MES design preview<span class="sample-date">Sample date: Oct 5, 2026</span></span><button class="btn link" id="reset-demo">Reset demo</button></footer>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<noscript><p style="padding:24px">Enable JavaScript to browse the interactive design preview.</p></noscript>
+<script>
+'use strict';
+/* This prototype never calls an API, reads credentials, or changes the Flask app. */
+const paths = {
+  clover: '<path d="M12 10 8.6 6.56a2.1 2.1 0 0 1 0-2.95 2.04 2.04 0 0 1 2.91 0L12 4l.49-.39a2.04 2.04 0 0 1 2.91 0 2.1 2.1 0 0 1 0 2.95L12 10Zm0 4-3.4 3.44a2.1 2.1 0 0 0 0 2.95 2.04 2.04 0 0 0 2.91 0L12 20l.49.39a2.04 2.04 0 0 0 2.91 0 2.1 2.1 0 0 0 0-2.95L12 14Zm2-2 3.44-3.4a2.1 2.1 0 0 1 2.95 0 2.04 2.04 0 0 1 0 2.91L20 12l.39.49a2.04 2.04 0 0 1 0 2.91 2.1 2.1 0 0 1-2.95 0L14 12Zm-4 0L6.56 8.6a2.1 2.1 0 0 0-2.95 0 2.04 2.04 0 0 0 0 2.91L4 12l-.39.49a2.04 2.04 0 0 0 0 2.91 2.1 2.1 0 0 0 2.95 0L10 12Z"/>',
+  orders: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 12h8M8 17h5"/>',
+  file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>',
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2"/>',
+  shield: '<path d="M12 3 3 7v5c0 5 9 9 9 9s9-4 9-9V7l-9-4Z"/><path d="m8 12 3 3 5-6"/>',
+  search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  arrow: '<path d="M4 12h16m-6-6 6 6-6 6"/>',
+  chevron: '<path d="m9 5 7 7-7 7"/>',
+  left: '<path d="m15 5-7 7 7 7"/>',
+  up: '<path d="m6 14 6-6 6 6"/>',
+  down: '<path d="m6 10 6 6 6-6"/>',
+  check: '<path d="m5 12 4 4L19 6"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7h.01"/>',
+  warning: '<path d="m12 3 10 18H2L12 3Z"/><path d="M12 9v5M12 17h.01"/>',
+  x: '<path d="m6 6 12 12M6 18 18 6"/>',
+  copy: '<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
+  refresh: '<path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.2 8a7.5 7.5 0 0 1 12.4-3L20 8M4 16l2.4 3A7.5 7.5 0 0 0 18.8 16"/>',
+  save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12l4 4v12a2 2 0 0 1-2 2Z"/><path d="M7 3v6h10V3M7 21v-8h10v8"/>',
+  box: '<path d="m12 3 9 5-9 5-9-5 9-5ZM3 8v9l9 5 9-5V8M12 13v9M7.5 5.5l9 5"/>'
+};
+const icon = name => `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] || paths.info}</svg>`;
+const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone = value => JSON.parse(JSON.stringify(value));
+const BASE_DATE = '2026-10-05';
+const asDate = value => new Date(value + 'T12:00:00');
+const addDays = (value, n) => { const d = asDate(value); d.setDate(d.getDate()+n); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+const fmt = (value, opts = {}) => value ? asDate(value).toLocaleDateString('en-US',{month:'short',day:'numeric',...opts}) : 'Not assigned';
+const item = (name, quantity, family, notes = '') => ({name,quantity,family,notes});
+const initialOrders = [
+  {id:'SO-20261208',customer:'Northstar Robotics',po:'PO-481208',ship:'2026-10-08',date:'2026-10-05',items:[item('Nuvo-9160GC',12,'Nuvo','32 GB RAM · 512 GB SSD'),item('PA-120W',12,'Accessory','120 W power adapter')]},
+  {id:'SO-20261207',customer:'Atlas Automation',po:'AT-260918',ship:'2026-10-06',date:'2026-10-06',items:[item('NRU-220S',8,'NRU','Jetson AGX Orin · 64 GB')]},
+  {id:'SO-20261206',customer:'Meridian Systems',po:'MS-1026-04',ship:'2026-10-09',date:'2026-10-06',items:[item('POC-715',20,'POC','16 GB RAM · 256 GB SSD')]},
+  {id:'SO-20261205',customer:'Fieldline Technologies',po:'FL-260901',ship:'2026-10-09',date:'2026-10-07',items:[item('SEMIL-2000GC',10,'SEMIL','32 GB RAM · 1 TB SSD')]},
+  {id:'SO-20261204',customer:'Northstar Robotics',po:'PO-481204',ship:'2026-10-12',date:'2026-10-08',items:[item('Nuvo-9002',18,'Nuvo','16 GB RAM · 512 GB SSD')]},
+  {id:'SO-20261203',customer:'Summit Industrial',po:'SI-88412',ship:'2026-10-12',date:'2026-10-09',items:[item('F-860',12,'F','16 GB RAM · 256 GB SSD')]},
+  {id:'SO-20261202',customer:'Atlas Automation',po:'AT-260925',ship:'2026-10-16',date:'2026-10-12',items:[item('Nuvo-9160GC',24,'Nuvo','32 GB RAM · 1 TB SSD')]},
+  {id:'SO-20261201',customer:'Meridian Systems',po:'MS-1026-01',ship:'',date:'',items:[item('POC-715',6,'POC','8 GB RAM · 128 GB SSD')]},
+  {id:'SO-20261210',customer:'Vantage Inspection',po:'VI-260922',ship:'2026-10-15',date:'2026-10-13',items:[item('POC-715',8,'POC','16 GB RAM · 256 GB SSD')]}
+];
+const makeSerials = (prefix,n) => Array.from({length:n},(_,i)=>`DEMO-${prefix}-${String(i+1).padStart(3,'0')}`);
+const initialHistory = [
+  {key:'saved-1',document:'WO-2610-0001',order:'SO-20261208',customer:'Northstar Robotics',po:'PO-481208',release:1,created:'Oct 5, 2026 · 08:42 UTC',updated:'Oct 5, 2026 · 08:42 UTC',items:[{...item('Nuvo-9160GC',4,'Nuvo','32 GB RAM · 512 GB SSD'),serials:makeSerials('N916',4)},{...item('PA-120W',4,'Accessory','120 W power adapter'),serials:['NA']}]},
+  {key:'saved-2',document:'WO-2610-0002',order:'SO-20261203',customer:'Summit Industrial',po:'SI-88412',release:1,created:'Oct 5, 2026 · 09:16 UTC',updated:'Oct 5, 2026 · 09:16 UTC',items:[{...item('F-860',6,'F','16 GB RAM · 256 GB SSD'),serials:makeSerials('F860',6)}]}
+];
+const initialReviews = [
+  {id:'SO-20261211',customer:'Cascade Motion',po:'CM-10621',ship:'2026-10-14',status:'Unapproved',change:'New sales order',ready:'2026-10-09',date:'',items:[item('Nuvo-9002',16,'Nuvo','16 GB RAM · 512 GB SSD'),item('PA-120W',16,'Accessory','120 W power adapter')]},
+  {id:'SO-20261210',customer:'Vantage Inspection',po:'VI-260922',ship:'2026-10-15',status:'Changed',change:'POC-715 quantity: 8 → 12',ready:'',date:'',items:[item('POC-715',12,'POC','16 GB RAM · 256 GB SSD')]},
+  {id:'SO-20261209',customer:'TerraEdge Systems',po:'TE-4618',ship:'2026-10-16',status:'Unapproved',change:'New sales order',ready:'2026-10-12',date:'',items:[item('NRU-220S',4,'NRU','Jetson AGX Orin · 64 GB')]}
+];
+let orders = clone(initialOrders), history = clone(initialHistory), reviews = clone(initialReviews);
+let drafts = {}, scheduleDraft = {}, weekOffset = 0, filters = {orders:{q:''},history:{q:''},review:{q:'',status:'pending'}};
+let currentDraft = null, reviewOrder = null, toastTimer;
+const content = document.getElementById('content');
+const allocated = (id, name, exclude = '') => history.filter(w=>w.order===id && w.key!==exclude).reduce((sum,w)=>sum+w.items.filter(i=>i.name.trim().toLowerCase()===name.trim().toLowerCase()).reduce((n,i)=>n+i.quantity,0),0);
+const remaining = (order, name, exclude = '') => Math.max(0,order.items.filter(i=>i.name.trim().toLowerCase()===name.trim().toLowerCase()).reduce((n,i)=>n+i.quantity,0)-allocated(order.id,name,exclude));
+const units = order => order.items.filter(i=>i.family!=='Accessory').reduce((n,i)=>n+remaining(order,i.name),0);
+const hours = order => order.items.reduce((n,i)=>n+remaining(order,i.name)*(i.family==='Accessory'?0:i.family==='POC'?.5:1),0);
+const picked = order => history.some(w=>w.order===order.id);
+const dateFor = order => Object.hasOwn(scheduleDraft,order.id)?scheduleDraft[order.id]:order.date;
+const btn = (text, href, style = '', glyph = '') => `<a class="btn ${style}" href="${href}">${glyph?icon(glyph):''}${text}</a>`;
+const notice = (text, kind = '') => `<div class="notice ${kind}">${icon(kind==='error'||kind==='warning'?'warning':'info')}<div>${text}</div></div>`;
+const crumb = (label, parent = 'Sales orders', href = '#orders') => `<div class="breadcrumb"><a href="${href}">${parent}</a>${icon('chevron')}<span>${esc(label)}</span></div>`;
+const head = (title, description, actions = '') => `<header class="page-head"><div><h1>${title}</h1><p class="description">${description}</p></div><div class="actions">${actions}</div></header>`;
+const search = (scope, placeholder) => `<div class="search">${icon('search')}<label class="sr-only" for="search-${scope}">${placeholder}</label><input type="search" id="search-${scope}" data-search="${scope}" value="${esc(filters[scope].q)}" placeholder="${placeholder}" autocomplete="off"><button type="button" class="clear-search" data-clear="${scope}" aria-label="Clear search" ${filters[scope].q?'':'hidden'}>${icon('x')}</button></div>`;
+const empty = (title, description, action = '') => `<div class="empty">${icon('search')}<h2>${title}</h2><p>${description}</p>${action}</div>`;
+function toast(message) {
+  const el = document.getElementById('toast'); clearTimeout(toastTimer);
+  el.innerHTML = `${icon('check')}<span>${esc(message)}</span><button type="button" aria-label="Dismiss notification">${icon('x')}</button>`;
+  el.hidden=false; el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  el.querySelector('button').onclick=()=>{el.hidden=true;};
+  toastTimer=setTimeout(()=>{el.hidden=true;},6500);
+}
+function showOrders() {
+  content.innerHTML=`<section class="orders-home" aria-label="Sales order picker"><header class="page-head"><h1>Open sales orders</h1></header><div class="orders-search">${search('orders','Search orders')}<span class="list-count" id="order-count" role="status" aria-live="polite"></span></div><div id="order-results"></div><div class="orders-secondary">${btn('New blank work order','#manual','link','plus')}</div></section>`;
+  updateOrders();
+}
+function updateOrders() {
+  const q=filters.orders.q.toLowerCase();
+  const list=orders.filter(o=>`${o.id} ${o.customer} ${o.po} ${o.items.map(i=>i.name).join(' ')}`.toLowerCase().includes(q));
+  document.getElementById('order-count').textContent=`${list.length} order${list.length===1?'':'s'}`;
+  document.getElementById('order-results').innerHTML=list.length?`<table class="order-picker"><caption class="sr-only">Approved sales orders</caption><thead><tr><th scope="col">Sales order</th><th scope="col">Customer</th><th scope="col"><span class="sr-only">Action</span></th></tr></thead><tbody>${list.map(o=>`<tr><td><strong class="number nowrap">${esc(o.id)}</strong></td><td class="customer-cell">${esc(o.customer)}</td><td class="right row-action"><a class="btn link small" href="#editor/${o.id}" aria-label="Open order ${esc(o.id)}">Open order ${icon('arrow')}</a></td></tr>`).join('')}</tbody></table>`:empty('No matching orders','Try an order number, customer, purchase order or product.','<button class="btn" data-clear="orders">Clear search</button>');
+}
+function showHistory() {
+  content.innerHTML=head('Saved work orders','Each record is a saved release. Revisions keep the same document number and original creation date.',btn('Open sales orders','#orders','','orders'))+`<div class="panel"><div class="toolbar">${search('history','Search document, order, customer or serial')}<span id="history-count" class="list-count"></span></div><div id="history-results"></div><div class="panel-footer"><span>Previews do not appear here. Save a work order to add a record.</span><span>All timestamps are UTC.</span></div></div>`;
+  updateHistory();
+}
+function updateHistory() {
+  const q=filters.history.q.toLowerCase();
+  const list=history.filter(w=>`${w.document} ${w.order} ${w.customer} ${w.po} ${w.items.map(i=>i.name+' '+i.serials.join(' ')).join(' ')}`.toLowerCase().includes(q));
+  document.getElementById('history-count').textContent=`${list.length} saved release${list.length===1?'':'s'}`;
+  document.getElementById('history-results').innerHTML=list.length?`<div class="table-wrap"><table class="list-table stack-table"><caption class="sr-only">Saved work-order releases</caption><thead><tr><th scope="col">Document / release</th><th scope="col">Sales order</th><th scope="col">Customer / purchase order</th><th scope="col">Created (UTC)</th><th scope="col" class="right">Lines / serials</th><th scope="col"><span class="sr-only">Action</span></th></tr></thead><tbody>${list.slice().reverse().map(w=>`<tr><td data-label="Document / release"><a class="order-id" href="#saved/${w.key}">${esc(w.document)}</a><span class="subline">Release P${w.release}${w.manual?' · Manual':''}</span></td><td data-label="Sales order">${esc(w.order)}</td><td data-label="Customer / PO"><strong>${esc(w.customer)}</strong><span class="subline">${esc(w.po)}</span></td><td data-label="Created (UTC)">${esc(w.created)}<span class="subline">Last saved: ${esc(w.updated)}</span></td><td class="right" data-label="Lines / serials">${w.items.length} lines<span class="subline">${w.items.reduce((n,i)=>n+i.serials.length,0)} serial entries</span></td><td class="row-action right">${btn('View work order',`#saved/${w.key}`,'small','arrow')}</td></tr>`).join('')}</tbody></table></div>`:empty(q?'No work orders match':'No saved work orders',q?'Search another document, customer or serial number.':'Create a work order, preview it, then save it.',btn('Open sales orders','#orders'));
+}
+function newDraft(id, savedKey = '') {
+  const saved=history.find(w=>w.key===savedKey), order=orders.find(o=>o.id===id);
+  const key=savedKey?'revise-'+savedKey:id==='manual'?'manual':id;
+  if(drafts[key])return drafts[key];
+  if(!order&&!saved&&id!=='manual')return null;
+  const manual=id==='manual'||Boolean(saved?.manual);
+  const draft={key,order:id,manual,savedKey,customer:saved?.customer||order?.customer||'',po:saved?.po||order?.po||'',release:saved?.release||history.filter(w=>w.order===id).reduce((n,w)=>Math.max(n,w.release),0)+1,preview:null,dirty:false};
+  draft.items=saved? saved.items.map(i=>({...clone(i),serialText:i.serials.join('\n')})):order?order.items.map(i=>({...clone(i),quantity:remaining(order,i.name),serialText:''})):[{...item('',1,'Manual'),serialText:''}];
+  if(manual&&!saved)draft.order='';
+  drafts[key]=draft; return draft;
+}
+function workflow(stage) {
+  return `<div class="workflow" aria-label="Work order steps">${['Enter details','Preview table','Save work order'].map((name,i)=>`${i?icon('chevron'):''}<span ${i===stage?'class="current" aria-current="step"':''}><span class="step">${i+1}</span>${name}</span>`).join('')}</div>`;
+}
+function contextGrid(draft) {
+  if(draft.manual)return `<div class="context-grid manual-context">${[['customer','Customer',draft.customer],['po','Customer PO # (optional)',draft.po],['order','NTA order ID',draft.order]].map(([field,label,value])=>`<div class="context-cell"><label class="field-label" for="manual-${field}">${label}</label><input id="manual-${field}" data-draft-field="${field}" value="${esc(value)}" ${field==='po'?'':'required'} ${field==='order'&&draft.savedKey?'readonly':''} maxlength="${field==='customer'?200:field==='po'?120:80}" placeholder="${field==='order'?'e.g. SO-20261212':''}"></div>`).join('')}</div>`;
+  const order=orders.find(o=>o.id===draft.order);
+  return `<dl class="context-grid">${[['Customer',draft.customer],['Customer PO #',draft.po],['NTA order ID',draft.order],['Ship date',fmt(order?.ship)]].map(([label,value])=>`<div class="context-cell"><dt>${label}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>`;
+}
+function showEditor(id, savedKey = '') {
+  currentDraft=newDraft(id,savedKey);
+  if(!currentDraft){notFound();return;}
+  const d=currentDraft;
+  content.innerHTML=crumb(d.savedKey?'Revise work order':d.manual?'New blank work order':d.order)+head(d.savedKey?`Revise ${esc(history.find(w=>w.key===d.savedKey).document)}`:d.manual?'New blank work order':`Create work order`,d.savedKey?'Update this release only. Its document number and creation date stay unchanged.':d.manual?'Enter customer and item details without a sales-order record.':'Enter serial numbers for this release. Saved releases are excluded from the available quantities.',`<span class="tag neutral">Release P${d.release}</span>`)+
+    `<div id="workflow">${workflow(d.preview?1:0)}</div>${contextGrid(d)}${d.manual?notice('Manual quantities have no sales-order limit. Serial numbers must still be unique.'):''}
+    <form id="editor-form" novalidate><section class="panel" aria-label="Work order items"><div class="panel-head"><div><h2>Items & serial numbers</h2><p class="secondary">${d.manual?'Add each product to this work order.':'Your approved item order is preserved. Use the arrows to reorder this release.'}</p></div>${d.manual?'<button type="button" class="btn small" data-action="add-item">'+icon('plus')+'Add item</button>':''}</div><div id="editor-items"></div></section><div id="editor-errors" role="alert"></div><div class="form-bottom"><p id="draft-hint">Preview first. Nothing is saved until you choose Save work order.</p><div class="actions"><button class="btn primary" type="submit">Preview work order ${icon('arrow')}</button></div></div></form><div id="work-order-preview"></div>`;
+  renderItems(); renderPreview();
+}
+function renderItems() {
+  const d=currentDraft,o=orders.find(o=>o.id===d.order);
+  document.getElementById('editor-items').innerHTML=d.items.map((i,n)=>`<div class="editor-item" data-item="${n}"><div class="item-index"><span class="number">${n+1}</span><button type="button" class="reorder" data-move-item="${n}" data-direction="-1" aria-label="Move item ${n+1} up" ${n===0?'disabled':''}>${icon('up')}</button><button type="button" class="reorder" data-move-item="${n}" data-direction="1" aria-label="Move item ${n+1} down" ${n===d.items.length-1?'disabled':''}>${icon('down')}</button></div><div class="item-info">${d.manual?`<label class="field-label" for="name-${n}">Product number</label><input id="name-${n}" data-item-field="name" data-index="${n}" value="${esc(i.name)}" required placeholder="e.g. Nuvo-9002">`:`<h3>${esc(i.name)}</h3><p>${esc(i.family==='Accessory'?'Accessory · excluded from system-unit totals':`${i.family} system`)}</p><span class="subline">Approved: ${o?.items.find(x=>x.name===i.name)?.quantity||i.quantity} · Already saved: ${allocated(d.order,i.name,d.savedKey)}</span><span class="tag neutral">${o?remaining(o,i.name,d.savedKey):i.quantity} available</span>`}${d.manual&&d.items.length>1?`<button type="button" class="btn link danger small" data-remove-item="${n}">Remove item</button>`:''}</div><div><label class="field-label" for="qty-${n}">Quantity</label><input id="qty-${n}" class="number" type="number" min="0" step="1" ${o?`max="${remaining(o,i.name,d.savedKey)}"`:''} data-item-field="quantity" data-index="${n}" value="${i.quantity}" required></div><div class="serial-field"><label class="field-label" for="serials-${n}">Serial numbers</label><textarea id="serials-${n}" class="mono" data-item-field="serialText" data-index="${n}" placeholder="Paste one serial per line" spellcheck="false" aria-describedby="serial-help-${n} serial-feedback-${n}">${esc(i.serialText)}</textarea><p id="serial-help-${n}" class="serial-hint">One serial per line. Blank lines are ignored.</p><div id="serial-feedback-${n}" class="serial-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></div></div><div class="notes-field"><label class="field-label" for="notes-${n}">Notes / deviation <span class="secondary">(optional)</span></label><textarea id="notes-${n}" data-item-field="notes" data-index="${n}" placeholder="Configuration, exceptions or picking notes">${esc(i.notes)}</textarea></div></div>`).join('');
+}
+function parseSerials(text) {
+  // Count non-empty lines as entered. Do not sort, deduplicate, or split on punctuation.
+  return String(text||'').split(/\r\n|\n|\r/).map(line=>line.trim()).filter(Boolean);
+}
+function clearEditorValidation() {
+  document.getElementById('editor-errors').innerHTML='';
+  content.querySelectorAll('[aria-invalid]').forEach(el=>el.removeAttribute('aria-invalid'));
+  content.querySelectorAll('.serial-feedback').forEach(el=>{el.hidden=true;el.textContent='';});
+}
+function invalidatePreview() {
+  currentDraft.preview=null;currentDraft.dirty=true;
+  clearEditorValidation();
+  document.getElementById('work-order-preview').innerHTML='';
+  document.getElementById('workflow').innerHTML=workflow(0);
+  document.getElementById('draft-hint').textContent='Unsaved changes. Preview again before saving.';
+}
+function previewDraft() {
+  const d=currentDraft,o=orders.find(o=>o.id===d.order), errors=[];
+  clearEditorValidation();
+  d.preview=null;document.getElementById('work-order-preview').innerHTML='';
+  function fail(text,id) {errors.push(text);document.getElementById(id)?.setAttribute('aria-invalid','true');}
+  if(d.manual) {
+    if(!d.customer.trim())fail('Enter a customer name.','manual-customer');
+    if(!d.order.trim())fail('Enter an NTA order ID.','manual-order');
+  }
+  const quantities={};
+  d.items.forEach((i,n)=>{
+    if(!i.name.trim())fail(`Item ${n+1}: enter a product number.`,`name-${n}`);
+    const expected=Number(i.quantity),valid=i.quantity!==''&&Number.isInteger(expected)&&expected>=0;
+    if(!valid)fail(`Item ${n+1}: enter a whole-number quantity of zero or more.`,`qty-${n}`);
+    quantities[i.name.trim().toLowerCase()]=(quantities[i.name.trim().toLowerCase()]||0)+expected;
+    if(valid) {
+      const count=parseSerials(i.serialText).length,feedback=document.getElementById(`serial-feedback-${n}`);
+      const matches=count===expected,difference=Math.abs(expected-count);
+      const message=matches?`${count} serial line${count===1?'':'s'} · Quantity: ${expected}. Matched.`:`${count} serial line${count===1?'':'s'} entered. Quantity is ${expected}. ${count<expected?'Add':'Remove'} ${difference} line${difference===1?'':'s'} or change the quantity.`;
+      feedback.hidden=false;feedback.className=`serial-feedback ${matches?'match':'error'}`;feedback.textContent=message;
+      if(!matches)fail(`${i.name||`Item ${n+1}`}: serial line count does not match quantity.`,`serials-${n}`);
+    }
+  });
+  if(o)d.items.forEach((i,n)=>{if(quantities[i.name.trim().toLowerCase()]>remaining(o,i.name,d.savedKey))fail(`${i.name}: the total quantity exceeds the ${remaining(o,i.name,d.savedKey)} units available.`,`qty-${n}`);});
+  if(errors.length) {
+    document.getElementById('editor-errors').innerHTML=notice(`<strong>Review these fields before you preview.</strong><ul>${[...new Set(errors)].map(e=>`<li>${esc(e)}</li>`).join('')}</ul>`,'error');
+    document.querySelector('[aria-invalid="true"]')?.focus();return;
+  }
+  document.getElementById('editor-errors').innerHTML='';
+  d.items.forEach(i=>i.quantity=Number(i.quantity));
+  d.preview=d.items.map(i=>({...clone(i),serials:parseSerials(i.serialText)}));
+  renderPreview();document.getElementById('workflow').innerHTML=workflow(1);
+  document.getElementById('work-order-preview').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function pickingTable(items) {
+  return `<div class="table-wrap"><table class="stack-table"><caption class="sr-only">Configuration details and picking</caption><thead><tr><th scope="col">Product number</th><th scope="col">Quantity</th><th scope="col">Serial numbers</th><th scope="col">Notes / deviation</th><th scope="col">Check</th></tr></thead><tbody>${items.map(i=>`<tr><td data-label="Product number"><strong>${esc(i.name)}</strong></td><td data-label="Quantity">${i.quantity}</td><td data-label="Serial numbers" class="mono">${i.serials.length?i.serials.map(esc).join('<br>'):'<span class="secondary">Not entered</span>'}</td><td data-label="Notes / deviation">${esc(i.notes).replace(/\n/g,'<br>')||'<span class="secondary">None</span>'}</td><td data-label="Check"><span class="secondary">For picking</span></td></tr>`).join('')}</tbody></table></div>`;
+}
+function outputPanel(d, items, isSaved = false) {
+  return `<section class="panel"><div class="panel-head"><div class="preview-heading"><h2>${isSaved?'Work order details':'Work order preview'}</h2><span class="tag ${isSaved?'':'warning'}">${isSaved?icon('check')+'Saved':'Not saved'}</span></div></div><div class="panel-head"><h3>Customer details</h3><button type="button" class="btn small" data-copy="header">${icon('copy')}Copy header for Word</button></div><div class="word-header">${[['Customer',d.customer],['Customer PO #',d.po],['NTA order ID',d.order]].map(([k,v])=>`<div><span class="secondary">${k}</span><p><strong>${esc(v)||'Not entered'}</strong></p></div>`).join('')}</div><div class="panel-head"><h3>Configuration details & picking</h3><button type="button" class="btn small" data-copy="picking">${icon('copy')}Copy picking table</button></div>${pickingTable(items)}<div class="panel-footer"><span>Paste each section into Word with Keep Source Formatting.</span><span>Document number and date are not copied.</span></div></section>`;
+}
+function renderPreview() {
+  const target=document.getElementById('work-order-preview'),d=currentDraft;
+  if(!d.preview){target.innerHTML='';return;}
+  const estimate=d.savedKey?history.find(w=>w.key===d.savedKey).document:`WO-2610-${String(nextDocumentNumber()).padStart(4,'0')}`;
+  target.innerHTML=`${outputPanel(d,d.preview)}<div class="form-bottom"><p>Document number: <strong>${estimate}</strong>${d.savedKey?' · Kept on revision.':' · Estimate only. Assigned when saved.'}<br>This preview saves only to the demo, not to your database.</p><button type="button" class="btn primary" data-action="save-wo">${icon('save')}Save work order</button></div>`;
+}
+function nextDocumentNumber() { return history.reduce((n,w)=>Math.max(n,Number(w.document.split('-').at(-1))||0),0)+1; }
+function saveWO() {
+  const d=currentDraft;if(!d?.preview)return;
+  const existing=history.find(w=>w.key===d.savedKey),stamp='Oct 5, 2026 · '+new Date().toLocaleTimeString('en-GB',{timeZone:'UTC',hour12:false})+' UTC';
+  const record={key:existing?.key||`saved-${Date.now()}`,document:existing?.document||`WO-2610-${String(nextDocumentNumber()).padStart(4,'0')}`,order:d.order.trim(),customer:d.customer.trim(),po:d.po.trim(),release:existing?.release||history.filter(w=>w.order===d.order.trim()).reduce((n,w)=>Math.max(n,w.release),0)+1,manual:d.manual,created:existing?.created||stamp,updated:stamp,items:d.preview.map(i=>({name:i.name.trim(),quantity:i.quantity,family:i.family,notes:i.notes,serials:i.serials}))};
+  if(existing)history[history.indexOf(existing)]=record;else history.push(record);
+  delete drafts[d.key];currentDraft=null;location.hash=`saved/${record.key}`;
+  toast(`${record.document} ${existing?'revised':'saved'} in this demo. Your database is unchanged.`);
+}
+function showSaved(key) {
+  const w=history.find(w=>w.key===key);if(!w){notFound();return;}
+  currentDraft=null;
+  content.innerHTML=crumb(w.document,'Work orders','#history')+head(esc(w.document),`Release P${w.release} · ${esc(w.order)}${w.manual?' · Manual work order':''}`,btn('Revise this work order',`#revise/${w.key}`,'','file')+btn('Create next release',w.manual?'#manual':`#editor/${w.order}`,'primary','plus'))+notice('This record is saved in the demo only. The real database is unchanged.')+`<dl class="context-grid"><div class="context-cell"><dt>Customer</dt><dd>${esc(w.customer)}</dd></div><div class="context-cell"><dt>Customer PO #</dt><dd>${esc(w.po)||'Not entered'}</dd></div><div class="context-cell"><dt>Created (UTC)</dt><dd>${esc(w.created)}</dd></div><div class="context-cell"><dt>Last saved (UTC)</dt><dd>${esc(w.updated)}</dd></div></dl>`+outputPanel(w,w.items,true);
+}
+function scheduleOptions(selected) {
+  const start=addDays(BASE_DATE,weekOffset*7);
+  const dates=Array.from({length:15},(_,i)=>addDays(start,i)).filter(d=>![0,6].includes(asDate(d).getDay()));
+  if(selected && selected!=='fg'&&!dates.includes(selected))dates.push(selected);
+  return `<option value="">Not assigned</option>${dates.sort().map(d=>`<option value="${d}" ${selected===d?'selected':''}>${fmt(d,{weekday:'short'})}</option>`).join('')}<option value="fg" ${selected==='fg'?'selected':''}>Finished goods</option>`;
+}
+function scheduledOrder(o) {
+  const date=dateFor(o),risk=o.ship&&date&&date!=='fg'&&date>=o.ship,saveQty=o.items.filter(i=>i.family!=='Accessory').reduce((n,i)=>n+Math.min(i.quantity,allocated(o.id,i.name)),0);
+  return `<article class="schedule-order ${risk?'risk':picked(o)?'picked':''} ${Object.hasOwn(scheduleDraft,o.id)?'is-dirty':''}"><a class="order-id" href="#editor/${o.id}">${o.id} ${icon('chevron')}</a><span class="customer">${esc(o.customer)}</span><span class="product">${esc(o.items[0].name)}</span><span class="subline">${units(o)} units remaining · ${hours(o)} h</span>${risk?`<span class="tag danger">${icon('warning')}Ship-date risk</span>`:picked(o)?`<span class="tag">${icon('check')}Picked · ${saveQty} saved</span>`:'<span class="tag neutral">No saved work order</span>'}<div class="schedule-meta"><span>Ship date</span><strong>${o.ship?fmt(o.ship):'Not assigned'}</strong></div><label for="schedule-${o.id}">Production date</label><select id="schedule-${o.id}" data-schedule="${o.id}">${scheduleOptions(date)}</select></article>`;
+}
+function showPlanning() {
+  const dirty=Object.keys(scheduleDraft).length;
+  const week=addDays(BASE_DATE,weekOffset*7);
+  content.innerHTML=head('Production planning','Plan remaining quantities against weekly capacity. Date changes stay staged until you save the schedule.',btn('Review & schedule orders','#review','','orders')+`<button class="btn primary" data-action="save-schedule" ${dirty?'':'disabled'}>${icon('save')}Save schedule${dirty?` (${dirty})`:''}</button>`)+
+    `${reviews.some(r=>r.status!=='Approved')?notice(`<strong>${reviews.filter(r=>r.status!=='Approved').length} sales orders need review.</strong> Only approved, active orders enter this schedule. <a href="#review">Review orders ${icon('arrow')}</a>`):''}${dirty?notice(`${dirty} date change${dirty===1?' is':'s are'} not saved. <button class="btn link small" data-action="discard-schedule">Discard changes</button>`,'warning'):''}`+
+    `<section class="panel"><div class="panel-head"><div><h2>Weekly labor capacity</h2><p class="secondary">90 hours per week · Nuvo / NRU / SEMIL / F: 1 h per unit · POC: 0.5 h per unit</p></div></div><div class="capacity-grid">${Array.from({length:3},(_,n)=>{
+      const start=addDays(week,n*7),end=addDays(start,4),list=orders.filter(o=>dateFor(o)>=start&&dateFor(o)<=end),used=list.reduce((s,o)=>s+hours(o),0),families={};
+      list.forEach(o=>o.items.filter(i=>i.family!=='Accessory').forEach(i=>{families[i.family]=(families[i.family]||0)+remaining(o,i.name);}));
+      return `<div class="capacity-week"><div class="capacity-top"><h3>${fmt(start)} – ${fmt(end)}</h3>${n===0?'<span class="tag neutral">Selected week</span>':''}</div><div class="capacity-values"><span><strong>${used}</strong> <small>/ 90 hours</small></span><span class="${used>90?'form-error':'secondary'}">${used>90?`${used-90} h over capacity`:`${90-used} h available`}</span></div><div class="capacity-track" role="meter" aria-label="${fmt(start)} capacity" aria-valuemin="0" aria-valuemax="90" aria-valuenow="${Math.min(used,90)}" aria-valuetext="${used} of 90 hours"><div class="capacity-fill ${used>90?'over':''}" style="width:${Math.min(used/90*100,100)}%"></div></div><p class="capacity-breakdown">${list.length} order${list.length===1?'':'s'}${Object.entries(families).filter(([,q])=>q>0).map(([f,q])=>` · ${f} ${q}`).join('')}</p></div>`;
+    }).join('')}</div></section><div class="schedule-toolbar"><div class="actions"><button class="btn icon-btn small" data-week="-1" aria-label="Previous week" ${weekOffset===0?'disabled':''}>${icon('left')}</button><span class="schedule-week">${fmt(week,{year:'numeric'})} – ${fmt(addDays(week,4))}</span><button class="btn icon-btn small" data-week="1" aria-label="Next week">${icon('chevron')}</button></div><span class="secondary">${dirty?'Unsaved schedule changes':'Schedule up to date'} · Demo only</span></div><div class="schedule-grid">${Array.from({length:5},(_,i)=>{
+      const date=addDays(week,i),list=orders.filter(o=>dateFor(o)===date);
+      return `<section class="day"><div class="day-head"><h3><span>${fmt(date,{weekday:'short'}).split(',')[0]}</span><span>${fmt(date)}</span></h3><p>${list.length} order${list.length===1?'':'s'} · ${list.reduce((n,o)=>n+units(o),0)} units · ${list.reduce((n,o)=>n+hours(o),0)} h</p></div>${list.length?list.map(scheduledOrder).join(''):'<p class="day-empty">No orders scheduled.</p>'}</section>`;
+    }).join('')}</div><div class="legend"><span><span class="legend-swatch"></span>Picked: a work order is saved</span><span><span class="legend-swatch red"></span>Production is on or after ship date</span><span><span class="legend-swatch white"></span>No saved work order</span></div>
+    <p class="secondary" style="margin-top:10px">Picked quantities come from saved work orders, not physical warehouse confirmation. Accessories do not count as system units.</p>
+    <details class="panel details-panel" ${orders.some(o=>!dateFor(o))?'open':''}><summary>Unassigned dates · ${orders.filter(o=>!dateFor(o)).length} ${orders.filter(o=>!dateFor(o)).length===1?'order':'orders'}</summary><p class="explanation">Missing, placeholder or weekend source dates need review. Choose a weekday production date to place an order in the schedule.</p><div class="schedule-grid panel-body">${orders.filter(o=>!dateFor(o)).map(scheduledOrder).join('')||'<p class="secondary">All orders have a production date.</p>'}</div></details>
+    <details class="panel details-panel"><summary>Finished goods / past dates · ${orders.filter(o=>dateFor(o)==='fg'||dateFor(o)&&dateFor(o)<BASE_DATE).length} orders</summary><p class="explanation">A past production date does not confirm completion. Assign a future weekday to return an order to production.</p><div class="schedule-grid panel-body">${orders.filter(o=>dateFor(o)==='fg'||dateFor(o)&&dateFor(o)<BASE_DATE).map(scheduledOrder).join('')||'<p class="secondary">No orders in this group.</p>'}</div></details>
+    <p class="secondary" style="margin-top:20px">In the live app, schedule saves also update MRP. They do not create work orders.</p>`;
+}
+function showReview() {
+  content.innerHTML=crumb('Review & schedule orders','Production planning','#planning')+head('Review & schedule orders','Review source changes, confirm item order and optionally assign a production date before approval.',btn('Production planning','#planning','','calendar')+`<button class="btn primary" data-action="sync">${icon('refresh')}Sync Google Sheet</button>`)+notice('Sync loads source changes for review. It does not approve orders, change approved item order or save work orders.')+`<div class="panel"><div class="toolbar">${search('review','Search order, customer or purchase order')}<label class="sr-only" for="review-filter">Review status</label><select id="review-filter">${[['pending','Pending review'],['all','All statuses'],['Unapproved','Unapproved'],['Changed','Changed'],['Approved','Approved']].map(([v,label])=>`<option value="${v}" ${filters.review.status===v?'selected':''}>${label}</option>`).join('')}</select><span id="review-count" class="list-count"></span></div><div id="review-results"></div><div class="panel-footer"><span>Sorted by ship date. Source dates are read-only until approval.</span><span>Last sample sync: Oct 5 · 09:30 UTC</span></div></div><p class="secondary" style="margin-top:18px">Orders removed from the source are excluded automatically. Their approved data and saved work orders remain available.</p>`;
+  updateReview();
+}
+function updateReview() {
+  const f=filters.review,q=f.q.toLowerCase();
+  const list=reviews.filter(o=>(f.status==='all'||f.status==='pending'&&o.status!=='Approved'||o.status===f.status)&&`${o.id} ${o.customer} ${o.po}`.toLowerCase().includes(q)).sort((a,b)=>a.ship.localeCompare(b.ship));
+  document.getElementById('review-count').textContent=`${list.length} order${list.length===1?'':'s'}`;
+  document.getElementById('review-results').innerHTML=list.length?`<div class="table-wrap"><table class="list-table stack-table"><caption class="sr-only">Source changes to review</caption><thead><tr><th scope="col">Sales order</th><th scope="col">Customer / purchase order</th><th scope="col">Ship date ↑</th><th scope="col">Review status</th><th scope="col">Source change</th><th scope="col"><span class="sr-only">Action</span></th></tr></thead><tbody>${list.map(o=>`<tr><td data-label="Sales order"><a class="order-id" href="#review-order/${o.id}">${o.id}</a></td><td data-label="Customer / PO"><strong>${esc(o.customer)}</strong><span class="subline">${esc(o.po)}</span></td><td data-label="Ship date">${fmt(o.ship)}</td><td data-label="Review status"><span class="tag ${o.status==='Approved'?'':o.status==='Changed'?'warning':'neutral'}">${o.status}</span></td><td data-label="Source change">${esc(o.change)}<span class="subline">${o.status==='Approved'?'No pending changes':o.status==='Changed'?'Approval required for this change':'Not yet approved'}</span></td><td class="row-action right">${btn(o.status==='Approved'?'View order':'Review order',`#review-order/${o.id}`,'small','arrow')}</td></tr>`).join('')}</tbody></table></div>`:empty('No orders need review','Select All statuses to see approved orders, or change your search.','<button class="btn" data-action="all-review">Show all statuses</button>');
+}
+function showReviewOrder(id) {
+  const o=reviews.find(r=>r.id===id);if(!o){notFound();return;}
+  if(reviewOrder?.id!==id)reviewOrder=clone(o);
+  const r=reviewOrder;
+  content.innerHTML=crumb(r.id,'Review & schedule orders','#review')+head(`Review ${r.id}`,'Approve source details and item order. Existing saved work orders stay unchanged.',`<span class="tag ${o.status==='Approved'?'':'warning'}">${o.status==='Approved'?'Approved':'Approval required'}</span>`)+
+    `<div class="review-summary"><section class="panel"><div class="panel-body"><h2>Since previous sync</h2><p>${esc(r.change)}</p></div></section><section class="panel"><div class="panel-body"><h2>Since last approval</h2><p>${o.status==='Approved'?'No pending source changes. You can still update the approved item order.':o.status==='Changed'?'POC-715 increased from 8 to 12 units. Review the new quantity before approval.':'This order is not approved yet. Confirm the source details below.'}</p></div></section></div><dl class="context-grid">${[['Customer',r.customer],['Customer PO #',r.po],['Ship date (Google Sheet)',fmt(r.ship)],['Terms','Net 30']].map(([k,v])=>`<div class="context-cell"><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl><div class="review-date-row"><div><h3>Earliest material ready date</h3><p style="margin-top:8px"><strong>${r.ready?fmt(r.ready,{year:'numeric'}):'Not determined'}</strong></p><p class="secondary" style="margin-top:7px">Read-only from MRP. This date does not set or restrict the production date.</p></div><div><label class="field-label" for="review-date">Production date (optional)</label><input type="date" id="review-date" value="${esc(r.date)}" min="${BASE_DATE}" aria-describedby="review-date-hint"><p class="secondary" id="review-date-hint" style="margin-top:8px">Choose Oct 5, 2026 or a later weekday. Leave blank to keep the existing schedule.</p><div class="form-error" id="date-error" role="alert"></div></div></div><section class="panel"><div class="panel-head"><div><h2>Item order</h2><p class="secondary">Use the arrows to set the order for planning and new work orders.</p></div><button type="button" class="btn small" data-action="source-order">Use Google item order</button></div><div class="table-wrap"><table class="review-item-table stack-table"><caption class="sr-only">Items to approve</caption><thead><tr><th scope="col">Order</th><th scope="col">Product number</th><th scope="col">Quantity</th><th scope="col">Configuration</th><th scope="col">Inventory site</th><th scope="col"><span class="sr-only">Reorder</span></th></tr></thead><tbody>${r.items.map((i,n)=>`<tr><td data-label="Order">${n+1}</td><td data-label="Product number"><strong>${esc(i.name)}</strong></td><td data-label="Quantity">${i.quantity}</td><td data-label="Configuration">${esc(i.notes)}</td><td data-label="Inventory site">NTA Warehouse</td><td class="actions mobile-wide"><button type="button" class="btn small" data-review-move="${n}" data-direction="-1" aria-label="Move ${esc(i.name)} up" ${n===0?'disabled':''}>${icon('up')}</button><button type="button" class="btn small" data-review-move="${n}" data-direction="1" aria-label="Move ${esc(i.name)} down" ${n===r.items.length-1?'disabled':''}>${icon('down')}</button></td></tr>`).join('')}</tbody></table></div></section><div class="review-actions"><p class="secondary">Approval publishes this order and the selected production date together.<br>It does not create a work order.</p><button type="button" class="btn primary" data-action="approve">${icon('check')}Approve sales order</button></div>`;
+}
+function validProductionDate(date) {return !date||date>=BASE_DATE&&!isNaN(asDate(date))&&![0,6].includes(asDate(date).getDay());}
+function approveOrder() {
+  const r=reviewOrder,date=document.getElementById('review-date').value;
+  if(!validProductionDate(date)) {
+    document.getElementById('date-error').textContent='Choose Oct 5, 2026 or a later weekday. Weekends cannot be scheduled.';
+    document.getElementById('review-date').setAttribute('aria-invalid','true');document.getElementById('review-date').focus();return;
+  }
+  const existing=orders.find(o=>o.id===r.id),source=reviews.find(o=>o.id===r.id);
+  const approved={id:r.id,customer:r.customer,po:r.po,ship:r.ship,items:clone(r.items),date:date||existing?.date||r.ship};
+  if(existing)orders[orders.indexOf(existing)]=approved;else orders.unshift(approved);
+  source.status='Approved';source.items=clone(r.items);source.date=approved.date;
+  reviewOrder=null;location.hash='review';toast(`${r.id} approved in this demo. No live data was changed.`);
+}
+async function copyForWord(kind) {
+  const route=location.hash.slice(1).split('/'),w=route[0]==='saved'?history.find(w=>w.key===route[1]):currentDraft,items=w?.preview||w?.items;
+  if(!w||!items)return;
+  const cell=value=>`<td style="border:1px solid #000;padding:5px">${esc(value).replace(/\n/g,'<br>')}</td>`;
+  const rows=kind==='header'?[w.customer,w.po,w.order].map(v=>[v]):items.map(i=>[i.name,i.quantity,i.serials.join('\n'),i.notes,'']);
+  const html=`<table style="border-collapse:collapse;font-family:Calibri,sans-serif;font-size:11pt;color:#000">${rows.map(row=>`<tr>${row.map(cell).join('')}</tr>`).join('')}</table>`;
+  const text=rows.map(row=>row.join('\t')).join('\n');
+  try {
+    if(navigator.clipboard?.write && window.ClipboardItem)await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([text],{type:'text/plain'})})]);
+    else throw new Error('Use selection copy');
+    toast(`${kind==='header'?'Customer header':'Picking rows'} copied. Paste in Word with Keep Source Formatting.`);
+  } catch {
+    const box=document.createElement('div');box.innerHTML=html;box.style.cssText='position:fixed;left:-10000px;top:0';document.body.append(box);
+    const selection=window.getSelection(),range=document.createRange();range.selectNodeContents(box);selection.removeAllRanges();selection.addRange(range);
+    const ok=document.execCommand('copy');selection.removeAllRanges();box.remove();
+    toast(ok?'Copied for Word. Paste with Keep Source Formatting.':'Copy was blocked by the browser. Select the visible table and copy it manually.');
+  }
+}
+function notFound() {content.innerHTML=head('This sample record is unavailable','The demo resets when the page reloads.',btn('Open sales orders','#orders','primary'));}
+function route(focus = true) {
+  const [view='orders',id]=location.hash.replace(/^#/,'').split('/');
+  const nav=view==='history'||view==='saved'?'history':view==='planning'||view==='review'||view==='review-order'?'planning':'orders';
+  document.querySelectorAll('[data-nav]').forEach(a=>{if(a.dataset.nav===nav)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+  currentDraft=null;
+  if(view==='orders'||view==='')showOrders();else if(view==='history')showHistory();else if(view==='editor')showEditor(id);else if(view==='manual')showEditor('manual');else if(view==='revise'){const w=history.find(w=>w.key===id);w?showEditor(w.order,id):notFound();}else if(view==='saved')showSaved(id);else if(view==='planning')showPlanning();else if(view==='review')showReview();else if(view==='review-order')showReviewOrder(id);else notFound();
+  document.title=`${content.querySelector('h1')?.textContent||'Workspace'} · NEOUSYS MES`;
+  if(focus){window.scrollTo({top:0,behavior:'instant'});content.focus({preventScroll:true});}
+}
+content.addEventListener('input',event=>{
+  const t=event.target;
+  if(t.dataset.search){const scope=t.dataset.search;filters[scope].q=t.value;document.querySelector(`[data-clear="${scope}"]`).hidden=!t.value;({orders:updateOrders,history:updateHistory,review:updateReview})[scope]();}
+  if(t.dataset.draftField&&currentDraft){currentDraft[t.dataset.draftField]=t.value;invalidatePreview();}
+  if(t.dataset.itemField&&currentDraft){const i=currentDraft.items[Number(t.dataset.index)];i[t.dataset.itemField]=t.value;invalidatePreview();}
+  if(t.id==='review-date'&&reviewOrder){reviewOrder.date=t.value;t.removeAttribute('aria-invalid');document.getElementById('date-error').textContent='';}
+});
+content.addEventListener('change',event=>{
+  const t=event.target;
+  if(t.id==='review-filter'){filters.review.status=t.value;updateReview();}
+  if(t.dataset.schedule){const o=orders.find(o=>o.id===t.dataset.schedule);if(t.value===o.date)delete scheduleDraft[o.id];else scheduleDraft[o.id]=t.value;const scroll=window.scrollY;showPlanning();window.scrollTo({top:scroll,behavior:'instant'});document.getElementById(t.id)?.focus({preventScroll:true});}
+});
+content.addEventListener('submit',event=>{if(event.target.id==='editor-form'){event.preventDefault();previewDraft();}});
+content.addEventListener('click',event=>{
+  const t=event.target.closest('button');if(!t)return;
+  if(t.dataset.clear){const scope=t.dataset.clear;filters[scope].q='';const input=document.getElementById('search-'+scope);input.value='';t.hidden=true;({orders:updateOrders,history:updateHistory,review:updateReview})[scope]();input.focus();}
+  if(t.dataset.moveItem){const n=Number(t.dataset.moveItem),to=n+Number(t.dataset.direction);[currentDraft.items[n],currentDraft.items[to]]=[currentDraft.items[to],currentDraft.items[n]];invalidatePreview();renderItems();document.querySelector(`[data-move-item="${to}"][data-direction="${t.dataset.direction}"]`)?.focus();toast('Item order updated for this release.');}
+  if(t.dataset.removeItem){currentDraft.items.splice(Number(t.dataset.removeItem),1);invalidatePreview();renderItems();}
+  if(t.dataset.reviewMove){const n=Number(t.dataset.reviewMove),to=n+Number(t.dataset.direction);[reviewOrder.items[n],reviewOrder.items[to]]=[reviewOrder.items[to],reviewOrder.items[n]];const scroll=window.scrollY;showReviewOrder(reviewOrder.id);window.scrollTo({top:scroll,behavior:'instant'});document.querySelector(`[data-review-move="${to}"][data-direction="${t.dataset.direction}"]`)?.focus();}
+  if(t.dataset.copy)copyForWord(t.dataset.copy);
+  if(t.dataset.week){weekOffset=Math.max(0,weekOffset+Number(t.dataset.week));showPlanning();}
+  switch(t.dataset.action){
+    case 'all-review':filters.review={q:'',status:'all'};showReview();break;
+    case 'add-item':currentDraft.items.push({...item('',1,'Manual'),serialText:''});invalidatePreview();renderItems();document.getElementById(`name-${currentDraft.items.length-1}`).focus();break;
+    case 'save-wo':saveWO();break;
+    case 'save-schedule':Object.entries(scheduleDraft).forEach(([id,date])=>{orders.find(o=>o.id===id).date=date;});scheduleDraft={};showPlanning();toast('Schedule saved in this demo. The MRP schedule is unchanged.');break;
+    case 'discard-schedule':scheduleDraft={};showPlanning();toast('Staged date changes discarded.');break;
+    case 'sync':t.disabled=true;t.innerHTML=icon('refresh')+'Loading sample snapshot…';setTimeout(()=>{if(document.contains(t)){t.disabled=false;t.innerHTML=icon('refresh')+'Sync Google Sheet';}toast('Sample snapshot loaded. No Google Sheet connection was used.');},700);break;
+    case 'source-order':reviewOrder.items=clone(initialReviews.find(o=>o.id===reviewOrder.id).items);showReviewOrder(reviewOrder.id);toast('Source item order restored for review.');break;
+    case 'approve':approveOrder();break;
+  }
+});
+document.getElementById('reset-demo').onclick=()=>{
+  if(!confirm('Reset this demo? All work orders, approvals and schedule changes created in this preview will be discarded.'))return;
+  orders=clone(initialOrders);history=clone(initialHistory);reviews=clone(initialReviews);drafts={};scheduleDraft={};reviewOrder=null;weekOffset=0;filters={orders:{q:''},history:{q:''},review:{q:'',status:'pending'}};
+  if(location.hash==='#orders')route();else location.hash='orders';toast('Sample data restored.');
+};
+document.querySelectorAll('[data-icon]').forEach(el=>el.innerHTML=icon(el.dataset.icon));
+document.getElementById('brand-mark').innerHTML=icon('clover');document.getElementById('preview-info-icon').innerHTML=icon('info');
+document.getElementById('skip-link').onclick=event=>{event.preventDefault();content.focus();};
+window.addEventListener('hashchange',()=>route());
+route(false);
+</script>
+</body>
+</html>

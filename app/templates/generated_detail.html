@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
+{% block title %}{{ order.document_number or order.sales_order }} | NEOUSYS MES{% endblock %}
 {% block content %}
-<div class="workspace-breadcrumb"><a href="{{ url_for('main.generated_orders') }}">WO History</a><span>/</span><span>{{ order.sales_order }}</span></div>
+<div class="workspace-breadcrumb"><a href="{{ url_for('main.generated_orders') }}">Work orders</a><span>/</span><span>{{ order.sales_order }}</span></div>
 <header class="workspace-header">
-  <div><h1 class="workspace-title">{{ order.document_number or 'Generated WO' }} — P{{ order.release_number }}</h1><p class="workspace-description">DB table WO Details.</p></div>
-  <div class="workspace-header-actions"><a class="btn btn-outline-secondary" href="{{ url_for('main.generated_orders') }}">Back</a><a class="btn btn-primary" href="{{ url_for('main.so_detail', wo_id=order.id) }}">Revise this WO</a><a class="btn btn-outline-secondary" href="{{ url_for('main.manual_wo', sales_order=order.sales_order) if order.is_manual else url_for('main.so_detail', sales_order=order.sales_order) }}">Create next WO</a></div>
+  <div><h1 class="workspace-title">{{ order.document_number or 'Generated WO' }} — P{{ order.release_number }}</h1><p class="workspace-description">Saved work order · {{ order.sales_order }}{% if order.is_manual %} · Manual entry{% endif %}</p></div>
+  <div class="workspace-header-actions"><a class="btn btn-outline-secondary" href="{{ url_for('main.generated_orders') }}">Back to work orders</a><a class="btn btn-primary" href="{{ url_for('main.so_detail', wo_id=order.id) }}">Revise work order</a><a class="btn btn-outline-secondary" href="{{ url_for('main.manual_wo', sales_order=order.sales_order) if order.is_manual else url_for('main.so_detail', sales_order=order.sales_order) }}">Create next release</a></div>
 </header>
 <div class="metric-grid">
   <div class="metric"><div class="label">NTA Order ID</div><div class="value">{{ order.sales_order }}</div></div>
@@ -11,10 +12,10 @@
   <div class="metric"><div class="label">Generated Date (UTC)</div><div class="value">{{ order.generated_date.strftime('%Y-%m-%d %H:%M:%S') if order.generated_date else '—' }}</div></div>
   <div class="metric"><div class="label">Customer</div><div class="value">{{ order.customer or '' }}</div></div>
   <div class="metric"><div class="label">Customer PO</div><div class="value">{{ order.customer_po or '' }}</div></div>
-  <div class="metric"><div class="label">Last Push</div><div class="value">{{ order.pushed_at.strftime('%Y-%m-%d %H:%M:%S') if order.pushed_at else '' }}</div></div>
+  <div class="metric"><div class="label">Last saved (UTC)</div><div class="value">{{ order.pushed_at.strftime('%Y-%m-%d %H:%M:%S') if order.pushed_at else '' }}</div></div>
 </div>
 <div class="card-lite">
-  <div class="compact-card-header"><span>Saved table{% if order.is_manual %} · Manual entry{% endif %}</span><span class="data-note">{{ lines|length }} item lines</span></div>
+  <div class="compact-card-header"><span>Saved work order{% if order.is_manual %} · Manual entry{% endif %}</span><span class="data-note">{{ lines|length }} item lines</span></div>
   {% include 'word_export.html' %}
 </div>
 {% endblock %}

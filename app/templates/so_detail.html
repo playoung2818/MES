@@ -1,50 +1,52 @@
 {% extends 'base.html' %}
+{% block title %}{{ sales_order }} | NEOUSYS MES{% endblock %}
 {% block content %}
-<div class="workspace-breadcrumb"><a href="{{ url_for('main.index') }}">Workspace</a><span>/</span><span>SO {{ sales_order }}</span></div>
+<div class="workspace-breadcrumb"><a href="{{ url_for('main.index') }}">Sales orders</a><span>/</span><span>{{ sales_order }}</span></div>
 <header class="workspace-header">
-  <div class="workspace-header-actions"><a class="btn btn-outline-secondary" href="{{ url_for('main.index') }}">Back</a></div>
+  <div><h1 class="workspace-title">{{ sales_order }}</h1><p class="workspace-description">{% if editing %}Revise {{ editing.document_number or 'work order' }}{% else %}Create work order{% endif %} · Release P{{ release_number }}</p></div>
+  <a class="btn btn-outline-secondary" href="{{ url_for('main.index') }}">Back to orders</a>
 </header>
 <div class="metric-grid">
-  <div class="metric"><div class="label">Customer</div><div class="value">{{ order.customer or '' }}</div></div>
-  <div class="metric"><div class="label">Customer PO#</div><div class="value">{{ order.customer_po or '' }}</div></div>
+  <div class="metric"><div class="label">Customer</div><div class="value">{{ order.customer or '—' }}</div></div>
+  <div class="metric"><div class="label">Customer PO</div><div class="value">{{ order.customer_po or '—' }}</div></div>
   <div class="metric"><div class="label">NTA Order ID</div><div class="value">{{ sales_order }}</div></div>
+  <div class="metric"><div class="label">Approved ship date</div><div class="value">{{ ship_date or 'Not assigned' }}</div></div>
 </div>
-<div class="data-toolbar"><span class="fw-semibold">{% if editing %}Revise {{ editing.document_number or 'WO' }} — P{{ release_number }}{% else %}Create new WO — P{{ release_number }}{% endif %}</span><span class="data-note">{% for release in releases %}<a href="{{ url_for('main.generated_detail', wo_id=release.id) }}">P{{ release.release_number }} · {{ release.document_number or 'WO' }}</a>{% if not loop.last %} | {% endif %}{% endfor %}</span></div>
-<form method="post" id="so-form">
+{% if releases %}<div class="data-toolbar"><span class="data-note">Saved releases</span><span class="data-note">{% for release in releases %}<a href="{{ url_for('main.generated_detail', wo_id=release.id) }}">P{{ release.release_number }} · {{ release.document_number or 'WO' }}</a>{% if not loop.last %} · {% endif %}{% endfor %}</span></div>{% endif %}
+<form method="post" id="so-form" data-work-order-entry>
 {% if preview_token %}<input type="hidden" name="preview_token" value="{{ preview_token }}">{% endif %}
 <input type="hidden" name="item_order" id="item-order" value="{{ lines|map(attribute='id')|join(',') }}">
 <div class="card-lite mb-3">
-  <div class="compact-card-header"><span>SO item entry</span><span id="order-status" class="data-note" role="status" aria-live="polite">Drag handles to reorder before preview/push</span></div>
+  <div class="compact-card-header"><span>Work order items</span><span class="data-note">{{ lines|length }} item{{ 's' if lines|length != 1 }}</span></div>
+  <div class="card-body data-note">Paste one serial per line. Blank lines are ignored. Line counts are checked when you preview.</div>
   <div class="table-responsive">
-    <table class="table table-sm table-hover align-middle">
-      <thead><tr><th style="width:4rem">#</th><th>Item</th><th style="width:5rem">Qty</th><th style="width:28rem">Serial Numbers</th><th style="width:20rem">Notes/Deviation</th></tr></thead>
-      <tbody id="item-list">
+    <table class="table table-sm entry-table" aria-label="Work order items">
+      <thead><tr><th class="order-column" scope="col">Order</th><th class="item-column" scope="col">Product</th><th class="qty-column" scope="col">Qty</th><th class="serial-column" scope="col">Serial numbers</th><th scope="col">Notes / deviation</th></tr></thead>
+      <tbody id="item-list" data-entry-items>
       {% for line in lines %}
         <tr data-item-id="{{ line.id }}">
-          <td><button type="button" class="btn btn-sm btn-outline-secondary reorder-handle" draggable="true" aria-label="Reorder {{ line.item or 'item' }}" title="Drag to reorder" style="cursor:grab">&#x2630;</button> <span class="item-number">{{ loop.index }}</span></td>
-          <td class="fw-semibold">{{ line.item or '' }}<div class="data-note">Available for this WO: {{ remaining.get(line.item, 0) }}</div></td>
-          <td><input type="number" class="form-control" style="min-width:5rem" name="quantity_{{ line.id }}" value="{{ request.form.get('quantity_' ~ line.id, line.quantity) }}" min="0" step="1" required aria-label="Quantity for {{ line.item }}"></td>
-          <td><textarea class="form-control font-monospace" name="serials_{{ line.id }}" rows="3" placeholder="Scan/paste SNs; Enter, comma or semicolon separated">{% if request.method == 'POST' and not show_table %}{{ request.form.get('serials_' ~ line.id, '') }}{% else %}{% for serial in line.serials %}{{ serial }}{% if not loop.last %}
-{% endif %}{% endfor %}{% endif %}</textarea></td>
-          <td><textarea class="form-control" name="notes_{{ line.id }}" rows="3" placeholder="Notes or deviations">{{ request.form.get('notes_' ~ line.id, line.notes or '') }}</textarea></td>
+          <td><div class="reorder-actions"><button type="button" class="btn btn-outline-secondary icon-button reorder-handle" draggable="true" aria-label="Drag to reorder {{ line.item or 'item' }}" title="Drag to reorder"><svg class="ui-icon" aria-hidden="true"><use href="{{ url_for('static', filename='workspace-icons.svg') }}#grip"></use></svg></button><button type="button" class="btn btn-outline-secondary icon-button entry-up" aria-label="Move {{ line.item }} up"><svg class="ui-icon" aria-hidden="true"><use href="{{ url_for('static', filename='workspace-icons.svg') }}#arrow-up"></use></svg></button><button type="button" class="btn btn-outline-secondary icon-button entry-down" aria-label="Move {{ line.item }} down"><svg class="ui-icon" aria-hidden="true"><use href="{{ url_for('static', filename='workspace-icons.svg') }}#arrow-down"></use></svg></button></div><span class="item-number">{{ loop.index }}</span></td>
+          <td class="fw-semibold" data-label="Product">{{ line.item or '' }}<div class="data-note">Available for this WO: {{ remaining.get(line.item, 0) }}</div></td>
+          <td data-label="Qty"><input type="number" class="form-control" name="quantity_{{ line.id }}" value="{{ request.form.get('quantity_' ~ line.id, line.quantity) }}" min="0" step="1" required data-entry-quantity aria-label="Quantity for {{ line.item }}"></td>
+          <td data-label="Serial numbers"><textarea class="form-control font-monospace serial-input" name="serials_{{ line.id }}" rows="5" aria-label="Serial numbers for {{ line.item }}" placeholder="Paste one serial per line" spellcheck="false">{% if request.method == 'POST' %}{{ request.form.get('serials_' ~ line.id, '') }}{% else %}{% for serial in line.serials %}{{ serial }}{% if not loop.last %}
+{% endif %}{% endfor %}{% endif %}</textarea><div class="serial-feedback" hidden aria-live="polite"></div></td>
+          <td data-label="Notes / deviation"><textarea class="form-control" name="notes_{{ line.id }}" rows="5" aria-label="Notes or deviations for {{ line.item }}" placeholder="Optional notes">{{ request.form.get('notes_' ~ line.id, line.notes or '') }}</textarea></td>
         </tr>
       {% endfor %}
       </tbody>
     </table>
   </div>
 </div>
-<div class="data-toolbar no-print">
-  <div class="data-note">Preview does not write DB. Push writes this WO only.</div>
-  <div><button class="btn btn-primary" name="action" value="preview">Generate Table</button>{% if show_table %} <button class="btn btn-success" name="action" value="push">Push to DB</button>{% endif %}</div>
+<div class="data-toolbar entry-actions no-print">
+  <div class="data-note" id="order-status" data-entry-status role="status" aria-live="polite">{% if show_table %}Preview ready. Review it below before saving.{% else %}Preview first. Nothing is saved until you save the work order.{% endif %}</div>
+  <div><button class="btn {{ 'btn-outline-secondary' if show_table else 'btn-primary' }}" name="action" value="preview">Preview work order</button>{% if show_table %}<button class="btn btn-primary" name="action" value="push">{{ 'Save revision' if editing else 'Save work order' }}</button>{% endif %}</div>
 </div>
 {% if show_table %}
-<section id="generated-table" class="card-lite mt-3" aria-label="Generated table">
-  <div class="compact-card-header"><span>Preview table</span>{% if preview %}<span class="badge text-bg-warning">Not pushed to DB</span>{% endif %}</div>
+<section id="generated-table" class="card-lite mt-3" aria-label="Work order preview">
+  <div class="compact-card-header"><span>Work order preview</span>{% if preview %}<span class="data-note">Not saved yet</span>{% endif %}</div>
   {% include 'word_export.html' %}
 </section>
 {% endif %}
 </form>
-<script>
-(() => {const list=document.getElementById('item-list'),status=document.getElementById('order-status'),orderInput=document.getElementById('item-order');let dragged=null;const rows=()=>Array.from(list.children);const updateOrder=()=>{rows().forEach((r,i)=>r.querySelector('.item-number').textContent=i+1);orderInput.value=rows().map(r=>r.dataset.itemId).join(',')};list.addEventListener('dragstart',e=>{if(!e.target.closest('.reorder-handle')){e.preventDefault();return}dragged=e.target.closest('tr');e.dataTransfer.effectAllowed='move';dragged.classList.add('table-active')});list.addEventListener('dragover',e=>{if(!dragged)return;e.preventDefault();const t=e.target.closest('tr');if(!t||t===dragged)return;const b=t.getBoundingClientRect();list.insertBefore(dragged,e.clientY<b.top+b.height/2?t:t.nextSibling);updateOrder();status.textContent='New order will be applied when you generate/push.'});list.addEventListener('drop',e=>{if(!dragged)return;e.preventDefault();dragged.classList.remove('table-active');dragged=null;updateOrder()});list.addEventListener('dragend',()=>{if(dragged)dragged.classList.remove('table-active');dragged=null;updateOrder()});updateOrder();})();
-</script>
+<script src="{{ url_for('static', filename='work-order-entry.js') }}?v=1" defer></script>
 {% endblock %}

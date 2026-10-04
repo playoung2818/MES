@@ -12,28 +12,28 @@ Production Planning → Sync Google Sheet (stage snapshots)
         ↓
 Review differences + reorder SO items
         ↓
-Push Approved SO → approved_work_orders
+Approve sales order → approved_work_orders
         ↓
 Planning and WO generation read the same approved SO data
         ↓
 Select Sales Order → view its approved item order
         ↓
-Paste / scan serial numbers into item text boxes
+Paste one serial per line into each item text box
         ↓
-Generate Table preview
+Preview work order
         ↓
-Check table
+Review the table
         ↓
-Push to DB
+Save work order
 ```
 
 ## Main behavior
 
 - Google Sheets are read only by the explicit sync action; there is no Excel upload.
 - Open SOs, new WO generation, and planning read approved, active `approved_work_orders` rows.
-- **New Blank WO** supports manual entry without any Google Sheet record or connection.
+- **Create a work order without a sales order** opens manual entry without a Google Sheet record or connection.
 - **Sync Google Sheet** updates review snapshots only, never approved fields or WOs.
-- **Push Approved SO** publishes reviewed SO data and item order to `approved_work_orders`.
+- **Approve sales order** publishes reviewed SO data and item order to `approved_work_orders`.
 - Sales orders are grouped by SO number.
 - After selecting an SO, all items under that SO are displayed.
 - Each item has:
@@ -45,17 +45,17 @@ Push to DB
   - https://github.com/playoung2818/Serial-Number-Prune
 - One SO can have multiple independent WOs (P1, P2, ...), each with its own Document #.
 - Duplicate actual serial numbers across items or saved WOs are rejected. `NA` remains visible and is exempt.
-- Item rows can be reordered by drag/drop before preview/push.
+- Item rows can be reordered by dragging or using the up/down buttons before preview and save.
 - The generated output is an HTML preview table shown on the SO page.
-- WO table preview does not write DB. **Push to DB** saves only that WO.
+- **Preview work order** does not write to the database. **Save work order** saves only that WO.
 - SO approval and schedule saves are separate explicit actions; they do not create WOs.
 
-## WO History module
+## Work order history
 
 Use the navbar link:
 
 ```text
-WO History
+Work orders
 ```
 
 This module pulls saved/generated records directly from the DB table:
@@ -64,17 +64,18 @@ This module pulls saved/generated records directly from the DB table:
 WO Details
 ```
 
-It shows all pushed WO records, release numbers, document numbers, dates, item counts, serial counts, and a detail table with:
+The list shows saved work orders, releases, document numbers, customers, item counts, and last-save dates.
+Open a record for its customer PO, original generated date, and complete item table:
 
 ```text
 Item | Qty | Serial Numbers | Notes/Deviation
 ```
 
-Only records that have been pushed with **Push to DB** appear here. Each push updates the `pushed_at` timestamp.
+Only saved work orders appear here. Each save updates the `pushed_at` timestamp.
 
 ## Production Planning
 
-The **Production Planning** button sits at the top right of the global navigation.
+The **Production planning** link appears in the global navigation.
 Open `/production_planning` for the module adapted from
 [playoung2818/MRP_System](https://github.com/playoung2818/MRP_System), upstream
 commit `f37fe90861187b8806cd6ac6fb3ea3fbb2694578` (`Webpage/server.py` and
@@ -94,7 +95,7 @@ commit `f37fe90861187b8806cd6ac6fb3ea3fbb2694578` (`Webpage/server.py` and
 ### Picked status and partial-WO rule
 
 - **Any saved WO in `WO Details` automatically marks its SO as Picked.**
-  Generating a preview does not count; only **Push to DB** creates a saved WO.
+  Generating a preview does not count. Only **Save work order** creates a saved WO.
 - **Picked Qty is read-only**, calculated from the saved item quantities across
   all partial WOs for the same SO. It does not come from an external picked-status
   API, `wo_structured.Picked`, or manual picked-quantity overrides.
@@ -115,8 +116,8 @@ The SO is Picked after P1 even though some quantity is still unpicked.
 
 ### Google sync, diff review, and approved SOs
 
-Use **Assign Production Date** (`/production_planning/orders`) from Production Planning.
-The summary is sorted by **L/T ascending**, with missing/invalid dates last and
+Use **Review orders** (`/production_planning/orders`) from Production planning.
+The summary is sorted by **Ship date ascending**, with missing/invalid dates last and
 SO number as the tie-breaker. The **Status** dropdown supports Pending review
 (default), All statuses, Legacy, Unapproved, Changed, Removed, Approved, and
 Retired. Status filtering can be combined with SO/customer/PO search.
@@ -125,12 +126,12 @@ Retired. Status filtering can be combined with SO/customer/PO search.
    It saves previous/latest snapshots in the `approved_work_orders` table, and
    shows changes since the previous sync and since the last approval. Empty,
    malformed, or partially skipped reads are rejected without retiring any SOs.
-2. Open **Review / reorder**. Review customer/PO/date/terms/site changes,
+2. Open **Review order**. Review customer/PO/date/terms/site changes,
    added/removed products, quantities, and Google order changes separately.
    Drag handles or use up/down buttons; **Use Google item order** is optional.
    Existing approved order is retained when merging updated content; new items
    are appended for review. Configuration is retained and initializes WO notes.
-   **L/T** (the Google Lead Time / Ship Date) appears in the list and detail page.
+   **Ship date** (the Google Lead Time / L/T field) appears in the list and detail page.
    The review page also displays **Earliest Material Ready Date** directly from
    the existing MRP-managed `so_material_readiness.earliest_material_ready_date`,
    matched by `"QB Num"` to the SO number. This is read-only: it does not modify
@@ -140,7 +141,7 @@ Retired. Status filtering can be combined with SO/customer/PO search.
    Existing future dates are prefilled; blank preserves the existing schedule,
    including finished-goods status. Assigning a date returns finished goods to
    production, like the calendar's production-date assignment.
-3. **Push Approved SO** publishes the reviewed items and your chosen order,
+3. **Approve sales order** publishes the reviewed items and your chosen order,
    and saves an assigned production date in `production_overrides` in the same
    transaction. Invalid dates or save failures leave both SO and schedule unchanged.
    Only approved, active SOs appear under Open SOs and in planning. Reordering an
@@ -173,8 +174,7 @@ SO are not added to planning. Upstream PDF-viewer links are not imported.
 changes also affect the MRP schedule. MES picked status and quantities now ignore
 `wo_structured.Picked` and `wo_picked_qty_overrides` entirely. Legacy overrides are
 preserved but cannot be edited from MES (`POST /api/wo_picked_qty` returns 409).
-Planning never inserts or modifies `WO Details`; use the WO editor / Push to DB
-for quantity changes, then reload planning. GET/reload only reads data. New or
+Planning never inserts or modifies `WO Details`. Save quantity changes in the WO editor, then refresh planning. GET/reload only reads data. New or
 upgraded installs require syncing and approving SOs before planning/generation.
 Schedule requests validate source keys/dates and require a session CSRF header.
 Existing shared tables are not replaced. This MES rule treats a saved WO as
@@ -256,7 +256,7 @@ Columns:
 | `customer_po` | Customer PO |
 | `items` | JSON array containing item lines, serials, notes, and display order |
 | `pushed_at` | Timestamp when this WO was last pushed to DB |
-| `Generated Date` | First Push to DB timestamp (UTC); immutable on revision |
+| `Generated Date` | First save timestamp (UTC); immutable on revision |
 | `Document #` | Unique `WO-YYMM-NNNN` identity; immutable on revision |
 
 New previews display an estimated Document Number using the same monthly
@@ -290,8 +290,8 @@ quantities after subtracting previously allocated WOs. Saved serials are never
 copied into a new release. Example: SO quantity 10 → P1 quantity 5 → P2 quantity 5.
 
 From a generated detail page:
-- **Revise this WO** edits only that record; its Document # and Generated Date stay unchanged.
-- **Create next WO** creates a separate release with a new Document # on push.
+- **Revise work order** edits only that record. Its Document # and Generated Date stay unchanged.
+- **Create next release** creates a separate release with a new Document # when saved.
 
 Preview is read-only. Push accepts the signed preview, rechecks allocations and
 serial uniqueness, and saves one WO. If inputs change after preview, regenerate
@@ -305,16 +305,17 @@ not a shrinking unshipped balance. Allocation is not shipment confirmation.
 New SO-based releases require approved, active `approved_work_orders` data, not Google
 access. Existing WOs remain independently revisable; without active approved
 limits, revisions cannot increase total allocated quantities. WO preview is
-read-only, and only **Push to DB** saves the WO.
+read-only, and only **Save work order** saves the WO.
 
 ## Blank / manual WO
 
-Click **New Blank WO** on the Open SO page (`/wo/new`); it is not in the top bar. Enter
-Customer, Customer PO#, NTA Order ID, and any number of item rows using **Add item**
-and **Remove**. Item, Qty, Serial Numbers, and Notes/Deviation are editable.
+Click **Create a work order without a sales order** below the sales-order list (`/wo/new`).
+Enter the NTA Order ID, Customer, and optional Customer PO.
+Use **Add item** and **Remove** to manage product rows.
+Product, Qty, Serial numbers, and Notes / deviation are editable.
 
-**Generate Table** previews these fields without writing the database; **Push to DB**
-creates a WO with its own document number and generated date. Multiple manual WOs
+**Preview work order** previews these fields without writing to the database.
+**Save work order** creates a WO with its own document number and generated date. Multiple manual WOs
 can share an NTA Order ID. Saved manual WOs can be revised without Google Sheet access.
 
 Manual quantities are operator-defined: there is no authoritative sheet quantity
@@ -471,6 +472,31 @@ OneDrive upload must be checked separately; local backup success is not cloud
 sync confirmation. Keep the backup folder on this device, restrict access, and
 regularly test restoration into a separate test database.
 
+## Workspace UI
+
+The Flask pages use the approved design from `design-preview/index.html`.
+The home page shows search, order number, customer, and Open order.
+Search still matches hidden PO and product fields.
+Order details, approved ship dates, allocation limits, and saved releases appear inside the editor.
+The history, manual-entry, approval, and planning pages use the same navigation and green styling.
+Bootstrap 5.3.3 is served locally from `app/static/vendor` with its MIT license.
+The UI does not need a CDN connection.
+
+Paste one serial per line. The browser compares nonempty line counts with Qty only after **Preview work order**.
+Blank lines are ignored. Repeated values and `NA` each count as one line.
+Commas and semicolons do not create extra lines in this browser check.
+A mismatch blocks preview and tells you how many lines to add or remove.
+Input changes clear old errors, hide an old preview, and disable saving until you preview again.
+
+The browser retains the original pasted text through preview.
+The existing server still normalizes and sorts serials for the saved record and Word output.
+Numeric leading zeros are removed by that existing server rule.
+Repeated `NA` lines become one stored `NA` value.
+Cross-item and saved-WO serial checks remain unchanged.
+The line-count check is a browser aid, not a new server or database constraint.
+All routes, POST field names, signed preview checks, approvals, and MRP schedule writes remain intact.
+No database migration is needed for this UI update.
+
 ## Tests
 
 Run:
@@ -478,6 +504,30 @@ Run:
 ```bash
 python -m unittest discover -s tests -v
 ```
+
+For browser tests, use the isolated fixture below. It creates an in-memory SQLite database with sample orders.
+It does not load production configuration or sync Google Sheets.
+Start it from the repository root in one terminal:
+
+```bash
+PYTHONPATH=. python tests/ui_fixture.py
+```
+
+In another terminal, install the browser-test tools outside the repository and run the checks:
+
+```bash
+npm install --prefix /tmp/mes-ui-tools playwright axe-core
+/tmp/mes-ui-tools/node_modules/.bin/playwright install chromium
+NODE_PATH=/tmp/mes-ui-tools/node_modules node tests/ui-browser.cjs
+```
+
+Do not point the browser script at production. It saves sample work orders, approves an order, and changes a schedule.
+The script rejects servers without the isolated-fixture response header.
+`MES_UI_TEST_URL` changes the fixture URL. The default is `http://127.0.0.1:5057`.
+`MES_BROWSER_EXECUTABLE` selects an existing Chrome installation instead of the installed Chromium browser.
+Screenshots and the accessibility report go to `/tmp/mes-ui-check`.
+The script checks nine pages at five widths, plus preview, save, revision, manual entry, approval, and scheduling.
+Restart the fixture before each run to reset its sample data.
 
 ## Legacy migration
 
