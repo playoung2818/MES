@@ -24,8 +24,10 @@ def approved_orders():
 
 
 def signature(item):
-    return tuple(str(item.get(field) or '').strip().casefold()
-                 for field in ('item', 'configuration', 'inventory_site'))
+    """Identity within one SO: item + quantity + site. SO# is the parent row."""
+    return (str(item.get('item') or '').strip().casefold(),
+            str(item.get('quantity') or '').strip(),
+            str(item.get('inventory_site') or '').strip().casefold())
 
 
 def snapshot(source, prior=None):
@@ -49,8 +51,8 @@ def snapshot(source, prior=None):
         if row['id']:
             used_ids.add(row['id'])
         result['items'].append(row)
-    # Preserve identity/order across configuration or site edits when matching
-    # the unmatched product is unambiguous. Never guess across ambiguous lines.
+    # Preserve identity/order across site/quantity edits when matching the
+    # unmatched product is unambiguous. Never guess across ambiguous lines.
     old_products, new_products = defaultdict(list), defaultdict(list)
     for item in (prior or {}).get('items', []):
         try:

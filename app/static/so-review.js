@@ -90,7 +90,16 @@
     JSON.parse(document.getElementById('sheet-item-order').textContent).forEach(id => { if (rows.get(id)) body.appendChild(rows.get(id)); });
     update();
   });
-  document.getElementById('so-approval-form').addEventListener('submit', () => {
+  document.getElementById('so-approval-form').addEventListener('submit', event => {
+    const action = event.submitter?.value || '';
+    if (productionDate && action === 'approve' && !productionDate.value) {
+      const ok = window.confirm('Production Date is blank. Approve this sales order without assigning a Production Date?');
+      if (!ok) {
+        event.preventDefault();
+        productionDate.focus();
+        return;
+      }
+    }
     [...body.children].forEach(row => {
       const isManual = row.dataset.itemId.startsWith('manual-');
       const data = rowData(row);

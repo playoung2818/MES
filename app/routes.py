@@ -128,7 +128,7 @@ def so_detail(sales_order=None, wo_id=None):
                     raise ValueError('WO changed in another session. Reload before revising.')
                 validate(items, limits, siblings, all_orders, wo_id)
                 now = datetime.now(timezone.utc).replace(tzinfo=None)
-                if not current:
+                if not current: #The code only generates a new document number when there is no existing WO being edited.
                     number = next_document_number(now)
                     current = SalesOrder(id=payload['id'], sales_order=sales_order,
                         release_number=max((o.release_number for o in siblings), default=0)+1,

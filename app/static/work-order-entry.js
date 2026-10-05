@@ -58,6 +58,7 @@
   };
   form.addEventListener("input", invalidate);
   form.addEventListener("change", invalidate);
+  const isNA = (value) => value.replace(/[^A-Za-z0-9]/g, "").toUpperCase().match(/^(NA|NAN|NONE|NULL)$/);
   form.addEventListener("submit", (event) => {
     // Legacy direct POSTs and database validation keep their existing contracts.
     if (event.submitter && event.submitter.value !== "preview") return;
@@ -68,10 +69,12 @@
       if (!qty.validity.valid) return; // Native required/min/step checks handle this.
       const expected = Number(qty.value);
       const serials = row.querySelector(".serial-input");
-      const actual = serials.value
+      const lines = serials.value
         .split(/\r\n?|\n/)
         .map((line) => line.trim())
-        .filter(Boolean).length;
+        .filter(Boolean);
+      if (lines.some(isNA)) return;
+      const actual = lines.length;
       if (actual === expected) return;
       const difference = Math.abs(expected - actual);
       const feedback = row.querySelector(".serial-feedback");

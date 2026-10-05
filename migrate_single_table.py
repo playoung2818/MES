@@ -42,7 +42,7 @@ def consolidate(data):
 
 def main():
     load_dotenv()
-    engine = create_engine(os.environ["WO_DB_URL"])
+    engine = create_engine(os.environ["DATABASE_DSN"])
     with engine.begin() as connection:
         names = set(inspect(connection).get_table_names())
         # Prevent concurrent writes while reading, checking, and removing the old tables.

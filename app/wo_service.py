@@ -26,7 +26,8 @@ def new_order(source, orders):
         product = row['item'].strip().casefold()
         consumed = min(quantity, used.get(product, 0))
         used[product] = used.get(product, 0) - consumed
-        items.append(dict(id=n, item=row['item'], quantity=quantity-consumed, serials=[], notes=row.get('configuration') or ''))
+        items.append(dict(id=n, item=row['item'], quantity=quantity-consumed, serials=[],
+                          notes=row.get('configuration') or '', inventory_site=row.get('inventory_site') or ''))
     return SimpleNamespace(sales_order=source['sales_order'], customer=source.get('customer'),
                            customer_po=source.get('customer_po'), items=items)
 
