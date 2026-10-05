@@ -160,7 +160,7 @@ class ApprovedSOTests(unittest.TestCase):
         self.assertEqual((saved.items, saved.pushed_at, saved.document_number), saved_before)
         self.assertEqual(self.client.get('/wo/' + saved.id + '/edit').status_code, 200)
         self.assertNotIn('<td class="fw-semibold">SO1</td>', self.client.get('/production_planning/orders').text)
-        self.assertIn('Assign Production Date (1)', self.client.get('/production_planning').text)
+        self.assertIn('Review orders (1)', self.client.get('/production_planning').text)
         self.assertIn('No approval required — excluded', self.client.get('/production_planning/orders?status=all').text)
         detail = self.client.get('/production_planning/orders/SO1').text
         self.assertIn('No review or retirement approval is required', detail)
@@ -232,7 +232,7 @@ class ApprovedSOTests(unittest.TestCase):
         row = db.session.get(ApprovedSO, 'SO1')
         response = self.client.get('/production_planning/orders/SO1')
         self.assertEqual(response.status_code, 200)
-        self.assertIn('Push Approved SO', response.text)
+        self.assertIn('Approve sales order', response.text)
         self.assertEqual(self.client.post('/production_planning/orders/SO1').status_code, 403)
         response = self.client.post('/production_planning/orders/SO1', data={
             'csrf_token': csrf, 'source_revision': row.source_revision, 'revision': row.revision,
@@ -289,10 +289,10 @@ class ApprovedSOTests(unittest.TestCase):
     def test_review_shows_lt_and_saves_production_date_with_approval(self):
         row = self.sync()
         response = self.client.get('/production_planning/orders/SO1')
-        self.assertIn('L/T (Google Sheet)', response.text)
+        self.assertIn('Ship date (Google Sheet)', response.text)
         self.assertIn(self.source['ship_date'], response.text)
         self.assertIn('name="production_date"', response.text)
-        self.assertIn('<th>L/T ↑</th>', self.client.get('/production_planning/orders').text)
+        self.assertIn('<th>Ship date ↑</th>', self.client.get('/production_planning/orders').text)
         target = self.next_weekday()
         response = self.client.post('/production_planning/orders/SO1', data=self.review_form(row, target.isoformat()))
         self.assertEqual(response.status_code, 302)

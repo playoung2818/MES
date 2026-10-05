@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
+{% block title %}{{ sales_order }} unavailable | NEOUSYS MES{% endblock %}
 {% block content %}
-<h1 class="workspace-title">{{ sales_order }}</h1>
-<p>No approved, active SO data is available. Sync and approve this SO in Production Planning first, or create a blank WO. Saved WOs can still be viewed/revised.</p>
-<a class="btn btn-outline-secondary" href="{{ url_for('main.so_review_list', q=sales_order) }}">Review SO</a>
-<a class="btn btn-primary" href="{{ url_for('main.manual_wo', sales_order=sales_order) }}">Create Blank WO</a>
-{% for release in releases %}
-<p><a href="{{ url_for('main.generated_detail', wo_id=release.id) }}">P{{ release.release_number }} · {{ release.document_number or 'WO' }}</a>
-<a class="btn btn-outline-secondary" href="{{ url_for('main.so_detail', wo_id=release.id) }}">Revise</a></p>
-{% endfor %}
+<div class="workspace-breadcrumb"><a href="{{ url_for('main.index') }}">Sales orders</a><span>/</span><span>{{ sales_order }}</span></div>
+<header class="workspace-header"><div><h1 class="workspace-title">{{ sales_order }}</h1><p class="workspace-description">This sales order is not available for a new work order.</p></div><a class="btn btn-outline-secondary" href="{{ url_for('main.index') }}">Back to orders</a></header>
+<div class="card-lite"><div class="card-body">
+<p>No approved, active data is available. Review and approve this order in Production planning, or create a manual work order.</p>
+<div class="workspace-header-actions"><a class="btn btn-outline-secondary" href="{{ url_for('main.so_review_list', q=sales_order) }}">Review sales order</a><a class="btn btn-primary" href="{{ url_for('main.manual_wo', sales_order=sales_order) }}">Create manual work order</a></div>
+</div></div>
+{% if releases %}<div class="card-lite mt-3"><div class="compact-card-header">Saved releases</div><div class="card-body"><p class="data-note">Saved work orders remain available to view and revise.</p>
+{% for release in releases %}<div class="data-toolbar"><a href="{{ url_for('main.generated_detail', wo_id=release.id) }}">P{{ release.release_number }} · {{ release.document_number or 'WO' }}</a><a class="btn btn-outline-secondary" href="{{ url_for('main.so_detail', wo_id=release.id) }}">Revise work order</a></div>{% endfor %}
+</div></div>{% endif %}
 {% endblock %}

@@ -1,43 +1,34 @@
 {% extends 'base.html' %}
+{% block title %}Manual work order | NEOUSYS MES{% endblock %}
 {% block content %}
-<div class="workspace-breadcrumb"><a href="{{ url_for('main.index') }}">Workspace</a><span>/</span><span>{% if editing %}Revise {{ editing.document_number }}{% else %}New Blank WO{% endif %}</span></div>
-<p class="data-note">Manual entry — no Google Sheet required. Quantities are operator-defined; SO remaining-quantity limits are not checked. Actual serial numbers must still be unique.</p>
-<form method="post" id="manual-form">
+<div class="workspace-breadcrumb"><a href="{{ url_for('main.index') }}">Sales orders</a><span>/</span><span>Manual entry</span></div>
+<header class="workspace-header"><div><h1 class="workspace-title">{% if editing %}Revise {{ editing.document_number or 'work order' }}{% else %}New work order{% endif %}</h1><p class="workspace-description">Manual entry. No approved sales order is required.</p></div><a class="btn btn-outline-secondary" href="{{ url_for('main.index') }}">Back to orders</a></header>
+<form method="post" id="manual-form" data-work-order-entry>
 {% if preview_token %}<input type="hidden" name="preview_token" value="{{ preview_token }}">{% endif %}
 <div class="metric-grid">
-  <div class="metric"><label class="label" for="customer">Customer</label><input id="customer" class="form-control" name="customer" value="{{ data.customer or '' }}" maxlength="200" required></div>
-  <div class="metric"><label class="label" for="customer-po">Customer PO#</label><input id="customer-po" class="form-control" name="customer_po" value="{{ data.customer_po or '' }}" maxlength="120"></div>
   <div class="metric"><label class="label" for="sales-order">NTA Order ID</label><input id="sales-order" class="form-control" name="sales_order" value="{{ data.sales_order }}" maxlength="80" placeholder="SO-20261457" required {% if editing %}readonly{% endif %}></div>
+  <div class="metric"><label class="label" for="customer">Customer</label><input id="customer" class="form-control" name="customer" value="{{ data.customer or '' }}" maxlength="200" required></div>
+  <div class="metric"><label class="label" for="customer-po">Customer PO</label><input id="customer-po" class="form-control" name="customer_po" value="{{ data.customer_po or '' }}" maxlength="120"></div>
 </div>
 <div class="card-lite mb-3">
-  <div class="compact-card-header"><span>Manual WO items</span><button type="button" id="add-item" class="btn btn-outline-secondary">Add item</button></div>
+  <div class="compact-card-header"><span>Work order items</span><button type="button" id="add-item" class="btn btn-outline-secondary">Add item</button></div>
+  <div class="card-body data-note">Paste one serial per line. Blank lines are ignored. Line counts are checked when you preview.</div>
   <div class="table-responsive">
-    <table class="table table-sm"><thead><tr><th>Item</th><th style="width:7rem">Qty</th><th>Serial Numbers</th><th>Notes/Deviation</th><th></th></tr></thead>
-    <tbody id="manual-items">
-    {% for line in data['items'] %}
-      {% include 'manual_row.html' %}
-    {% endfor %}
+    <table class="table table-sm entry-table" aria-label="Manual work order items"><thead><tr><th class="item-column" scope="col">Product</th><th class="qty-column" scope="col">Qty</th><th class="serial-column" scope="col">Serial numbers</th><th scope="col">Notes / deviation</th><th class="remove-column" scope="col"><span class="visually-hidden">Remove item</span></th></tr></thead>
+    <tbody id="manual-items" data-entry-items>
+    {% for line in data['items'] %}{% include 'manual_row.html' %}{% endfor %}
     </tbody></table>
   </div>
 </div>
-<div class="data-toolbar"><span class="data-note">Preview does not write DB.</span><div><button class="btn btn-primary" name="action" value="preview">Generate Table</button>{% if show_table %} <button class="btn btn-success" name="action" value="push">Push to DB</button>{% endif %}</div></div>
+<div class="data-toolbar entry-actions no-print"><span class="data-note" data-entry-status role="status" aria-live="polite">{% if show_table %}Preview ready. Review it below before saving.{% else %}Preview first. Nothing is saved until you save the work order.{% endif %}</span><div><button class="btn {{ 'btn-outline-secondary' if show_table else 'btn-primary' }}" name="action" value="preview">Preview work order</button>{% if show_table %}<button class="btn btn-primary" name="action" value="push">{{ 'Save revision' if editing else 'Save work order' }}</button>{% endif %}</div></div>
+<p class="data-note">Manual quantities are operator-defined. Approved sales-order allocation limits do not apply.</p>
 {% if show_table %}
-<section id="generated-table" class="card-lite mt-3">
-  <div class="compact-card-header"><span>Preview table</span><span class="badge text-bg-warning">Not pushed to DB</span></div>
-  {% with order=data, sales_order=data.sales_order, lines=data['items'] %}
-    {% include 'word_export.html' %}
-  {% endwith %}
+<section id="generated-table" class="card-lite mt-3" aria-label="Work order preview">
+  <div class="compact-card-header"><span>Work order preview</span><span class="data-note">Not saved yet</span></div>
+  {% with order=data, sales_order=data.sales_order, lines=data['items'] %}{% include 'word_export.html' %}{% endwith %}
 </section>
 {% endif %}
 </form>
 <template id="blank-row">{% set line = {'item': '', 'quantity': 1, 'serials': [], 'notes': ''} %}{% include 'manual_row.html' %}</template>
-<script>
-const body = document.getElementById('manual-items');
-document.getElementById('add-item').addEventListener('click', () => {
-  body.appendChild(document.getElementById('blank-row').content.cloneNode(true));
-});
-body.addEventListener('click', event => {
-  if (event.target.closest('.remove-row') && body.children.length > 1) event.target.closest('tr').remove();
-});
-</script>
+<script src="{{ url_for('static', filename='work-order-entry.js') }}?v=1" defer></script>
 {% endblock %}

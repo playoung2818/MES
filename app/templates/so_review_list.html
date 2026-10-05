@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% block title %}Review orders | NEOUSYS MES{% endblock %}
 {% block content %}
 <header class="workspace-header">
-  <div><h1 class="workspace-title">Assign Production Date</h1><p class="workspace-description">Sync stores Google snapshots only. Approved SOs keep your item order until you publish changes.</p></div>
+  <div><h1 class="workspace-title">Review sales orders</h1><p class="workspace-description">Review source changes, set production dates and approve item order. Saved work orders stay unchanged.</p></div>
   <div class="workspace-header-actions">
     <a class="btn btn-outline-secondary" href="{{ url_for('main.production_planning') }}">Production Planning</a>
     <form method="post" action="{{ url_for('main.sync_google') }}"><input type="hidden" name="csrf_token" value="{{ planning_csrf }}"><button class="btn btn-primary">Sync Google Sheet</button></form>
   </div>
 </header>
-<form class="workspace-search row g-2">
-  <div class="col"><input class="form-control" name="q" value="{{ q }}" placeholder="Search SO / customer / PO"></div>
+<form class="workspace-search row g-2" role="search">
+  <div class="col"><label class="visually-hidden" for="review-search">Search sales orders for review</label><input class="form-control" type="search" id="review-search" name="q" value="{{ q }}" placeholder="Search SO / customer / PO"></div>
   <div class="col-auto"><label class="visually-hidden" for="review-status">Status</label><select class="form-select form-select-sm" id="review-status" name="status" aria-label="Filter SO review status" onchange="this.form.submit()">
     {% for value, label in status_options %}<option value="{{ value }}" {% if value == selected_status %}selected{% endif %}>{{ label }}</option>{% endfor %}
   </select></div>
@@ -16,14 +17,14 @@
 </form>
 <div class="card-lite">
   <div class="compact-card-header"><span>{{ summary_title }}</span><span class="data-note">{{ rows|length }} SOs</span></div>
-  <div class="table-responsive"><table class="table table-sm align-top"><thead><tr><th>SO</th><th>Customer / PO</th><th>L/T ↑</th><th>Status</th><th>Latest sync changes</th><th>Pending approval</th><th></th></tr></thead><tbody>
+  <div class="table-responsive"><table class="table table-sm align-top mobile-records review-table" aria-label="Sales orders for review"><thead><tr><th>SO</th><th>Customer / PO</th><th>Ship date ↑</th><th>Status</th><th>Latest sync changes</th><th>Pending approval</th><th><span class="visually-hidden">Review order</span></th></tr></thead><tbody>
     {% for entry in rows %}{% set row=entry.order %}
-    <tr><td class="fw-semibold">{{ row.sales_order }}</td><td>{{ entry.source.customer or '' }}<br><small>{{ entry.source.customer_po or '' }}</small></td>
-      <td>{{ entry.source.ship_date or '—' }}</td>
-      <td>{{ entry.status_label }}</td>
-      <td>{% for change in entry.sync_changes %}<div>{{ change }}</div>{% else %}<span class="data-note">No changes since prior sync</span>{% endfor %}</td>
-      <td>{% if row.synced_at and not row.google_present %}<span class="data-note">No approval required — excluded</span>{% else %}{% for change in entry.changes %}<div>{{ change }}</div>{% else %}<span class="data-note">{{ 'Approval required' if not row.approved_at else 'Reapproval required' if not row.is_active else 'No pending source changes' }}</span>{% endfor %}{% endif %}</td>
-      <td><a class="btn btn-outline-secondary" href="{{ url_for('main.so_review_detail', sales_order=row.sales_order) }}">{{ 'View' if row.synced_at and not row.google_present else 'Review / reorder' }}</a></td></tr>
+    <tr><td class="fw-semibold">{{ row.sales_order }}</td><td data-label="Customer / PO">{{ entry.source.customer or '' }}<br><small>{{ entry.source.customer_po or '' }}</small></td>
+      <td data-label="Ship date">{{ entry.source.ship_date or '—' }}</td>
+      <td data-label="Status"><span class="review-status">{{ entry.status_label }}</span></td>
+      <td data-label="Latest sync changes">{% for change in entry.sync_changes %}<div>{{ change }}</div>{% else %}<span class="data-note">No changes since prior sync</span>{% endfor %}</td>
+      <td data-label="Pending approval">{% if row.synced_at and not row.google_present %}<span class="data-note">No approval required — excluded</span>{% else %}{% for change in entry.changes %}<div>{{ change }}</div>{% else %}<span class="data-note">{{ 'Approval required' if not row.approved_at else 'Reapproval required' if not row.is_active else 'No pending source changes' }}</span>{% endfor %}{% endif %}</td>
+      <td><a class="btn btn-outline-secondary" href="{{ url_for('main.so_review_detail', sales_order=row.sales_order) }}">{{ 'View' if row.synced_at and not row.google_present else 'Review order' }}</a></td></tr>
     {% else %}<tr><td colspan="7" class="text-muted text-center">No SOs match this status/search. Sync Google Sheet or select All statuses to review other SOs.</td></tr>{% endfor %}
   </tbody></table></div>
 </div>
