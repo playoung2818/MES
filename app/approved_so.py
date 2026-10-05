@@ -8,7 +8,7 @@ from sqlalchemy import text
 from .models import db, ApprovedSO, SalesOrder
 from .production_schedule import parse_production_date, save_production_date
 
-FIELDS = ('customer', 'customer_po', 'ship_date', 'remark', 'inventory_site')
+FIELDS = ('customer', 'customer_po', 'ship_date', 'terms', 'inventory_site')
 ITEM_FIELDS = ('item', 'quantity', 'configuration', 'inventory_site')
 
 
@@ -158,23 +158,35 @@ def _normalize_review_rows(item_rows):
     if not isinstance(item_rows, list):
         raise ValueError('Invalid review item rows.')
     rows, seen = [], set()
-    for raw in item_rows:
+    for index, raw in enumerate(item_rows, start=1):
         if not isinstance(raw, dict):
-            raise ValueError('Invalid review item row.')
+            raise ValueError(f'Row {index}: invalid review item row.')
         item_id = str(raw.get('id') or '').strip()
         product = str(raw.get('item') or '').strip()
-        if not item_id or item_id in seen or not product:
-            raise ValueError('Every reviewed row needs a unique id and item.')
+        configuration = str(raw.get('configuration') or '').strip()
+        site = str(raw.get('inventory_site') or '').strip()
+        # Ignore a manually inserted row that was left blank.
+        if (not item_id or item_id.startswith('manual-')) and not product and not configuration and not site:
+            continue
+        if not product:
+            raise ValueError(f'Row {index}: item is required. Delete blank added rows before pushing.')
+        if not item_id:
+            item_id = f'manual-{uuid4()}'
+        if item_id in seen:
+            if item_id.startswith('manual-'):
+                item_id = f'manual-{uuid4()}'
+            else:
+                raise ValueError(f'Row {index}: duplicate Google row id. Reload the review page and try again.')
         try:
             quantity = int(str(raw.get('quantity') or '').strip())
         except ValueError:
-            raise ValueError(f'{product}: quantity must be a nonnegative whole number.')
+            raise ValueError(f'Row {index} ({product}): quantity must be a nonnegative whole number.')
         if quantity < 0:
-            raise ValueError(f'{product}: quantity must be a nonnegative whole number.')
+            raise ValueError(f'Row {index} ({product}): quantity must be a nonnegative whole number.')
         seen.add(item_id)
         rows.append({'id': item_id, 'item': product, 'quantity': quantity,
-                     'configuration': str(raw.get('configuration') or '').strip(),
-                     'inventory_site': str(raw.get('inventory_site') or '').strip()})
+                     'configuration': configuration,
+                     'inventory_site': site})
     return rows
 
 
@@ -221,7 +233,7 @@ def approve(row, order_ids, source_revision, revision, retire=False, production_
         row.customer = incoming['customer']
         row.customer_po = incoming['customer_po']
         row.items = [deepcopy(item) for item in approved_items]
-        row.metadata_fields = {key: incoming.get(key, '') for key in ('ship_date', 'remark', 'inventory_site')}
+        row.metadata_fields = {key: incoming.get(key, '') for key in ('ship_date', 'terms', 'inventory_site')}
         row.is_active = True
     row.approved_snapshot = deepcopy(row.latest_snapshot)
     row.approved_at = datetime.now(timezone.utc).replace(tzinfo=None)

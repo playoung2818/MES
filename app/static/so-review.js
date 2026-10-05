@@ -17,13 +17,19 @@
       dirty = true;
     });
   }
+  function fieldValue(row, selector, label) {
+    const field = row.querySelector(selector);
+    if (field) return field.value || '';
+    const cell = row.querySelector(`[data-label="${label}"]`);
+    return cell ? cell.textContent.trim() : '';
+  }
   function rowData(row) {
     return {
       id: row.dataset.itemId,
-      item: row.querySelector('.review-item')?.value || '',
-      quantity: row.querySelector('.review-quantity')?.value || '',
-      configuration: row.querySelector('.review-configuration')?.value || '',
-      inventory_site: row.querySelector('.review-site')?.value || ''
+      item: fieldValue(row, '.review-item', 'Product'),
+      quantity: fieldValue(row, '.review-quantity', 'Qty'),
+      configuration: fieldValue(row, '.review-configuration', 'Configuration'),
+      inventory_site: fieldValue(row, '.review-site', 'Site')
     };
   }
   function update(changed = true) {
@@ -39,7 +45,6 @@
     row.innerHTML = '<td><span class="approval-drag" draggable="true" title="Drag to reorder">☰</span> <span class="approval-number"></span></td>' +
       '<td><input class="form-control form-control-sm review-item" required></td>' +
       '<td><input class="form-control form-control-sm review-quantity" type="number" min="0" step="1" value="1" required></td>' +
-      '<td><textarea class="form-control form-control-sm review-configuration" rows="1"></textarea></td>' +
       '<td><input class="form-control form-control-sm review-site"></td>' +
       '<td><button type="button" class="btn btn-outline-secondary approval-up" aria-label="Move row up">↑</button> <button type="button" class="btn btn-outline-secondary approval-down" aria-label="Move row down">↓</button> <button type="button" class="btn btn-outline-danger approval-delete" aria-label="Delete manual row">×</button></td>';
     body.appendChild(row);
@@ -85,7 +90,15 @@
     JSON.parse(document.getElementById('sheet-item-order').textContent).forEach(id => { if (rows.get(id)) body.appendChild(rows.get(id)); });
     update();
   });
-  document.getElementById('so-approval-form').addEventListener('submit', () => { update(false); dirty = false; });
+  document.getElementById('so-approval-form').addEventListener('submit', () => {
+    [...body.children].forEach(row => {
+      const isManual = row.dataset.itemId.startsWith('manual-');
+      const data = rowData(row);
+      if (isManual && !data.item.trim() && !data.configuration.trim() && !data.inventory_site.trim()) row.remove();
+    });
+    update(false);
+    dirty = false;
+  });
   window.addEventListener('beforeunload', event => {
     if (dirty) { event.preventDefault(); event.returnValue = ''; }
   });

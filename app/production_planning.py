@@ -28,10 +28,10 @@ def load_orders():
             if site.strip().casefold() == 'drop ship':
                 continue
             rows.append({'QB Num': source['sales_order'], 'Customer': source.get('customer') or '',
-                         'Customer PO': source.get('customer_po') or '', 'Remark': source.get('remark') or '',
+                         'Customer PO': source.get('customer_po') or '', 'Terms': source.get('terms') or '',
                          'Item': item['item'], 'Qty': item['quantity'],
                          'Lead Time': source.get('ship_date') or '', 'Inventory Site': site})
-    frame = pd.DataFrame(rows, columns=['QB Num', 'Customer', 'Customer PO', 'Remark',
+    frame = pd.DataFrame(rows, columns=['QB Num', 'Customer', 'Customer PO', 'Terms',
                                        'Item', 'Qty', 'Lead Time', 'Inventory Site'])
     frame['Lead Time'] = pd.to_datetime(frame['Lead Time'], errors='coerce', format='mixed')
     return frame

@@ -43,7 +43,7 @@
                           <span class="review-row">
                             <span>
                               <span class="review-main d-block">
-                                {{ so.qb_num }}{% if so.customer %} | {{ so.customer }}{% endif %}{% if so.remark %} | <span class="order-remark">{{ so.remark }}</span>{% endif %}
+                                {{ so.qb_num }}{% if so.customer %} | {{ so.customer }}{% endif %}{% if so.terms %} | <span class="order-terms">{{ so.terms }}</span>{% endif %}
                               </span>
                               {% if so.ship_date %}<span class="review-meta d-block">Ship: {{ so.ship_date }}</span>{% endif %}
                               <span class="review-meta d-block">{{ so.first_item or 'No item found' }}</span>
@@ -89,7 +89,7 @@
                     <div class="large-so">
                       <div>
                         <div class="large-so-main">
-                          {{ so.qb_num }}{% if so.customer %} | {{ so.customer }}{% endif %}{% if so.remark %} | <span class="order-remark">{{ so.remark }}</span>{% endif %} | {{ so.family }}
+                          {{ so.qb_num }}{% if so.customer %} | {{ so.customer }}{% endif %}{% if so.terms %} | <span class="order-terms">{{ so.terms }}</span>{% endif %} | {{ so.family }}
                         </div>
                         {% if so.ship_date %}<div class="large-so-meta">Ship: {{ so.ship_date }}</div>{% endif %}
                         <div class="large-so-meta">{{ so.first_item }}</div>
@@ -128,7 +128,7 @@
                 <div class="order-line {% if o.wo_status == 'Picked' %}order-picked{% else %}order-na{% endif %}" data-wo="{{ o.qb_num }}" data-return-production-date="{{ o.production_date }}" data-ship-date="{{ o.ship_date }}" data-schedule-units="{{ o.remaining_units_str }}" data-schedule-hours="{{ o.labor_hours if o.labor_hours is not none else '' }}">
                   <div class="me-2">
                     <div class="order-main">
-                      {{ o.qb_num }}{% if o.customer %} | {{ o.customer }}{% endif %}{% if o.remark %} | <span class="order-remark">{{ o.remark }}</span>{% endif %}
+                      {{ o.qb_num }}{% if o.customer %} | {{ o.customer }}{% endif %}{% if o.terms %} | <span class="order-terms">{{ o.terms }}</span>{% endif %}
                       {% if o.ship_date %}<span class="order-ship-date">Ship: {{ o.ship_date }}</span>{% endif %}
                     </div>
                     {% include 'planning_pick_status.html' %}
@@ -166,7 +166,7 @@
                   <div class="order-line {% if o.wo_status == 'Picked' %}order-picked{% else %}order-na{% endif %}{% if o.lt_matches_production_date %} lt-same-day{% endif %}" data-wo="{{ o.qb_num }}" data-production-date="{{ group.date }}" data-ship-date="{{ o.ship_date }}" data-schedule-units="{{ o.remaining_units_str }}" data-schedule-hours="{{ o.labor_hours if o.labor_hours is not none else '' }}">
                     <div class="me-2">
                       <div class="order-main">
-                        {{ o.qb_num }}{% if o.customer %} | {{ o.customer }}{% endif %}{% if o.remark %} | <span class="order-remark">{{ o.remark }}</span>{% endif %}
+                        {{ o.qb_num }}{% if o.customer %} | {{ o.customer }}{% endif %}{% if o.terms %} | <span class="order-terms">{{ o.terms }}</span>{% endif %}
                         {% if o.ship_date %}<span class="order-ship-date">Ship: {{ o.ship_date }}</span>{% endif %}
                       </div>
                       {% include 'planning_pick_status.html' %}
@@ -219,7 +219,7 @@
           <div class="unassigned-lt-row order-line {% if o.wo_status == 'Picked' %}order-picked{% else %}order-na{% endif %}" data-wo="{{ o.qb_num }}" data-ship-date="{{ o.lead_time }}" data-schedule-units="{{ o.remaining_qty_str }}" data-schedule-hours="{{ o.labor_hours if o.labor_hours is not none else '' }}">
             <div>
               <div class="unassigned-lt-main">
-                {{ o.qb_num }}{% if o.customer %} | {{ o.customer }}{% endif %}{% if o.remark %} | <span class="order-remark">{{ o.remark }}</span>{% endif %}
+                {{ o.qb_num }}{% if o.customer %} | {{ o.customer }}{% endif %}{% if o.terms %} | <span class="order-terms">{{ o.terms }}</span>{% endif %}
                 {% if o.lead_time %}<span class="order-ship-date">Ship: {{ o.lead_time }}</span>{% endif %}
               </div>
               {% include 'planning_pick_status.html' %}
