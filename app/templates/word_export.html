@@ -4,12 +4,14 @@
   <span class="data-note">{% if editing %}Existing WO number — unchanged on revision.{% else %}Estimated, not reserved. Final number is assigned when you save the work order.{% endif %}</span>
 </div>
 {% endif %}
+{% if not preview_token %}
 <div class="word-copy-toolbar no-print">
   <span class="data-note">Paste in Word with <b>Keep Source Formatting</b>. Copy each area separately.</span>
   <span id="word-copy-status" role="status" aria-live="polite" class="data-note"></span>
 </div>
+{% endif %}
 <div class="word-copy-area">
-  <div class="data-toolbar no-print"><strong>1. Customer details</strong><button type="button" class="btn btn-outline-secondary" data-copy-values-only data-copy-word="word-header">Copy header for Word</button></div>
+  <div class="data-toolbar no-print"><strong>1. Customer details</strong>{% if not preview_token %}<button type="button" class="btn btn-outline-secondary" data-copy-values-only data-copy-word="word-header">Copy header for Word</button>{% endif %}</div>
   <div id="word-header" style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#000;background:#fff;">
     <table style="border-collapse:collapse;width:100%;font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#000;" border="1" cellpadding="5">
       <tbody>
@@ -21,7 +23,7 @@
   </div>
 </div>
 <div class="word-copy-area">
-  <div class="data-toolbar no-print"><strong>2. Configuration Details and Picking</strong><button type="button" class="btn btn-outline-secondary" data-copy-table-data-only data-copy-word="word-picking">Copy picking table for Word</button></div>
+  <div class="data-toolbar no-print"><strong>2. Configuration Details and Picking</strong>{% if not preview_token %}<button type="button" class="btn btn-outline-secondary" data-copy-table-data-only data-copy-word="word-picking">Copy picking table for Word</button>{% endif %}</div>
   <div id="word-picking" style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#000;background:#fff;">
     <p style="margin:0 0 6pt;font-weight:bold;">Configuration Details and Picking</p>
     <table style="border-collapse:collapse;width:100%;font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#000;" border="1" cellpadding="5">
