@@ -1,7 +1,7 @@
 <tr>
-  <td><input class="form-control" name="item" value="{{ line.item }}" placeholder="Product number" maxlength="200" required aria-label="Item"></td>
-  <td><input class="form-control" type="number" name="quantity" value="{{ line.quantity }}" min="0" step="1" required aria-label="Qty"></td>
-  <td><textarea class="form-control font-monospace" name="serials" rows="3" aria-label="Serial Numbers" placeholder="Scan / paste serial numbers">{{ line.serial_text if line.serial_text is defined else line.serials|join('\n') }}</textarea></td>
-  <td><textarea class="form-control" name="notes" rows="3" aria-label="Notes/Deviation">{{ line.notes }}</textarea></td>
+  <td data-label="Product"><input class="form-control" name="item" value="{{ line.item }}" placeholder="Product number" maxlength="200" required aria-label="Item"></td>
+  <td data-label="Qty"><input class="form-control" data-entry-quantity type="number" name="quantity" value="{{ line.quantity }}" min="0" step="1" required aria-label="Qty"></td>
+  <td data-label="Serial numbers"><textarea class="form-control font-monospace serial-input" name="serials" rows="5" aria-label="Serial numbers" placeholder="Paste one serial per line" spellcheck="false">{{ line.serial_text if line.serial_text is defined else line.serials|join('\n') }}</textarea><div class="serial-feedback" hidden aria-live="polite"></div></td>
+  <td data-label="Notes / deviation"><textarea class="form-control" name="notes" rows="5" aria-label="Notes or deviations" placeholder="Optional notes">{{ line.notes }}</textarea></td>
   <td><button type="button" class="btn btn-outline-secondary remove-row" aria-label="Remove item">Remove</button></td>
 </tr>

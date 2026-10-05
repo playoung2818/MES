@@ -3,20 +3,18 @@
 <div class="planning-workspace">
 <input type="hidden" id="planning-csrf" value="{{ planning_csrf }}">
 {% if error %}<div class="alert alert-warning">{{ error }}</div>{% endif %}
-<p class="data-note">Source: approved_work_orders data and your chosen item order. Picked status and quantities come from saved WO Details (including partial WOs). Schedule saves are shared with MRP; they do not create WOs. Past dates do not confirm completion.</p>
-
-  <div class="d-flex justify-content-between align-items-center mb-3">
+  <header class="workspace-header">
     <div>
-      <div class="workspace-title">Production Planning</div>
+      <h1 class="workspace-title">Production planning</h1>
       <div class="text-muted small">Loaded {{ loaded_at }}</div>
     </div>
-    <div class="d-flex gap-2 flex-wrap justify-content-end">
+    <div class="workspace-header-actions">
       <button id="schedule-save" class="btn btn-sm btn-primary" type="button" disabled>Save Schedule</button>
       <span id="schedule-save-msg" class="schedule-save-msg" role="status" aria-live="polite"></span>
-      <a class="btn btn-sm btn-outline-success" href="/production_planning">Recalculate Labor</a>
-      <a class="btn btn-sm btn-outline-primary" href="/production_planning">Reload</a>
+      <a class="btn btn-outline-secondary" href="{{ url_for('main.so_review_list') }}">Review orders ({{ pending_so_count }})</a>
+      <a class="btn btn-outline-secondary" href="{{ url_for('main.production_planning') }}">Refresh plan</a>
     </div>
-  </div>
+  </header>
 
   {% if pending_so_count %}<div class="alert alert-info">{{ pending_so_count }} SO(s) need review. Only approved, active SOs are used for planning and new WO generation.</div>{% endif %}
   {% if capacity_weeks or passed_lt_orders %}
@@ -81,7 +79,7 @@
               {% endfor %}
             </div>
             <div class="capacity-bar-area mb-3">
-              <div class="capacity-track">
+              <div class="capacity-track" tabindex="0" role="img" aria-label="{{ week.used_hours_str }} of {{ week.capacity_hours_str }} labor hours used; focus to show large orders">
                 <div class="capacity-fill capacity-{{ week.status }}" style="width:{{ week.used_pct }}%"></div>
               </div>
               <div class="large-so-panel">
@@ -241,6 +239,7 @@
   {% endif %}
   
 
+<p class="data-note planning-source-note">Planning uses approved sales orders and the reviewed item order. Picked quantities come from saved work orders. Schedule saves are shared with MRP; they do not create work orders. Past dates do not confirm completion.</p>
 </div>
 <script src="{{ url_for('static', filename='planning.js') }}?v=2" defer></script>
 {% endblock %}

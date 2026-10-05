@@ -92,7 +92,8 @@ def so_detail(sales_order=None, wo_id=None):
     release_number = saved.release_number if saved else max((o.release_number for o in siblings), default=0)+1
     target_id = saved.id if saved else str(uuid4())
     context = dict(sales_order=sales_order, order=order, lines=order.items, releases=siblings,
-                   release_number=release_number, editing=saved, remaining=remaining, **word_context(saved))
+                   release_number=release_number, editing=saved, remaining=remaining,
+                   ship_date=source.get('ship_date') if source else None, **word_context(saved))
     if request.method == 'POST':
         try:
             if request.form.get('action') == 'push':
