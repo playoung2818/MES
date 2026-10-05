@@ -322,25 +322,6 @@ against which to validate remaining allocation. Actual serial uniqueness and
 nonnegative integer quantity validation still apply. `NA` is preserved and exempt
 from duplicate checks. Changing a preview requires generating a new table before push.
 
-## Environment
-
-Configure `.env`:
-
-```text
-FLASK_APP=run.py
-FLASK_DEBUG=1
-SECRET_KEY=change-me
-
-GOOGLE_CREDENTIALS_PATH=D:\OneDrive - neousys-tech\Desktop\ZC\pdfwo-466115-734096e1cef8.json
-GOOGLE_SHEET_NAME=PDF_WO
-GOOGLE_WORKSHEET_NAME=Open Sales Order
-
-WO_DB_URL=postgresql://user:password@host:5432/database
-```
-
-`WO_DB_URL` takes priority over `DATABASE_URL`.
-If neither is set, the app falls back to local SQLite:
-
 ```text
 instance/wo_generator.db
 ```
@@ -362,7 +343,7 @@ python run.py
 Open:
 
 ```text
-http://localhost:5000
+http://localhost:5001
 ```
 
 ## Google Sheet read

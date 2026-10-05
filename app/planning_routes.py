@@ -118,7 +118,8 @@ def register_routes(bp):
                         int(request.form['source_revision']), int(request.form['revision']),
                         retire=request.form.get('action') == 'retire',
                         production_date=request.form.get('production_date', '').strip() or None,
-                        updated_by=request.remote_addr)
+                        updated_by=request.remote_addr,
+                        item_rows=request.form.get('item_rows') or None)
                 flash('SO retired from new WO generation.' if not row.is_active else
                       'Approved SO published. Item order and any assigned production date are saved.', 'success')
                 return redirect(url_for('main.so_review_list'))

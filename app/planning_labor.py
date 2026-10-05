@@ -140,7 +140,7 @@ def _build_production_order_row(
     first = so_group.iloc[0]
     qb_key = str(qb_num).strip()
     customer = first.get("Customer") or first.get("Name") or ""
-    terms = str(first.get("Terms") or "").strip()
+    remark = str(first.get("Remark") or "").strip()
     qty_val = first.get("Qty")
     try:
         qty_float = float(qty_val)
@@ -195,7 +195,7 @@ def _build_production_order_row(
     line = f"{item_name} x {qty_str}".strip()
     return {
         "qb_num": str(qb_num),
-        "terms": terms,
+        "remark": remark,
         "customer": customer,
         "line": line,
         "qty": qty_float,

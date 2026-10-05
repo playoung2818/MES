@@ -8,9 +8,7 @@ def create_app():
     load_dotenv()
     app = Flask(__name__, instance_relative_config=True)
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-change-me")
-    app.config["SQLALCHEMY_DATABASE_URI"] = (
-        os.getenv("WO_DB_URL") or os.getenv("DATABASE_URL") or "sqlite:///wo_generator.db"
-    )
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_DSN")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.init_app(app)
 

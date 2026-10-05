@@ -11,11 +11,12 @@
   <input type="hidden" name="source_revision" value="{{ order.source_revision }}">
   <input type="hidden" name="revision" value="{{ order.revision }}">
   <input type="hidden" name="item_order" id="approved-item-order" value="{{ items|map(attribute='id')|join(',') }}">
+  <input type="hidden" name="item_rows" id="approved-item-rows">
     <div class="metric-grid">
       <div class="metric"><div class="label">Customer</div><div class="value">{{ review_source.customer or '' }}</div></div>
       <div class="metric"><div class="label">Customer PO #</div><div class="value">{{ review_source.customer_po or '' }}</div></div>
       <div class="metric"><div class="label">{{ 'L/T (Google Sheet)' if order.google_present else 'L/T (last published)' }}</div><div class="value">{{ review_source.ship_date or 'Not assigned' }}</div></div>
-      <div class="metric"><div class="label">Terms</div><div class="value">{{ review_source.terms or '' }}</div></div>
+      <div class="metric"><div class="label">Remark</div><div class="value">{{ review_source.remark or '' }}</div></div>
       <div class="metric"><div class="label">Earliest Material Ready Date</div><div class="value">{{ material_readiness.date or material_readiness.message }}</div><div class="data-note mt-1">Read-only · Source: so_material_readiness</div></div>
       {% if order.google_present %}<div class="metric">
         <label class="label" for="review-production-date">Production Date</label>
@@ -26,9 +27,9 @@
     </div>
   {% if order.google_present %}
     {% if duplicates %}<div class="alert alert-warning">Repeated product/configuration/site lines have no unique Google row ID. Matching uses occurrence order; verify quantities and ordering carefully.</div>{% endif %}
-    <div class="data-toolbar"><span class="data-note">Drag the handle or use ↑ / ↓. Previously approved order is preserved; newly added items are appended for review.</span><button class="btn btn-outline-secondary" type="button" id="restore-sheet-order">Use Google item order</button></div>
+    <div class="data-toolbar"><span class="data-note">Drag the handle or use ↑ / ↓. Previously approved order is preserved; newly added items are appended for review.</span><div class="d-flex gap-2"><button class="btn btn-outline-primary" type="button" id="add-review-row">Add row</button><button class="btn btn-outline-secondary" type="button" id="restore-sheet-order">Use Google item order</button></div></div>
     <div class="card-lite"><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Order</th><th>Item</th><th>Qty</th><th>Configuration</th><th>Site</th><th></th></tr></thead><tbody id="approved-items">
-      {% for item in items %}<tr data-item-id="{{ item.id }}"><td><span class="approval-drag" draggable="true" title="Drag to reorder">☰</span> <span class="approval-number">{{ loop.index }}</span></td><td>{{ item.item }}</td><td>{{ item.quantity }}</td><td style="white-space:pre-wrap">{{ item.configuration }}</td><td>{{ item.inventory_site }}</td><td><button type="button" class="btn btn-outline-secondary approval-up" aria-label="Move {{ item.item }} up">↑</button> <button type="button" class="btn btn-outline-secondary approval-down" aria-label="Move {{ item.item }} down">↓</button></td></tr>{% endfor %}
+      {% for item in items %}<tr data-item-id="{{ item.id }}"><td><span class="approval-drag" draggable="true" title="Drag to reorder">☰</span> <span class="approval-number">{{ loop.index }}</span></td><td><input class="form-control form-control-sm review-item" value="{{ item.item }}" {% if not item.id|string|truncate(7, True, '') == 'manual-' %}readonly{% endif %}></td><td><input class="form-control form-control-sm review-quantity" type="number" min="0" step="1" value="{{ item.quantity }}" {% if not item.id|string|truncate(7, True, '') == 'manual-' %}readonly{% endif %}></td><td><textarea class="form-control form-control-sm review-configuration" rows="1" {% if not item.id|string|truncate(7, True, '') == 'manual-' %}readonly{% endif %}>{{ item.configuration }}</textarea></td><td><input class="form-control form-control-sm review-site" value="{{ item.inventory_site }}" {% if not item.id|string|truncate(7, True, '') == 'manual-' %}readonly{% endif %}></td><td><button type="button" class="btn btn-outline-secondary approval-up" aria-label="Move {{ item.item }} up">↑</button> <button type="button" class="btn btn-outline-secondary approval-down" aria-label="Move {{ item.item }} down">↓</button> <button type="button" class="btn btn-outline-danger approval-delete" aria-label="Delete manual row" {% if not item.id|string|truncate(7, True, '') == 'manual-' %}hidden{% endif %}>×</button></td></tr>{% endfor %}
     </tbody></table></div></div>
     <script type="application/json" id="sheet-item-order">{{ order.latest_snapshot['items']|map(attribute='id')|list|tojson }}</script>
     <div class="workspace-header-actions mt-3"><button class="btn btn-primary" name="action" value="approve">Push Approved SO</button></div>
@@ -39,5 +40,5 @@
   {% endif %}
 </form>
 {% if order.items %}<details class="card-lite mt-3"><summary class="p-2">{{ 'Current approved item order' if order.approved_at else 'Preserved legacy items (not approved)' }}</summary><ol>{% for item in order.items %}<li>{{ item.item }} — Qty {{ item.quantity }}</li>{% endfor %}</ol></details>{% endif %}
-<script src="{{ url_for('static', filename='so-review.js') }}?v=2" defer></script>
+<script src="{{ url_for('static', filename='so-review.js') }}?v=3" defer></script>
 {% endblock %}

@@ -1,13 +1,14 @@
 """Google snapshots -> reviewed SOs, using the approved_work_orders table only."""
 from collections import defaultdict, deque
 from copy import deepcopy
+import json
 from datetime import datetime, timezone
 from uuid import UUID, uuid4
 from sqlalchemy import text
 from .models import db, ApprovedSO, SalesOrder
 from .production_schedule import parse_production_date, save_production_date
 
-FIELDS = ('customer', 'customer_po', 'ship_date', 'terms', 'inventory_site')
+FIELDS = ('customer', 'customer_po', 'ship_date', 'remark', 'inventory_site')
 ITEM_FIELDS = ('item', 'quantity', 'configuration', 'inventory_site')
 
 
@@ -138,14 +139,46 @@ def sync_snapshots(result):
 
 
 def review_items(row):
-    """Keep approved manual order while merging current Google content for review."""
+    """Keep approved/manual order while merging current Google content for review."""
     latest = deepcopy((row.latest_snapshot or {}).get('items', []))
     by_id = {item['id']: item for item in latest}
-    ordered = [by_id.pop(item.get('id')) for item in row.items or [] if item.get('id') in by_id]
+    ordered = []
+    for item in row.items or []:
+        item_id = item.get('id')
+        if item_id in by_id:
+            ordered.append(by_id.pop(item_id))
+        elif str(item_id or '').startswith('manual-'):
+            ordered.append(deepcopy(item))
     return ordered + [item for item in latest if item['id'] in by_id]
 
 
-def approve(row, order_ids, source_revision, revision, retire=False, production_date=None, updated_by=None):
+def _normalize_review_rows(item_rows):
+    if isinstance(item_rows, str):
+        item_rows = json.loads(item_rows or '[]')
+    if not isinstance(item_rows, list):
+        raise ValueError('Invalid review item rows.')
+    rows, seen = [], set()
+    for raw in item_rows:
+        if not isinstance(raw, dict):
+            raise ValueError('Invalid review item row.')
+        item_id = str(raw.get('id') or '').strip()
+        product = str(raw.get('item') or '').strip()
+        if not item_id or item_id in seen or not product:
+            raise ValueError('Every reviewed row needs a unique id and item.')
+        try:
+            quantity = int(str(raw.get('quantity') or '').strip())
+        except ValueError:
+            raise ValueError(f'{product}: quantity must be a nonnegative whole number.')
+        if quantity < 0:
+            raise ValueError(f'{product}: quantity must be a nonnegative whole number.')
+        seen.add(item_id)
+        rows.append({'id': item_id, 'item': product, 'quantity': quantity,
+                     'configuration': str(raw.get('configuration') or '').strip(),
+                     'inventory_site': str(raw.get('inventory_site') or '').strip()})
+    return rows
+
+
+def approve(row, order_ids, source_revision, revision, retire=False, production_date=None, updated_by=None, item_rows=None):
     target = parse_production_date(production_date) if production_date is not None else None
     if retire and target is not None:
         raise ValueError('Cannot assign production to a retired SO.')
@@ -164,23 +197,31 @@ def approve(row, order_ids, source_revision, revision, retire=False, production_
             raise ValueError('SO no longer exists in Google and is excluded from new WO generation.')
         incoming = row.latest_snapshot
         by_id = {item['id']: item for item in incoming['items']}
-        if len(order_ids) != len(by_id) or set(order_ids) != set(by_id):
-            raise ValueError('Item list changed. Reload before approving.')
+        if item_rows is None:
+            if len(order_ids) != len(by_id) or set(order_ids) != set(by_id):
+                raise ValueError('Item list changed. Reload before approving.')
+            approved_items = [deepcopy(by_id[key]) for key in order_ids]
+        else:
+            approved_items = _normalize_review_rows(item_rows)
+            google_ids = set(by_id)
+            approved_google_ids = {item['id'] for item in approved_items if not str(item['id']).startswith('manual-')}
+            if approved_google_ids != google_ids:
+                raise ValueError('Google item list changed. Reload before approving.')
         # Never silently approve quantities below already saved WO allocations.
         saved = defaultdict(int)
         for wo in SalesOrder.query.filter_by(sales_order=row.sales_order):
             for item in wo.items:
                 saved[item['item'].strip().casefold()] += int(item.get('quantity', 0))
         planned = defaultdict(int)
-        for item in incoming['items']:
+        for item in approved_items:
             planned[item['item'].strip().casefold()] += item['quantity']
         for product, quantity in saved.items():
             if quantity > planned.get(product, 0):
                 raise ValueError(f'{product}: saved WOs allocate {quantity}, but Google now has {planned.get(product, 0)}. Resolve the saved WO quantities first.')
         row.customer = incoming['customer']
         row.customer_po = incoming['customer_po']
-        row.items = [deepcopy(by_id[key]) for key in order_ids]
-        row.metadata_fields = {key: incoming[key] for key in ('ship_date', 'terms', 'inventory_site')}
+        row.items = [deepcopy(item) for item in approved_items]
+        row.metadata_fields = {key: incoming.get(key, '') for key in ('ship_date', 'remark', 'inventory_site')}
         row.is_active = True
     row.approved_snapshot = deepcopy(row.latest_snapshot)
     row.approved_at = datetime.now(timezone.utc).replace(tzinfo=None)

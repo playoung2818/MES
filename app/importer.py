@@ -12,7 +12,7 @@ COLUMN_ALIASES = {
     "quantity": ["quantity", "qty", "order qty", "wo qty"],
     "inventory_site": ["inventory site", "site", "warehouse", "location"],
     "ship_date": ["lead time", "ship date", "shipping date", "l/t"],
-    "terms": ["terms", "term"],
+    "remark": ["remark", "remarks", "note", "notes", "comment", "comments"],
 }
 
 def _norm(value):
@@ -69,7 +69,7 @@ def _read_frames(frames):
                 order["customer"] = value("customer")
             if value("customer_po") is not None:
                 order["customer_po"] = value("customer_po")
-            for field in ('ship_date', 'terms', 'inventory_site'):
+            for field in ('ship_date', 'remark', 'inventory_site'):
                 if value(field) is not None:
                     order[field] = value(field)
             order["items"].append({"item": product, "quantity": quantity,
