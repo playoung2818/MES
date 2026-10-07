@@ -17,16 +17,25 @@
 </form>
 <div class="card-lite">
   <div class="compact-card-header"><span>{{ summary_title }}</span><span class="data-note">{{ rows|length }} SOs</span></div>
-  <div class="table-responsive"><table class="table table-sm align-top mobile-records review-table" aria-label="Sales orders for review"><thead><tr><th>SO</th><th>Customer / PO</th><th>Ship date ↑</th><th>Status</th><th>Latest sync changes</th><th>Pending approval</th><th><span class="visually-hidden">Review order</span></th></tr></thead><tbody>
+  <div class="table-responsive"><table class="table table-sm align-top mobile-records review-table" aria-label="Sales orders for review"><thead><tr><th>SO</th><th>Customer / PO</th><th>Ship date ↑</th><th>Status</th><th>Pending approval</th><th><span class="visually-hidden">Review order</span></th></tr></thead><tbody>
     {% for entry in rows %}{% set row=entry.order %}
     <tr><td class="fw-semibold">{{ row.sales_order }}</td><td data-label="Customer / PO">{{ entry.source.customer or '' }}<br><small>{{ entry.source.customer_po or '' }}</small></td>
-      <td data-label="Ship date">{{ entry.source.ship_date or '—' }}</td>
+      <td data-label="Ship date">{% if entry.highlight_ship_date %}<span class="badge text-bg-warning text-dark">{{ entry.source.ship_date }}</span>{% else %}{{ entry.source.ship_date or '—' }}{% endif %}</td>
       <td data-label="Status"><span class="review-status">{{ entry.status_label }}</span></td>
-      <td data-label="Latest sync changes">{% for change in entry.sync_changes %}<div>{{ change }}</div>{% else %}<span class="data-note">No changes since prior sync</span>{% endfor %}</td>
       <td data-label="Pending approval">{% if row.synced_at and not row.google_present %}<span class="data-note">No approval required — excluded</span>{% else %}{% for change in entry.changes %}<div>{{ change }}</div>{% else %}<span class="data-note">{{ 'Approval required' if not row.approved_at else 'Reapproval required' if not row.is_active else 'No pending source changes' }}</span>{% endfor %}{% endif %}</td>
-      <td><a class="btn btn-outline-secondary" href="{{ url_for('main.so_review_detail', sales_order=row.sales_order) }}">{{ 'View' if row.synced_at and not row.google_present else 'Review order' }}</a></td></tr>
-    {% else %}<tr><td colspan="7" class="text-muted text-center">No SOs match this status/search. Sync Google Sheet or select All statuses to review other SOs.</td></tr>{% endfor %}
+      <td><a class="btn btn-outline-secondary" href="{{ url_for('main.so_review_detail', sales_order=row.sales_order, next=request.full_path) }}">Review order</a>
+        {% if selected_status == 'changed' %}
+        <form method="post" action="{{ url_for('main.so_review_detail', sales_order=row.sales_order) }}" class="d-inline" onsubmit="return window.confirm(this.dataset.confirm)" data-confirm="{{ 'Approve all pending changes to this sales order?' if entry.has_production_date else 'No Production Date is assigned. Approve all pending changes without assigning a Production Date?' }}">
+          <input type="hidden" name="csrf_token" value="{{ planning_csrf }}">
+          <input type="hidden" name="source_revision" value="{{ row.source_revision }}">
+          <input type="hidden" name="revision" value="{{ row.revision }}">
+          <input type="hidden" name="back_url" value="{{ request.full_path }}">
+          <button class="btn btn-primary" name="action" value="quick_approve">Approve</button>
+        </form>
+        {% endif %}
+      </td></tr>
+    {% else %}<tr><td colspan="6" class="text-muted text-center">No SOs match this status/search. Sync Google Sheet or select All statuses to review other SOs.</td></tr>{% endfor %}
   </tbody></table></div>
 </div>
-<p class="data-note mt-2">Diffs compare source content, not your manual item order. Removed SOs are automatically excluded from new WO generation without review; stored SO data and saved WOs are preserved. Previous/latest/approved snapshots are retained; this is not an unlimited sync-history log.</p>
+<p class="data-note mt-2">Only SOs present in the latest Google sync are shown. Pending approval compares the latest Google data with the last approved snapshot, not your manual item order. Saved work orders stay unchanged.</p>
 {% endblock %}

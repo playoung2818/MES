@@ -20,12 +20,13 @@
     </tbody></table>
   </div>
 </div>
-<div class="data-toolbar entry-actions no-print"><span class="data-note" data-entry-status role="status" aria-live="polite">{% if show_table %}Preview ready. Review it below before saving.{% else %}Preview first. Nothing is saved until you save the work order.{% endif %}</span><div><button class="btn {{ 'btn-outline-secondary' if show_table else 'btn-primary' }}" name="action" value="preview">Preview work order</button>{% if show_table %}<button class="btn btn-primary" name="action" value="push">{{ 'Save revision' if editing else 'Save work order' }}</button>{% endif %}</div></div>
+<div class="data-toolbar entry-actions no-print"><span class="data-note" data-entry-status role="status" aria-live="polite">{% if show_table %}Preview ready. Review it below before saving.{% else %}Preview first. Nothing is saved until you save the work order.{% endif %}</span><div><button class="btn {{ 'btn-outline-secondary' if show_table else 'btn-primary' }}" name="action" value="preview">Preview work order</button></div></div>
 <p class="data-note">Manual quantities are operator-defined. Approved sales-order allocation limits do not apply.</p>
 {% if show_table %}
 <section id="generated-table" class="card-lite mt-3" aria-label="Work order preview">
   <div class="compact-card-header"><span>Work order preview</span><span class="data-note">Not saved yet</span></div>
   {% with order=data, sales_order=data.sales_order, lines=data['items'] %}{% include 'word_export.html' %}{% endwith %}
+  <div class="workspace-header-actions p-3 no-print"><button class="btn btn-primary" name="action" value="push">{{ 'Save revision' if editing else 'Save work order' }}</button></div>
 </section>
 {% endif %}
 </form>

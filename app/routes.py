@@ -6,12 +6,12 @@ from uuid import uuid4
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for, abort
 from itsdangerous import URLSafeTimedSerializer, BadData
 from sqlalchemy import String, cast, or_
-from .models import db, SalesOrder
+from .models import db, SalesOrder, ApprovedSO
 from .document_numbers import lock_document_numbers, next_document_number
 from .importer import read_google_sheet
 from .wo_service import totals, allocated, new_order, parse_items, validate
 from .word_export import word_context
-from .approved_so import approved_orders, lock_review
+from .approved_so import approved_orders, lock_review, differences
 
 bp = Blueprint('main', __name__)
 from .planning_routes import register_routes
@@ -77,6 +77,10 @@ def so_detail(sales_order=None, wo_id=None):
         sales_order = saved.sales_order
     siblings = SalesOrder.query.filter_by(sales_order=sales_order).order_by(SalesOrder.release_number).all()
     source = _read_approved_orders().get(sales_order)
+    approval = db.session.get(ApprovedSO, sales_order)
+    if not saved and source and approval and differences(approval.approved_snapshot, approval.latest_snapshot):
+        flash('This SO has pending source changes. Reapprove it before creating a new work order or next release.', 'warning')
+        return redirect(url_for('main.so_review_detail', sales_order=sales_order))
     if not source and not saved:
         flash('This SO is unapproved, inactive, or removed from the source; new WO generation is unavailable. Existing WOs can still be revised.', 'warning')
         return render_template('so_unavailable.html', sales_order=sales_order, releases=siblings), 503
@@ -110,6 +114,9 @@ def so_detail(sales_order=None, wo_id=None):
                 lock_review()
                 db.session.expire_all()
                 current_source = _read_approved_orders().get(sales_order)
+                current_approval = db.session.get(ApprovedSO, sales_order)
+                if not saved and current_approval and differences(current_approval.approved_snapshot, current_approval.latest_snapshot):
+                    raise ValueError('This SO has pending source changes. Reapprove it before creating a new work order or next release.')
                 if payload.get('source_revision') != (current_source or {}).get('revision'):
                     raise ValueError('Approved SO changed after preview. Reload and generate the table again.')
                 if not saved and not current_source:
@@ -165,7 +172,7 @@ def so_detail(sales_order=None, wo_id=None):
 @bp.route('/generated')
 def generated_orders():
     q = request.args.get('q', '').strip()
-    orders = _search(SalesOrder.query, q).order_by(SalesOrder.sales_order.desc(), SalesOrder.release_number).all()
+    orders = _search(SalesOrder.query, q).order_by(SalesOrder.document_number.desc()).all()
     return render_template('generated.html', orders=orders, q=q)
 
 

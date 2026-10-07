@@ -2,13 +2,14 @@
 {% block title %}Review {{ order.sales_order }} | NEOUSYS MES{% endblock %}
 {% block content %}
 <div class="workspace-breadcrumb"><a href="{{ url_for('main.so_review_list') }}">Review orders</a><span>/</span><span>{{ order.sales_order }}</span></div>
-<header class="workspace-header"><div><h1 class="workspace-title">{{ order.sales_order }}</h1></div><a class="btn btn-outline-secondary" href="{{ url_for('main.so_review_list') }}">Back to review list</a></header>
+<header class="workspace-header"><div><h1 class="workspace-title">{{ order.sales_order }}</h1></div><a class="btn btn-outline-secondary" href="{{ back_url }}">Back</a></header>
 <div class="row g-3 mb-3">
   <div class="col-md-6"><div class="card-lite"><div class="compact-card-header">Changes since previous sync</div><div class="card-body">{% for change in sync_changes %}<div>{{ change }}</div>{% else %}<span class="data-note">No changes since prior sync.</span>{% endfor %}</div></div></div>
   <div class="col-md-6"><div class="card-lite"><div class="compact-card-header">Changes since last approval</div><div class="card-body">{% for change in pending_changes %}<div>{{ change }}</div>{% else %}<span class="data-note">{{ 'No approval required — excluded from new WO generation.' if order.synced_at and not order.google_present else 'Reapproval required before this reappearing SO can generate new WOs.' if order.google_present and order.approved_at and not order.is_active else 'Legacy SO must be synced and approved.' if not order.approved_at else 'No pending source changes. You can still change the approved item order.' }}</span>{% endfor %}</div></div></div>
 </div>
 <p class="data-note">Synced: {{ order.synced_at or 'Never' }} · Approved: {{ order.approved_at or 'Never' }} · Approved revision: {{ order.revision }}</p>
 <form method="post" id="so-approval-form">
+  <input type="hidden" name="back_url" value="{{ back_url }}">
   <input type="hidden" name="csrf_token" value="{{ planning_csrf }}">
   <input type="hidden" name="source_revision" value="{{ order.source_revision }}">
   <input type="hidden" name="revision" value="{{ order.revision }}">

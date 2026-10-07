@@ -29,13 +29,13 @@
     <table style="border-collapse:collapse;width:100%;font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#000;" border="1" cellpadding="5">
       <thead><tr>{% for heading in ['Product Number', 'QTY', 'S/N', 'Notes/Deviation', 'Check'] %}<th style="border:1px solid #000;text-align:left;font-weight:bold;">{{ heading }}</th>{% endfor %}</tr></thead>
       <tbody>
-      {% for line in lines %}
+      {% for line in lines if line.quantity|int > 0 %}
         <tr>
           <td style="border:1px solid #000;">{{ line.item }}</td>
           <td style="border:1px solid #000;">{{ line.quantity }}</td>
           <td style="border:1px solid #000;">{% for serial in line.serials %}{{ serial }}{% if not loop.last %}<br>{% endif %}{% endfor %}</td>
           <td style="border:1px solid #000;">{% for note_line in (line.notes or '').split('\n') %}{{ note_line }}{% if not loop.last %}<br>{% endif %}{% endfor %}</td>
-          <td style="border:1px solid #000;">&nbsp;</td>
+          <td style="border:1px solid #000;text-align:center;">&#x2610;</td>
         </tr>
       {% endfor %}
         <tr data-copy-exclude><td colspan="5" style="border:1px solid #000;text-align:center;">End of Part</td></tr>

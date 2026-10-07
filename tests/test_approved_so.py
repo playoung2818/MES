@@ -70,6 +70,19 @@ class ApprovedSOTests(unittest.TestCase):
         self.assertEqual(labor_map(load_orders())['SO1']['qty'], 5)
         self.assertEqual(SalesOrder.query.count(), 0)
 
+    def test_changed_so_blocks_new_wo_until_reapproved(self):
+        self.publish(self.sync())
+        self.assertEqual(self.client.get('/so/SO1').status_code, 200)
+        source = deepcopy(self.source)
+        source['terms'] = 'Net60'
+        self.sync(source)
+        response = self.client.get('/so/SO1')
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/production_planning/orders/SO1', response.location)
+        self.assertEqual(SalesOrder.query.count(), 0)
+        self.publish()
+        self.assertEqual(self.client.get('/so/SO1').status_code, 200)
+
     def test_each_sync_diff_and_unapproved_changes_keep_final_order(self):
         row = self.publish(self.sync(), reverse=True)
         ids = [item['id'] for item in row.items]

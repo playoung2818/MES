@@ -39,12 +39,13 @@
 </div>
 <div class="data-toolbar entry-actions no-print">
   <div class="data-note" id="order-status" data-entry-status role="status" aria-live="polite">{% if show_table %}Preview ready. Review it below before saving.{% else %}Preview first. Nothing is saved until you save the work order.{% endif %}</div>
-  <div><button class="btn {{ 'btn-outline-secondary' if show_table else 'btn-primary' }}" name="action" value="preview">Preview work order</button>{% if show_table %}<button class="btn btn-primary" name="action" value="push">{{ 'Save revision' if editing else 'Save work order' }}</button>{% endif %}</div>
+  <div><button class="btn {{ 'btn-outline-secondary' if show_table else 'btn-primary' }}" name="action" value="preview">Preview work order</button></div>
 </div>
 {% if show_table %}
 <section id="generated-table" class="card-lite mt-3" aria-label="Work order preview">
   <div class="compact-card-header"><span>Work order preview</span>{% if preview %}<span class="data-note">Not saved yet</span>{% endif %}</div>
   {% include 'word_export.html' %}
+  <div class="workspace-header-actions p-3 no-print"><button class="btn btn-primary" name="action" value="push">{{ 'Save revision' if editing else 'Save work order' }}</button></div>
 </section>
 {% endif %}
 </form>
