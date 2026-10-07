@@ -2,6 +2,7 @@
 from datetime import date, datetime, timezone
 import hmac
 from uuid import uuid4
+from urllib.parse import urlsplit
 from flask import current_app, jsonify, render_template, request, session, flash, redirect, url_for, abort
 from sqlalchemy.exc import SQLAlchemyError
 from .models import db, ProductionOverride, ApprovedSO
@@ -11,18 +12,15 @@ from .material_readiness import load_material_readiness
 import pandas as pd
 
 REVIEW_STATUSES = [
-    ('pending', 'Pending review'), ('all', 'All statuses'),
-    ('legacy', 'Legacy — sync required'), ('unapproved', 'Unapproved'),
-    ('changed', 'Changed'), ('removed', 'Removed — excluded'),
-    ('approved', 'Approved'), ('retired', 'Retired'),
+    ('all', 'All statuses'), ('pending', 'Pending review'),
+    ('unapproved', 'Unapproved'), ('changed', 'Changed'),
+    ('approved', 'Approved'),
 ]
 
 
 def review_status(row, changes):
-    if row.synced_at is None:
-        return 'legacy'
     if not row.google_present:
-        return 'removed' if row.is_active or row.approved_at is None else 'retired'
+        return 'removed'
     if row.approved_at is None or not row.is_active:
         return 'unapproved'
     return 'changed' if changes else 'approved'
@@ -30,7 +28,7 @@ def review_status(row, changes):
 
 def needs_review(row, changes=None):
     if row.synced_at is None:
-        return True
+        return False
     if not row.google_present:
         return False
     if row.approved_at is None or not row.is_active:
@@ -77,13 +75,18 @@ def register_routes(bp):
         from .approved_so import differences
         session.setdefault('planning_csrf', str(uuid4()))
         q = request.args.get('q', '').strip().casefold()
-        selected_status = request.args.get('status') or ('all' if request.args.get('all') == '1' else 'pending')
+        selected_status = request.args.get('status') or ('all' if request.args.get('all') == '1' else 'changed')
+        if selected_status in ('lt_update', 'so_changes'):
+            selected_status = 'changed'
         labels = dict(REVIEW_STATUSES)
         if selected_status not in labels:
             abort(400)
         pending_only = selected_status == 'pending'
         rows = []
+        schedules = {schedule.wo_number: schedule for schedule in ProductionOverride.query.all()}
         for row in ApprovedSO.query.order_by(ApprovedSO.sales_order.desc()).all():
+            if row.synced_at is None or not row.google_present:
+                continue
             source = row.latest_snapshot or row.to_source()
             if q and q not in ' '.join([row.sales_order, source.get('customer') or '', source.get('customer_po') or '']).casefold():
                 continue
@@ -92,13 +95,18 @@ def register_routes(bp):
             status = review_status(row, pending_changes)
             if (pending_only and not pending) or (selected_status not in ('all', 'pending') and status != selected_status):
                 continue
+            schedule = schedules.get(row.sales_order)
+            ship_date = pd.to_datetime(source.get('ship_date') or '', errors='coerce', format='mixed')
+            highlight_ship_date = pending_only and pd.notna(ship_date) and (ship_date.month, ship_date.day) not in ((12, 31), (7, 4))
             rows.append(dict(order=row, source=source, changes=pending_changes,
-                             status=status, status_label=labels[status],
-                             sync_changes=differences(row.previous_snapshot, row.latest_snapshot)))
+                             highlight_ship_date=highlight_ship_date,
+                             has_production_date=bool(schedule and schedule.production_date and not schedule.is_finished_goods),
+                             status=status, status_label='Changed' if status == 'changed' else labels[status]))
         rows.sort(key=review_lt_key)
         return render_template('so_review_list.html', rows=rows, q=request.args.get('q', ''),
                                pending_only=pending_only, status_options=REVIEW_STATUSES,
-                               selected_status=selected_status, summary_title=labels[selected_status],
+                               selected_status=selected_status,
+                               summary_title=labels[selected_status],
                                planning_csrf=session['planning_csrf'])
 
     @bp.route('/production_planning/orders/<path:sales_order>', methods=['GET', 'POST'])
@@ -109,20 +117,33 @@ def register_routes(bp):
         if row is None:
             abort(404)
         session.setdefault('planning_csrf', str(uuid4()))
+        candidate = request.form.get('back_url') or request.args.get('next') or request.referrer or ''
+        parsed_back = urlsplit(candidate)
+        back_url = url_for('main.so_review_list')
+        if (not parsed_back.scheme or parsed_back.scheme in ('http', 'https')) and (not parsed_back.netloc or parsed_back.netloc == request.host):
+            if parsed_back.path.startswith('/') and not parsed_back.path.startswith('//') and '\\' not in candidate and parsed_back.path != request.path:
+                back_url = parsed_back.path + ('?' + parsed_back.query if parsed_back.query else '')
         status = 200
         if request.method == 'POST':
             if not _csrf_valid():
                 abort(403)
             try:
-                approve(row, request.form.get('item_order', '').split(',') if request.form.get('item_order') else [],
+                quick_approve = request.form.get('action') == 'quick_approve'
+                quick_items = None
+                if quick_approve:
+                    if not row.approved_at or not row.is_active or not row.google_present:
+                        raise ValueError('This SO is not available for quick approval. Open the review page instead.')
+                    quick_items = review_items(row)
+                approve(row, [item['id'] for item in quick_items] if quick_approve else
+                        request.form.get('item_order', '').split(',') if request.form.get('item_order') else [],
                         int(request.form['source_revision']), int(request.form['revision']),
                         retire=request.form.get('action') == 'retire',
                         production_date=request.form.get('production_date', '').strip() or None,
                         updated_by=request.remote_addr,
-                        item_rows=request.form.get('item_rows') or None)
+                        item_rows=quick_items if quick_approve else request.form.get('item_rows') or None)
                 flash('SO retired from new WO generation.' if not row.is_active else
                       'Approved SO published. Item order and any assigned production date are saved.', 'success')
-                return redirect(url_for('main.so_review_list'))
+                return redirect(back_url)
             except (ValueError, KeyError) as exc:
                 db.session.rollback()
                 flash(str(exc), 'danger')
@@ -139,7 +160,7 @@ def register_routes(bp):
         if schedule and not schedule.is_finished_goods and schedule.production_date:
             if schedule.production_date >= date.today() and schedule.production_date.weekday() < 5:
                 selected_date = schedule.production_date.isoformat()
-        return render_template('so_review_detail.html', order=row, items=items,
+        return render_template('so_review_detail.html', order=row, items=items, back_url=back_url,
                                review_source=row.latest_snapshot or row.to_source(), schedule=schedule,
                                material_readiness=load_material_readiness(row.sales_order),
                                selected_date=request.form.get('production_date', selected_date),
