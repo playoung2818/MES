@@ -16,6 +16,10 @@ from .approved_so import approved_orders, lock_review, differences
 bp = Blueprint('main', __name__)
 from .planning_routes import register_routes
 register_routes(bp)
+from .wo_inventory_api import register_wo_inventory_api
+register_wo_inventory_api(bp)
+from .wo_shipments import register_shipment_routes, shipment_context
+register_shipment_routes(bp)
 
 
 def _google_config():
@@ -69,13 +73,13 @@ def manual_wo(wo_id=None):
 @bp.route('/wo/<wo_id>/edit', methods=['GET', 'POST'])
 def so_detail(sales_order=None, wo_id=None):
     saved = db.session.get(SalesOrder, wo_id) if wo_id else None
-    if wo_id and saved is None:
+    if wo_id and (saved is None or saved.record_source != 'mes'):
         abort(404)
     if saved and saved.is_manual:
         return redirect(url_for('main.manual_wo', wo_id=saved.id))
     if saved:
         sales_order = saved.sales_order
-    siblings = SalesOrder.query.filter_by(sales_order=sales_order).order_by(SalesOrder.release_number).all()
+    siblings = SalesOrder.mes_query().filter_by(sales_order=sales_order).order_by(SalesOrder.release_number).all()
     source = _read_approved_orders().get(sales_order)
     approval = db.session.get(ApprovedSO, sales_order)
     if not saved and source and approval and differences(approval.approved_snapshot, approval.latest_snapshot):
@@ -123,7 +127,7 @@ def so_detail(sales_order=None, wo_id=None):
                     raise ValueError('SO is no longer approved and active.')
                 limits = totals(current_source['items'], normalized=True) if current_source else limits
                 lock_document_numbers()
-                all_orders = SalesOrder.query.populate_existing().all()
+                all_orders = SalesOrder.mes_query().populate_existing().all()
                 already = next((o for o in all_orders if o.id == payload['id']), None)
                 if not saved and already:
                     return redirect(url_for('main.generated_detail', wo_id=already.id))
@@ -149,7 +153,7 @@ def so_detail(sales_order=None, wo_id=None):
                 flash(f'{current.document_number} / P{current.release_number} pushed to DB.', 'success')
                 return redirect(url_for('main.generated_detail', wo_id=current.id))
             items = parse_items(request.form, order.items)
-            validate(items, limits, siblings, SalesOrder.query.all(), wo_id)
+            validate(items, limits, siblings, SalesOrder.mes_query().all(), wo_id)
             payload = dict(id=target_id, edit_id=wo_id, sales_order=sales_order, items=items,
                            customer=order.customer, customer_po=order.customer_po,
                            version=str(saved.pushed_at) if saved else None,
@@ -172,22 +176,22 @@ def so_detail(sales_order=None, wo_id=None):
 @bp.route('/generated')
 def generated_orders():
     q = request.args.get('q', '').strip()
-    orders = _search(SalesOrder.query, q).order_by(SalesOrder.document_number.desc()).all()
+    orders = _search(SalesOrder.mes_query(), q).order_by(SalesOrder.document_number.desc()).all()
     return render_template('generated.html', orders=orders, q=q)
 
 
 @bp.route('/generated/wo/<wo_id>')
 def generated_detail(wo_id):
     order = db.session.get(SalesOrder, wo_id)
-    if order is None:
+    if order is None or order.record_source != 'mes':
         abort(404)
     return render_template('generated_detail.html', order=order, lines=order.items,
-                           sales_order=order.sales_order, **word_context(order))
+                           sales_order=order.sales_order, **shipment_context([order]), **word_context(order))
 
 
 @bp.route('/generated/<path:sales_order>')
 def generated_so(sales_order):
-    orders = SalesOrder.query.filter_by(sales_order=sales_order).order_by(SalesOrder.release_number).all()
+    orders = SalesOrder.mes_query().filter_by(sales_order=sales_order).order_by(SalesOrder.release_number).all()
     if not orders:
         abort(404)
     return render_template('generated.html', orders=orders, q=sales_order)

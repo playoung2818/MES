@@ -40,7 +40,7 @@ def load_orders():
 def saved_quantities():
     """Aggregate current persisted releases; revisions replace, not add to, quantities."""
     orders = {}
-    for number, items in db.session.query(SalesOrder.sales_order, SalesOrder.items):
+    for number, items in db.session.query(SalesOrder.sales_order, SalesOrder.items).filter(SalesOrder.record_source == 'mes'):
         products = orders.setdefault(str(number).strip().casefold(), {})
         for item in items or []:
             key = str(item.get('item') or '').strip().casefold()

@@ -6,6 +6,7 @@
   <div><h1 class="workspace-title"><span class="document-number-highlight">{{ order.document_number or 'Generated WO' }}</span> — P{{ order.release_number }}</h1><p class="workspace-description">Saved work order · {{ order.sales_order }}{% if order.is_manual %} · Manual entry{% endif %}</p></div>
   <div class="workspace-header-actions"><a class="btn btn-outline-secondary" href="{{ url_for('main.index') }}">Back to home</a><a class="btn btn-primary" href="{{ url_for('main.so_detail', wo_id=order.id) }}">Revise work order</a><a class="btn btn-outline-secondary" href="{{ url_for('main.manual_wo', sales_order=order.sales_order) if order.is_manual else url_for('main.so_detail', sales_order=order.sales_order) }}">Create next release</a></div>
 </header>
+<div class="mb-3">{% with shipment_return_to='detail' %}{% include 'wo_shipment_control.html' %}{% endwith %}<p class="data-note mt-2">Shipment status applies to every item in this WO release, not production completion.{% if order.shipment_updated_at %} Updated (UTC): {{ order.shipment_updated_at.strftime('%Y-%m-%d %H:%M:%S') }}.{% endif %}</p></div>
 <div class="metric-grid">
   <div class="metric"><div class="label">NTA Order ID</div><div class="value">{{ order.sales_order }}</div></div>
   <div class="metric document-metric-highlight"><div class="label">Document #</div><div class="value">{{ order.document_number or '—' }}</div></div>

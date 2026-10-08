@@ -1,0 +1,8 @@
+<form method="post" action="{{ url_for('main.set_wo_shipment', wo_id=order.id) }}" class="d-inline" onsubmit="return window.confirm(this.dataset.confirm)" data-confirm="{{ 'Mark this entire WO release NOT shipped? Its quantities will count as WIP again.' if order.is_shipped else 'Mark this entire WO release shipped? All its item quantities will be excluded from WIP. Do not use this for a partially shipped release.' }}">
+  <input type="hidden" name="csrf_token" value="{{ shipment_csrf }}">
+  <input type="hidden" name="shipment_token" value="{{ shipment_tokens[order.id] }}">
+  <input type="hidden" name="is_shipped" value="{{ '0' if order.is_shipped else '1' }}">
+  <input type="hidden" name="return_to" value="{{ shipment_return_to or 'list' }}">
+  <input type="hidden" name="q" value="{{ q or '' }}">
+  <button class="btn btn-sm btn-outline-{{ 'secondary' if order.is_shipped else 'success' }}">{{ 'Mark not shipped' if order.is_shipped else 'Mark shipped' }}</button>
+</form>

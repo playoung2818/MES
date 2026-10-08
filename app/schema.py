@@ -7,6 +7,20 @@ from sqlalchemy import inspect, text, MetaData
 from .models import db, SalesOrder
 
 
+def ensure_wo_source_schema(connection=None):
+    """Add source metadata to the existing WO table; never create a new table."""
+    if connection is None:
+        with db.engine.begin() as conn:
+            ensure_wo_source_schema(conn)
+        return
+    columns = {column['name'] for column in inspect(connection).get_columns('WO Details')}
+    if 'record_source' not in columns:
+        connection.execute(text("ALTER TABLE \"WO Details\" ADD COLUMN record_source VARCHAR(20) NOT NULL DEFAULT 'mes'"))
+    if 'legacy_word_id' not in columns:
+        connection.execute(text('ALTER TABLE "WO Details" ADD COLUMN legacy_word_id INTEGER'))
+    connection.execute(text('CREATE UNIQUE INDEX IF NOT EXISTS uq_wo_legacy_word_id ON "WO Details" (legacy_word_id)'))
+
+
 def migrate_multiple_wos():
     with db.engine.begin() as conn:
         inspector = inspect(conn)

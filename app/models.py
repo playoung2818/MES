@@ -12,6 +12,14 @@ class SalesOrder(db.Model):
     sales_order = db.Column(db.String(80), nullable=False, index=True)
     release_number = db.Column(db.Integer, nullable=False, default=1)
     is_manual = db.Column(db.Boolean, nullable=False, default=False, server_default=false())
+    is_shipped = db.Column(db.Boolean, nullable=False, default=False, server_default=false())
+    shipment_updated_at = db.Column(db.DateTime)
+    record_source = db.Column(db.String(20), nullable=False, default='mes', server_default='mes')
+    legacy_word_id = db.Column(db.Integer, unique=True)
+
+    @classmethod
+    def mes_query(cls):
+        return cls.query.filter_by(record_source='mes')
     __table_args__ = (db.UniqueConstraint('sales_order', 'release_number', name='uq_wo_so_release'),)
     customer = db.Column(db.String(200))
     customer_po = db.Column(db.String(120))

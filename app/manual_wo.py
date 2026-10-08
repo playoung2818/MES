@@ -37,7 +37,7 @@ def parse_manual(form, existing):
 
 def manual_editor(wo_id, signer):
     saved = db.session.get(SalesOrder, wo_id) if wo_id else None
-    if wo_id and (saved is None or not saved.is_manual):
+    if wo_id and (saved is None or not saved.is_manual or saved.record_source != 'mes'):
         abort(404)
     blank = dict(sales_order=request.args.get('sales_order', ''), customer='', customer_po='',
                  items=[dict(id=1, item='', quantity=1, serials=[], notes='')])
@@ -62,7 +62,7 @@ def manual_editor(wo_id, signer):
                 raise ValueError('Inputs changed after preview. Generate the table again.')
             if payload:
                 lock_document_numbers()
-            all_orders = SalesOrder.query.populate_existing().all()
+            all_orders = SalesOrder.mes_query().populate_existing().all()
             existing = next((o for o in all_orders if payload and o.id == payload['id']), None)
             if payload and not saved and existing:
                 return redirect(url_for('main.generated_detail', wo_id=existing.id))

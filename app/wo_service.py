@@ -74,6 +74,8 @@ def validate(items, limits, sibling_orders, all_orders, exclude_id=None):
                 raise ValueError(f'Duplicate serial number: {sn}')
             seen.add(key)
     for order in all_orders:
+        if getattr(order, 'record_source', 'mes') == 'legacy_word':
+            continue
         if order.id == exclude_id:
             continue
         for item in order.items:

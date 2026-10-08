@@ -223,7 +223,7 @@ def approve(row, order_ids, source_revision, revision, retire=False, production_
                 raise ValueError('Google item list changed. Reload before approving.')
         # Never silently approve quantities below already saved WO allocations.
         saved = defaultdict(int)
-        for wo in SalesOrder.query.filter_by(sales_order=row.sales_order):
+        for wo in SalesOrder.mes_query().filter_by(sales_order=row.sales_order):
             for item in wo.items:
                 saved[item['item'].strip().casefold()] += int(item.get('quantity', 0))
         planned = defaultdict(int)
