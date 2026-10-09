@@ -9,6 +9,25 @@ from app.schema import migrate_multiple_wos
 
 
 class DocumentTests(unittest.TestCase):
+    def test_startup_does_not_assign_seed_number_to_imported_history(self):
+        app = Flask('app')
+        app.config.update(TESTING=True, SECRET_KEY='test', SQLALCHEMY_DATABASE_URI='sqlite:///:memory:')
+        db.init_app(app)
+        with app.app_context():
+            SalesOrder.__table__.create(db.engine)
+            db.session.add_all([
+                SalesOrder(sales_order='SO-20261207', release_number=1, items=[], document_number='WO-2609-0127'),
+                SalesOrder(sales_order='SO-20261207', release_number=-1, items=[], record_source='legacy_word', legacy_word_id=1),
+                SalesOrder(sales_order='SO-20261207', release_number=-2, items=[], record_source='legacy_word', legacy_word_id=2),
+            ])
+            db.session.commit()
+            _ensure_schema()
+            _ensure_schema()
+            self.assertTrue(all(row.document_number is None for row in SalesOrder.query.filter_by(record_source='legacy_word')))
+            self.assertEqual(SalesOrder.mes_query().one().document_number, 'WO-2609-0127')
+            db.session.remove()
+            db.engine.dispose()
+
     def test_migration_and_monthly_numbers(self):
         app = Flask('app')
         app.config.update(TESTING=True, SECRET_KEY='test', SQLALCHEMY_DATABASE_URI='sqlite:///:memory:')

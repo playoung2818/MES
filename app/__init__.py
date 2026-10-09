@@ -48,5 +48,10 @@ def _ensure_schema():
         # saved timestamp for legacy records; leave unknown dates NULL.
         if "Generated Date" not in columns:
             connection.execute(text('''UPDATE "WO Details" SET "Generated Date" = pushed_at'''))
+        # One-time legacy seed: never assign it to imported history or multiple releases.
+        source_filter = " AND record_source = 'mes'" if 'record_source' in columns else ''
         connection.execute(text('''UPDATE "WO Details" SET "Document #" = 'WO-2609-0127'
-                                  WHERE sales_order = 'SO-20261207' AND "Document #" IS NULL'''))
+            WHERE sales_order = 'SO-20261207' AND "Document #" IS NULL''' + source_filter + '''
+            AND NOT EXISTS (SELECT 1 FROM "WO Details" WHERE "Document #" = 'WO-2609-0127')
+            AND (SELECT COUNT(*) FROM "WO Details"
+                 WHERE sales_order = 'SO-20261207' AND "Document #" IS NULL''' + source_filter + ') = 1'))
