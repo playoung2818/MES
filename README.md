@@ -1,6 +1,6 @@
-# MES / WO Serial Entry
+# MES 
 
-Internal Flask web app for syncing open sales orders from Google Sheets, entering serial numbers by SO/item, and generating a clean table for work-order documentation.
+Internal Flask web app for review and generating a clean table for work-order documentation & Production Planning
 
 ## Current workflow
 
@@ -12,79 +12,35 @@ Production Planning → Sync Google Sheet (stage snapshots)
         ↓
 Review differences + reorder SO items
         ↓
-Approve sales order → approved_work_orders
-        ↓
-Planning and WO generation read the same approved SO data
-        ↓
+Approve sales order + Assign Production Date
+        ↓↓
 Select Sales Order → view its approved item order
         ↓
 Paste one serial per line into each item text box
         ↓
 Preview work order
         ↓
-Review the table
-        ↓
 Save work order
 ```
 
 ## Main behavior
 
-- Google Sheets are read only by the explicit sync action; there is no Excel upload.
 - Open SOs, new WO generation, and planning read approved, active `approved_work_orders` rows.
 - **Create a work order without a sales order** opens manual entry without a Google Sheet record or connection.
 - **Sync Google Sheet** updates review snapshots only, never approved fields or WOs.
 - **Approve sales order** publishes reviewed SO data and item order to `approved_work_orders`.
-- Sales orders are grouped by SO number.
-- After selecting an SO, all items under that SO are displayed.
-- Each item has:
-  - Product number / item
-  - Quantity
-  - Serial number text box
-  - Notes / Deviation text box
 - Serial numbers are pruned and sorted using logic based on:
   - https://github.com/playoung2818/Serial-Number-Prune
 - One SO can have multiple independent WOs (P1, P2, ...), each with its own Document #.
 - Duplicate actual serial numbers across items or saved WOs are rejected. `NA` remains visible and is exempt.
-- Item rows can be reordered by dragging or using the up/down buttons before preview and save.
 - The generated output is an HTML preview table shown on the SO page.
-- **Preview work order** does not write to the database. **Save work order** saves only that WO.
-- SO approval and schedule saves are separate explicit actions; they do not create WOs.
 
-## Work order history
-
-Use the navbar link:
-
-```text
-Work orders
-```
-
-This module pulls saved/generated records directly from the DB table:
-
-```text
-WO Details
-```
-
-The list shows saved work orders, releases, document numbers, customers, item counts, and last-save dates.
-Open a record for its customer PO, original generated date, and complete item table:
-
-```text
-Item | Qty | Serial Numbers | Notes/Deviation
-```
-
-Only saved work orders appear here. Each save updates the `pushed_at` timestamp.
 
 ## Production Planning
 
-The **Production planning** link appears in the global navigation.
-Open `/production_planning` for the module adapted from
-[playoung2818/MRP_System](https://github.com/playoung2818/MRP_System), upstream
-commit `f37fe90861187b8806cd6ac6fb3ea3fbb2694578` (`Webpage/server.py` and
-`Webpage/ui.py`, `PRODUCTION_TPL`). Its UI uses the MES green styling.
-
 - Weekly labor capacity (90 hours/week), family counts, large-order and review
   indicators; Nuvo / NRU / SEMIL / F = 1 hour/unit, POC = 0.5, regardless of
-  customer. Other models need review. Your approved
-  item order is never re-sorted by product name or PDF ordering.
+  customer. Other models need review. 
 - Day-by-day production schedule; date edits and finished-goods moves are staged
   until **Save Schedule**. Whole batches commit together, or roll back on error.
 - Placeholder 7/4 and 12/31 dates, missing dates, and future weekend dates appear
@@ -97,8 +53,7 @@ commit `f37fe90861187b8806cd6ac6fb3ea3fbb2694578` (`Webpage/server.py` and
 - **Any saved WO in `WO Details` automatically marks its SO as Picked.**
   Generating a preview does not count. Only **Save work order** creates a saved WO.
 - **Picked Qty is read-only**, calculated from the saved item quantities across
-  all partial WOs for the same SO. It does not come from an external picked-status
-  API, `wo_structured.Picked`, or manual picked-quantity overrides.
+  all partial WOs for the same SO. 
 - Match product names (trimmed, case-insensitive), and cap each product's picked
   quantity at its planned quantity. **Remaining = Planned − Picked.**
   Unpicked quantities and their labor remain in production planning.
