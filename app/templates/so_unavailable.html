@@ -5,7 +5,7 @@
 <header class="workspace-header"><div><h1 class="workspace-title">{{ sales_order }}</h1><p class="workspace-description">This sales order is not available for a new work order.</p></div><a class="btn btn-outline-secondary" href="{{ url_for('main.index') }}">Back to orders</a></header>
 <div class="card-lite"><div class="card-body">
 <p>No approved, active data is available. Review and approve this order in Production planning, or create a manual work order.</p>
-<div class="workspace-header-actions"><a class="btn btn-outline-secondary" href="{{ url_for('main.so_review_list', q=sales_order) }}">Review sales order</a><a class="btn btn-primary" href="{{ url_for('main.manual_wo', sales_order=sales_order) }}">Create manual work order</a></div>
+<div class="workspace-header-actions"><a class="btn btn-outline-secondary" href="{{ url_for('main.so_review_list', q=sales_order) }}">Review in MRP</a><a class="btn btn-primary" href="{{ url_for('main.manual_wo', sales_order=sales_order) }}">Create manual work order</a></div>
 </div></div>
 {% if releases %}<div class="card-lite mt-3"><div class="compact-card-header">Saved releases</div><div class="card-body"><p class="data-note">Saved work orders remain available to view and revise.</p>
 {% for release in releases %}<div class="data-toolbar"><a href="{{ url_for('main.generated_detail', wo_id=release.id) }}">P{{ release.release_number }} · {{ release.document_number or 'WO' }}</a><a class="btn btn-outline-secondary" href="{{ url_for('main.so_detail', wo_id=release.id) }}">Revise work order</a></div>{% endfor %}

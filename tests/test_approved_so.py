@@ -39,7 +39,7 @@ class ApprovedSOTests(unittest.TestCase):
         return {'orders': {'SO1': deepcopy(source or self.source)}, 'skipped': 0, 'messages': []}
 
     def csrf(self):
-        self.client.get('/production_planning/orders')
+        self.client.get('/production_planning')
         with self.client.session_transaction() as session:
             return session['planning_csrf']
 
@@ -173,17 +173,16 @@ class ApprovedSOTests(unittest.TestCase):
         self.assertEqual((saved.items, saved.pushed_at, saved.document_number), saved_before)
         self.assertEqual(self.client.get('/wo/' + saved.id + '/edit').status_code, 200)
         self.assertNotIn('<td class="fw-semibold">SO1</td>', self.client.get('/production_planning/orders').text)
-        self.assertIn('Review orders (1)', self.client.get('/production_planning').text)
-        self.assertIn('No approval required — excluded', self.client.get('/production_planning/orders?status=all').text)
-        detail = self.client.get('/production_planning/orders/SO1').text
-        self.assertIn('No review or retirement approval is required', detail)
-        self.assertNotIn('value="retire"', detail)
+        self.assertNotIn('Review orders (', self.client.get('/production_planning').text)
+        self.assertEqual(self.client.get('/production_planning/orders?status=all').status_code, 302)
+        detail = self.client.get('/production_planning/orders/SO1')
+        self.assertTrue(detail.location.endswith('/sales_orders/SO1'))
         self.assertIsNotNone(db.session.get(ApprovedSO, 'SO1'))
         self.sync()
         self.assertEqual([item['id'] for item in review_items(row)], ids)
         self.assertFalse(row.is_active)
         self.assertNotIn('SO1', approved_orders())
-        self.assertIn('<td class="fw-semibold">SO1</td>', self.client.get('/production_planning/orders?status=unapproved').text)
+        self.assertTrue(self.client.get('/production_planning/orders?status=unapproved').location.endswith('/sales_orders'))
         self.publish(row, reverse=True)
         self.assertIn('SO1', approved_orders())
 
@@ -236,22 +235,16 @@ class ApprovedSOTests(unittest.TestCase):
         self.assertEqual(self.client.post('/so/SO1', data=form).status_code, 302)
         self.assertEqual([item['item'] for item in SalesOrder.query.one().items], ['Nuvo-9000', 'Cable'])
 
-    def test_review_forms_csrf_and_sync_endpoint(self):
-        self.assertEqual(self.client.post('/sync-google').status_code, 403)
+    def test_review_forms_and_sync_endpoint_are_disabled_in_mes(self):
         csrf = self.csrf()
-        with patch('app.routes.read_google_sheet', return_value=self.result()):
-            response = self.client.post('/sync-google', data={'csrf_token': csrf})
-        self.assertEqual(response.status_code, 302)
-        row = db.session.get(ApprovedSO, 'SO1')
+        with patch('app.routes.read_google_sheet', side_effect=AssertionError('MES must not sync source orders')):
+            for form in ({}, {'csrf_token': csrf}):
+                self.assertEqual(self.client.post('/sync-google', data=form).status_code, 410)
+                self.assertEqual(self.client.post('/production_planning/orders/SO1', data=form).status_code, 410)
+        self.assertEqual(ApprovedSO.query.count(), 0)
         response = self.client.get('/production_planning/orders/SO1')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('Approve sales order', response.text)
-        self.assertEqual(self.client.post('/production_planning/orders/SO1').status_code, 403)
-        response = self.client.post('/production_planning/orders/SO1', data={
-            'csrf_token': csrf, 'source_revision': row.source_revision, 'revision': row.revision,
-            'item_order': ','.join(item['id'] for item in row.latest_snapshot['items']), 'action': 'approve'})
         self.assertEqual(response.status_code, 302)
-        self.assertIn('SO1', approved_orders())
+        self.assertTrue(response.location.endswith('/sales_orders/SO1'))
 
     def test_case_only_product_change_keeps_partial_allocation(self):
         row = self.publish(self.sync(), reverse=True)
@@ -275,7 +268,7 @@ class ApprovedSOTests(unittest.TestCase):
         row = self.sync(source)
         csrf = self.csrf()
         response = self.client.get('/production_planning/orders/SO1')
-        self.assertIn('Repeated product/configuration/site lines', response.text)
+        self.assertEqual(response.status_code, 302)
         old_source_revision = row.source_revision
         ids = ','.join(item['id'] for item in row.latest_snapshot['items'])
         source['customer_po'] = 'Changed'
@@ -283,8 +276,8 @@ class ApprovedSOTests(unittest.TestCase):
         response = self.client.post('/production_planning/orders/SO1', data={
             'csrf_token': csrf, 'source_revision': old_source_revision, 'revision': row.revision,
             'item_order': ids, 'action': 'approve'})
-        self.assertEqual(response.status_code, 400)
-        self.assertIn('changed in another session', response.text)
+        self.assertEqual(response.status_code, 410)
+        self.assertIn('review moved to MRP', response.json['error'])
         self.assertIsNone(row.approved_at)
 
     def review_form(self, row, production_date=''):
@@ -299,25 +292,17 @@ class ApprovedSOTests(unittest.TestCase):
             target += timedelta(days=1)
         return target
 
-    def test_review_shows_lt_and_saves_production_date_with_approval(self):
+    def test_review_cannot_publish_so_or_set_production_in_mes(self):
         row = self.sync()
         response = self.client.get('/production_planning/orders/SO1')
-        self.assertIn('Ship date (Google Sheet)', response.text)
-        self.assertIn(self.source['ship_date'], response.text)
-        self.assertIn('name="production_date"', response.text)
-        self.assertIn('<th>Ship date ↑</th>', self.client.get('/production_planning/orders').text)
-        target = self.next_weekday()
-        response = self.client.post('/production_planning/orders/SO1', data=self.review_form(row, target.isoformat()))
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(row.is_active)
-        schedule = db.session.get(ProductionOverride, 'SO1')
-        self.assertEqual(schedule.production_date, target)
-        self.assertFalse(schedule.is_finished_goods)
+        self.assertTrue(response.location.endswith('/sales_orders/SO1'))
+        response = self.client.post('/production_planning/orders/SO1', data=self.review_form(row, self.next_weekday().isoformat()))
+        self.assertEqual(response.status_code, 410)
+        self.assertFalse(row.is_active)
+        self.assertIsNone(row.approved_at)
+        self.assertIsNone(db.session.get(ProductionOverride, 'SO1'))
         self.assertEqual(SalesOrder.query.count(), 0)
-        from app.production_planning import build_plan
-        plan = build_plan(load_orders())
-        planned = next(order for group in plan['date_groups'] for order in group['orders'] if order['qb_num'] == 'SO1')
-        self.assertEqual(planned['production_date'], target.isoformat())
 
     def test_review_invalid_production_date_does_not_publish_so(self):
         from datetime import timedelta
@@ -327,7 +312,7 @@ class ApprovedSOTests(unittest.TestCase):
             weekend += timedelta(days=1)
         for raw in ('invalid', weekend.isoformat(), (date.today()-timedelta(days=1)).isoformat()):
             response = self.client.post('/production_planning/orders/SO1', data=self.review_form(row, raw))
-            self.assertEqual(response.status_code, 400)
+            self.assertEqual(response.status_code, 410)
             self.assertIsNone(row.approved_at)
             self.assertEqual(ProductionOverride.query.count(), 0)
 
@@ -337,25 +322,25 @@ class ApprovedSOTests(unittest.TestCase):
         db.session.add(ProductionOverride(wo_number='SO1', production_date=target, is_finished_goods=True))
         db.session.commit()
         response = self.client.get('/production_planning/orders/SO1')
-        self.assertIn('Finished goods', response.text)
-        response = self.client.post('/production_planning/orders/SO1', data=self.review_form(row))
         self.assertEqual(response.status_code, 302)
+        response = self.client.post('/production_planning/orders/SO1', data=self.review_form(row))
+        self.assertEqual(response.status_code, 410)
         schedule = db.session.get(ProductionOverride, 'SO1')
         self.assertEqual(schedule.production_date, target)
         self.assertTrue(schedule.is_finished_goods)
 
-    def test_review_assignment_returns_so_from_finished_goods(self):
+    def test_disabled_review_cannot_change_finished_goods(self):
         row = self.sync()
         db.session.add(ProductionOverride(wo_number='SO1', is_finished_goods=True,
                        finished_goods_updated_at=datetime.now(), finished_goods_updated_by='previous'))
         db.session.commit()
         response = self.client.post('/production_planning/orders/SO1',
                                     data=self.review_form(row, self.next_weekday().isoformat()))
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 410)
         schedule = db.session.get(ProductionOverride, 'SO1')
-        self.assertFalse(schedule.is_finished_goods)
-        self.assertIsNone(schedule.finished_goods_updated_at)
-        self.assertIsNone(schedule.finished_goods_updated_by)
+        self.assertTrue(schedule.is_finished_goods)
+        self.assertIsNotNone(schedule.finished_goods_updated_at)
+        self.assertEqual(schedule.finished_goods_updated_by, 'previous')
 
     def test_review_date_and_so_publication_roll_back_together(self):
         from sqlalchemy.exc import SQLAlchemyError
@@ -367,7 +352,7 @@ class ApprovedSOTests(unittest.TestCase):
             raise SQLAlchemyError('simulated schedule failure')
         with patch('app.approved_so.save_production_date', side_effect=save_then_fail), patch.object(self.app.logger, 'exception'):
             response = self.client.post('/production_planning/orders/SO1', data=form)
-        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.status_code, 410)
         self.assertIsNone(row.approved_at)
         self.assertFalse(row.is_active)
         self.assertEqual(row.revision, 0)
@@ -377,8 +362,7 @@ class ApprovedSOTests(unittest.TestCase):
         from app.material_readiness import load_material_readiness
         row = self.sync()
         response = self.client.get('/production_planning/orders/SO1')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('Readiness data unavailable', response.text)
+        self.assertEqual(response.status_code, 302)
         self.assertFalse(inspect(db.engine).has_table('so_material_readiness'))
         with db.engine.begin() as connection:
             connection.execute(text('CREATE TABLE so_material_readiness ("QB Num" TEXT PRIMARY KEY, earliest_material_ready_date DATE)'))
@@ -386,10 +370,8 @@ class ApprovedSOTests(unittest.TestCase):
                                [{'so': 'SO1', 'ready': '2030-03-18'}, {'so': 'SO2', 'ready': None}])
         before = deepcopy(row.latest_snapshot), row.source_revision, row.revision
         response = self.client.get('/production_planning/orders/SO1')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('Earliest Material Ready Date', response.text)
-        self.assertIn('2030-03-18', response.text)
-        self.assertIn('Read-only · Source: so_material_readiness', response.text)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.location.endswith('/sales_orders/SO1'))
         self.assertEqual((row.latest_snapshot, row.source_revision, row.revision), before)
         self.assertEqual(load_material_readiness('SO2')['message'], 'Not determined')
         self.assertEqual(load_material_readiness('MISSING')['message'], 'No readiness record')
@@ -399,7 +381,7 @@ class ApprovedSOTests(unittest.TestCase):
             self.assertEqual(connection.execute(text('SELECT earliest_material_ready_date FROM so_material_readiness WHERE "QB Num" = :so'),
                                                 {'so': 'SO1'}).scalar(), '2030-03-18')
         with patch('app.material_readiness.inspect', side_effect=SQLAlchemyError('read failure')):
-            self.assertEqual(self.client.get('/production_planning/orders/SO1').status_code, 200)
+            self.assertEqual(self.client.get('/production_planning/orders/SO1').status_code, 302)
         with db.engine.begin() as connection:
             connection.execute(text('DROP TABLE so_material_readiness'))
 
@@ -429,18 +411,18 @@ class ApprovedSOTests(unittest.TestCase):
         def so_ids(response):
             return re.findall(r'<td class="fw-semibold">([^<]+)</td>', response.text)
         response = self.client.get('/production_planning/orders?status=all')
-        self.assertEqual(so_ids(response), ['REMOVE', 'CHANGE', 'NEW', 'APP', 'LEGACY', 'RETIRE'])
-        self.assertEqual(so_ids(self.client.get('/production_planning/orders')), ['CHANGE', 'NEW', 'LEGACY'])
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.location.endswith('/sales_orders'))
+        self.assertEqual(so_ids(self.client.get('/production_planning/orders')), [])
         for status, number in [('approved', 'APP'), ('changed', 'CHANGE'), ('unapproved', 'NEW'),
                                ('legacy', 'LEGACY'), ('removed', 'REMOVE'), ('retired', 'RETIRE')]:
             response = self.client.get('/production_planning/orders?status=' + status)
-            self.assertEqual(so_ids(response), [number])
-            self.assertIn('name="status"', response.text)
-        self.assertEqual(so_ids(self.client.get('/production_planning/orders?all=1')),
-                         ['REMOVE', 'CHANGE', 'NEW', 'APP', 'LEGACY', 'RETIRE'])
-        self.assertEqual(so_ids(self.client.get('/production_planning/orders?status=approved&q=APP')), ['APP'])
+            self.assertEqual(response.status_code, 302)
+            self.assertTrue(response.location.endswith('/sales_orders'))
+        self.assertEqual(so_ids(self.client.get('/production_planning/orders?all=1')), [])
+        self.assertEqual(so_ids(self.client.get('/production_planning/orders?status=approved&q=APP')), [])
         self.assertEqual(so_ids(self.client.get('/production_planning/orders?status=changed&q=APP')), [])
-        self.assertEqual(self.client.get('/production_planning/orders?status=invalid').status_code, 400)
+        self.assertEqual(self.client.get('/production_planning/orders?status=invalid').status_code, 302)
 
     def test_table_rename_preserves_approved_records_and_is_idempotent(self):
         from app.approved_so_schema import rename_approved_so_table

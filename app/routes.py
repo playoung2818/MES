@@ -83,7 +83,7 @@ def so_detail(sales_order=None, wo_id=None):
     source = _read_approved_orders().get(sales_order)
     approval = db.session.get(ApprovedSO, sales_order)
     if not saved and source and approval and differences(approval.approved_snapshot, approval.latest_snapshot):
-        flash('This SO has pending source changes. Reapprove it before creating a new work order or next release.', 'warning')
+        flash('This SO has pending source changes. Review it in MRP before creating a new work order or next release.', 'warning')
         return redirect(url_for('main.so_review_detail', sales_order=sales_order))
     if not source and not saved:
         flash('This SO is unapproved, inactive, or removed from the source; new WO generation is unavailable. Existing WOs can still be revised.', 'warning')
@@ -120,7 +120,7 @@ def so_detail(sales_order=None, wo_id=None):
                 current_source = _read_approved_orders().get(sales_order)
                 current_approval = db.session.get(ApprovedSO, sales_order)
                 if not saved and current_approval and differences(current_approval.approved_snapshot, current_approval.latest_snapshot):
-                    raise ValueError('This SO has pending source changes. Reapprove it before creating a new work order or next release.')
+                    raise ValueError('This SO has pending source changes. Review it in MRP before creating a new work order or next release.')
                 if payload.get('source_revision') != (current_source or {}).get('revision'):
                     raise ValueError('Approved SO changed after preview. Reload and generate the table again.')
                 if not saved and not current_source:
@@ -199,18 +199,7 @@ def generated_so(sales_order):
 
 @bp.route('/sync-google', methods=['POST'])
 def sync_google():
-    from .planning_routes import _csrf_valid
-    from .approved_so import sync_snapshots
-    if not _csrf_valid():
-        abort(403)
-    try:
-        changed = sync_snapshots(read_google_sheet(*_google_config()))
-        flash(f'Google snapshots synced: {changed} SOs changed. Approved data and WOs were not overwritten.', 'success')
-    except ValueError as exc:
-        db.session.rollback()
-        flash(str(exc), 'danger')
-    except Exception:
-        db.session.rollback()
-        current_app.logger.exception('Google Sheet sync failed')
-        flash('Google Sheet sync failed. Existing snapshots and approved SOs were preserved.', 'danger')
-    return redirect(url_for('main.so_review_list'))
+    # Never replay old MES sync forms now that MRP owns source snapshots.
+    from .planning_routes import mrp_review_url
+    from flask import jsonify
+    return jsonify(ok=False, error='Sales-order sync and review moved to MRP.', review_url=mrp_review_url()), 410

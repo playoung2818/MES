@@ -1,47 +1,19 @@
-"""Flask routes for the shared MRP planning module."""
-from datetime import date, datetime, timezone
+"""MES consumes MRP-approved orders; only scheduling is editable here."""
+from datetime import datetime, timezone
 import hmac
+import os
 from uuid import uuid4
-from urllib.parse import urlsplit
-from flask import current_app, jsonify, render_template, request, session, flash, redirect, url_for, abort
+from urllib.parse import quote
+from flask import current_app, jsonify, render_template, request, session, redirect, abort
 from sqlalchemy.exc import SQLAlchemyError
-from .models import db, ProductionOverride, ApprovedSO
+from .models import db, ProductionOverride
 from .production_planning import PlanningDataError, load_orders, build_plan
 from .production_schedule import upsert as _upsert, parse_production_date
-from .material_readiness import load_material_readiness
-import pandas as pd
-
-REVIEW_STATUSES = [
-    ('all', 'All statuses'), ('pending', 'Pending review'),
-    ('unapproved', 'Unapproved'), ('changed', 'Changed'),
-    ('approved', 'Approved'),
-]
 
 
-def review_status(row, changes):
-    if not row.google_present:
-        return 'removed'
-    if row.approved_at is None or not row.is_active:
-        return 'unapproved'
-    return 'changed' if changes else 'approved'
-
-
-def needs_review(row, changes=None):
-    if row.synced_at is None:
-        return False
-    if not row.google_present:
-        return False
-    if row.approved_at is None or not row.is_active:
-        return True
-    if changes is None:
-        from .approved_so import differences
-        changes = differences(row.approved_snapshot, row.latest_snapshot)
-    return bool(changes)
-
-
-def review_lt_key(entry):
-    value = pd.to_datetime(entry['source'].get('ship_date') or '', errors='coerce', format='mixed')
-    return (pd.isna(value), value.date() if pd.notna(value) else date.max, entry['order'].sales_order)
+def mrp_review_url(sales_order=None):
+    base = current_app.config.get('MRP_BASE_URL') or os.getenv('MRP_BASE_URL', 'http://localhost:5002')
+    return base.rstrip('/') + '/sales_orders' + ('/' + quote(sales_order, safe='') if sales_order else '')
 
 
 def _csrf_valid():
@@ -65,109 +37,21 @@ def register_routes(bp):
             plan = dict(capacity_weeks=[], date_groups=[], passed_lt_orders=[], passed_lt_summary={},
                         unassigned_lt_orders=[], unassigned_lt_summary={})
             status = 503
-        pending = sum(1 for row in ApprovedSO.query.all() if needs_review(row))
-        return render_template('production_planning.html', **plan, error=error, pending_so_count=pending,
+        return render_template('production_planning.html', **plan, error=error,
                                planning_csrf=session['planning_csrf'],
                                loaded_at=datetime.now().strftime('%Y-%m-%d %H:%M:%S')), status
 
+    # Existing bookmarks point to MRP. Writes are deliberately not redirected:
+    # a cached MES form must never approve or sync orders after the ownership move.
     @bp.route('/production_planning/orders')
     def so_review_list():
-        from .approved_so import differences
-        session.setdefault('planning_csrf', str(uuid4()))
-        q = request.args.get('q', '').strip().casefold()
-        selected_status = request.args.get('status') or ('all' if request.args.get('all') == '1' else 'changed')
-        if selected_status in ('lt_update', 'so_changes'):
-            selected_status = 'changed'
-        labels = dict(REVIEW_STATUSES)
-        if selected_status not in labels:
-            abort(400)
-        pending_only = selected_status == 'pending'
-        rows = []
-        schedules = {schedule.wo_number: schedule for schedule in ProductionOverride.query.all()}
-        for row in ApprovedSO.query.order_by(ApprovedSO.sales_order.desc()).all():
-            if row.synced_at is None or not row.google_present:
-                continue
-            source = row.latest_snapshot or row.to_source()
-            if q and q not in ' '.join([row.sales_order, source.get('customer') or '', source.get('customer_po') or '']).casefold():
-                continue
-            pending_changes = differences(row.approved_snapshot, row.latest_snapshot)
-            pending = needs_review(row, pending_changes)
-            status = review_status(row, pending_changes)
-            if (pending_only and not pending) or (selected_status not in ('all', 'pending') and status != selected_status):
-                continue
-            schedule = schedules.get(row.sales_order)
-            ship_date = pd.to_datetime(source.get('ship_date') or '', errors='coerce', format='mixed')
-            highlight_ship_date = pending_only and pd.notna(ship_date) and (ship_date.month, ship_date.day) not in ((12, 31), (7, 4))
-            rows.append(dict(order=row, source=source, changes=pending_changes,
-                             highlight_ship_date=highlight_ship_date,
-                             has_production_date=bool(schedule and schedule.production_date and not schedule.is_finished_goods),
-                             status=status, status_label='Changed' if status == 'changed' else labels[status]))
-        rows.sort(key=review_lt_key)
-        return render_template('so_review_list.html', rows=rows, q=request.args.get('q', ''),
-                               pending_only=pending_only, status_options=REVIEW_STATUSES,
-                               selected_status=selected_status,
-                               summary_title=labels[selected_status],
-                               planning_csrf=session['planning_csrf'])
+        return redirect(mrp_review_url())
 
     @bp.route('/production_planning/orders/<path:sales_order>', methods=['GET', 'POST'])
     def so_review_detail(sales_order):
-        from collections import Counter
-        from .approved_so import differences, review_items, approve, signature
-        row = db.session.get(ApprovedSO, sales_order)
-        if row is None:
-            abort(404)
-        session.setdefault('planning_csrf', str(uuid4()))
-        candidate = request.form.get('back_url') or request.args.get('next') or request.referrer or ''
-        parsed_back = urlsplit(candidate)
-        back_url = url_for('main.so_review_list')
-        if (not parsed_back.scheme or parsed_back.scheme in ('http', 'https')) and (not parsed_back.netloc or parsed_back.netloc == request.host):
-            if parsed_back.path.startswith('/') and not parsed_back.path.startswith('//') and '\\' not in candidate and parsed_back.path != request.path:
-                back_url = parsed_back.path + ('?' + parsed_back.query if parsed_back.query else '')
-        status = 200
         if request.method == 'POST':
-            if not _csrf_valid():
-                abort(403)
-            try:
-                quick_approve = request.form.get('action') == 'quick_approve'
-                quick_items = None
-                if quick_approve:
-                    if not row.approved_at or not row.is_active or not row.google_present:
-                        raise ValueError('This SO is not available for quick approval. Open the review page instead.')
-                    quick_items = review_items(row)
-                approve(row, [item['id'] for item in quick_items] if quick_approve else
-                        request.form.get('item_order', '').split(',') if request.form.get('item_order') else [],
-                        int(request.form['source_revision']), int(request.form['revision']),
-                        retire=request.form.get('action') == 'retire',
-                        production_date=request.form.get('production_date', '').strip() or None,
-                        updated_by=request.remote_addr,
-                        item_rows=quick_items if quick_approve else request.form.get('item_rows') or None)
-                flash('SO retired from new WO generation.' if not row.is_active else
-                      'Approved SO published. Item order and any assigned production date are saved.', 'success')
-                return redirect(back_url)
-            except (ValueError, KeyError) as exc:
-                db.session.rollback()
-                flash(str(exc), 'danger')
-                status = 400
-            except SQLAlchemyError:
-                db.session.rollback()
-                current_app.logger.exception('SO approval failed')
-                flash('Approval failed. Approved data was not changed.', 'danger')
-                status = 503
-        items = review_items(row)
-        duplicates = any(count > 1 for count in Counter(signature(item) for item in items).values())
-        schedule = db.session.get(ProductionOverride, row.sales_order)
-        selected_date = ''
-        if schedule and not schedule.is_finished_goods and schedule.production_date:
-            if schedule.production_date >= date.today() and schedule.production_date.weekday() < 5:
-                selected_date = schedule.production_date.isoformat()
-        return render_template('so_review_detail.html', order=row, items=items, back_url=back_url,
-                               review_source=row.latest_snapshot or row.to_source(), schedule=schedule,
-                               material_readiness=load_material_readiness(row.sales_order),
-                               selected_date=request.form.get('production_date', selected_date),
-                               today=date.today().isoformat(),
-                               sync_changes=differences(row.previous_snapshot, row.latest_snapshot),
-                               pending_changes=differences(row.approved_snapshot, row.latest_snapshot),
-                               duplicates=duplicates, planning_csrf=session['planning_csrf']), status
+            return jsonify(ok=False, error='Sales-order review moved to MRP.', review_url=mrp_review_url(sales_order)), 410
+        return redirect(mrp_review_url(sales_order))
 
     @bp.route('/api/production_schedule', methods=['POST'])
     def api_production_schedule():
@@ -201,7 +85,6 @@ def register_routes(bp):
                         return jsonify(ok=False, error=str(exc)), 400
                 parsed.append((number, area, target))
             now = datetime.now(timezone.utc).replace(tzinfo=None)
-            # Validate every assignment first; then commit the entire batch together.
             for number, area, target in parsed:
                 values = {'wo_number': number}
                 if area == 'finished_goods':

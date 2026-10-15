@@ -1,6 +1,6 @@
 # MES 
 
-Internal Flask web app for review and generating a clean table for work-order documentation & Production Planning
+Internal Flask app for work-order execution and production scheduling. MRP owns sales-order review and approval.
 
 ## Current workflow
 
@@ -8,12 +8,14 @@ Internal Flask web app for review and generating a clean table for work-order do
 Google Sheet: PDF_WO
 Worksheet: Open Sales Order
         ↓
-Production Planning → Sync Google Sheet (stage snapshots)
+MRP → Sync source, review differences and approve SO items
         ↓
-Review differences + reorder SO items
+MRP → Review material blockers and confirm initial production plan
         ↓
-Approve sales order + Assign Production Date
-        ↓↓
+Shared approved_work_orders + production_overrides database
+        ↓
+MES → Read approved orders; adjust production dates if needed
+        ↓
 Select Sales Order → view its approved item order
         ↓
 Paste one serial per line into each item text box
@@ -27,8 +29,9 @@ Save work order
 
 - Open SOs, new WO generation, and planning read approved, active `approved_work_orders` rows.
 - **Create a work order without a sales order** opens manual entry without a Google Sheet record or connection.
-- **Sync Google Sheet** updates review snapshots only, never approved fields or WOs.
-- **Approve sales order** publishes reviewed SO data and item order to `approved_work_orders`.
+- Google snapshot sync and SO approval happen only in **MRP** (`/sales_orders`).
+- MES reads the approved database directly; no second sync/approval is needed.
+- Legacy MES review URLs redirect to MRP; old approval/sync POST requests return HTTP 410 without writing.
 - Serial numbers are pruned and sorted using logic based on:
   - https://github.com/playoung2818/Serial-Number-Prune
 - One SO can have multiple independent WOs (P1, P2, ...), each with its own Document #.
@@ -69,54 +72,26 @@ Save work order
 Remaining = 6. Saving P2 for another 3 means Picked Qty = 7 and Remaining = 3.
 The SO is Picked after P1 even though some quantity is still unpicked.
 
-### Google sync, diff review, and approved SOs
+### MRP-owned sales-order review
 
-Use **Review orders** (`/production_planning/orders`) from Production planning.
-The summary is sorted by **Ship date ascending**, with missing/invalid dates last and
-SO number as the tie-breaker. The **Status** dropdown supports Pending review
-(default), All statuses, Legacy, Unapproved, Changed, Removed, Approved, and
-Retired. Status filtering can be combined with SO/customer/PO search.
+The review module has moved to MRP at `/sales_orders`. MRP performs explicit
+Google-source sync, source diffs, manual item ordering and approval, material
+review, and initial production planning. MES has no review or approval form.
+Set `MRP_BASE_URL` (default `http://localhost:5002`) to the MRP URL reachable by
+users' browsers so old review bookmarks redirect correctly.
 
-1. **Sync Google Sheet** reads the complete `PDF_WO` / `Open Sales Order` sheet.
-   It saves previous/latest snapshots in the `approved_work_orders` table, and
-   shows changes since the previous sync and since the last approval. Empty,
-   malformed, or partially skipped reads are rejected without retiring any SOs.
-2. Open **Review order**. Review customer/PO/date/terms/site changes,
-   added/removed products, quantities, and Google order changes separately.
-   Drag handles or use up/down buttons; **Use Google item order** is optional.
-   Existing approved order is retained when merging updated content; new items
-   are appended for review. Configuration is retained and initializes WO notes.
-   **Ship date** (the Google Lead Time / L/T field) appears in the list and detail page.
-   The review page also displays **Earliest Material Ready Date** directly from
-   the existing MRP-managed `so_material_readiness.earliest_material_ready_date`,
-   matched by `"QB Num"` to the SO number. This is read-only: it does not modify
-   readiness data or automatically set/restrict the Production Date. Missing
-   records, undetermined dates, or unavailable readiness data are labeled clearly.
-   During review, optionally choose a **Production Date** (today/future weekdays).
-   Existing future dates are prefilled; blank preserves the existing schedule,
-   including finished-goods status. Assigning a date returns finished goods to
-   production, like the calendar's production-date assignment.
-3. **Approve sales order** publishes the reviewed items and your chosen order,
-   and saves an assigned production date in `production_overrides` in the same
-   transaction. Invalid dates or save failures leave both SO and schedule unchanged.
-   Only approved, active SOs appear under Open SOs and in planning. Reordering an
-   already approved SO is possible by selecting **All statuses** or **Approved**. Approval itself does
-   not create or revise a WO.
-4. An SO missing from a successful sync is **automatically excluded** from Open
-   SOs, production planning, and new WO generation. No removal review/retirement
-   approval is required, and it leaves the Pending review list. Stored approved
-   data and saved WOs are preserved; existing saved WOs can still be revised.
-   Already-flagged removals are excluded without another sync. If an SO reappears,
-   it stays inactive until explicitly approved again (shown as Unapproved).
+MRP CLI stages new SOs privately in `approved_work_orders` (`is_active=FALSE`).
+Material review records blockers; orders wait in Needs Production Planning while
+shipment updates are tracked. Only final production-date confirmation publishes
+the SO (`is_active=TRUE`) and writes its initial date to `production_overrides`.
+MES refreshes these database rows; there is no separate MES eligibility/approval action. SO source changes must be
+reviewed in MRP before new WO generation; existing WOs can still be revised.
 
-The three source snapshots are previous, latest, and last-approved; they are
-bounded state, **not an unlimited historical sync log**. Item IDs are preserved
-by product/configuration/site and occurrence. Unambiguous product matches also
-retain their IDs across configuration/site edits. Repeated identical lines lack
-a Google row ID and are flagged for careful review. Source and approved revision
-checks reject stale approval submissions; WO pushes also reject previews made
-against an older approved revision. Approval cannot reduce product quantities
-below saved WO allocations.
+Source snapshots remain previous/latest/approved with revision checks and stable
+item IDs. MRP rejects incomplete source syncs and approvals below saved WO
+allocations. Missing SOs are excluded without deletion; reappearing SOs require
+MRP reapproval. MES only adjusts production dates on Production Planning; WO
+execution, serials, shipments and finished-goods controls are unchanged.
 
 **Source and scope:** planning and new WO generation both read approved, active,
 Google-present `public.approved_work_orders`. Planning excludes Drop Ship items. Picked quantities come
@@ -130,7 +105,7 @@ changes also affect the MRP schedule. MES picked status and quantities now ignor
 `wo_structured.Picked` and `wo_picked_qty_overrides` entirely. Legacy overrides are
 preserved but cannot be edited from MES (`POST /api/wo_picked_qty` returns 409).
 Planning never inserts or modifies `WO Details`. Save quantity changes in the WO editor, then refresh planning. GET/reload only reads data. New or
-upgraded installs require syncing and approving SOs before planning/generation.
+upgraded installs require syncing and approving SOs in MRP before planning/generation.
 Schedule requests validate source keys/dates and require a session CSRF header.
 Existing shared tables are not replaced. This MES rule treats a saved WO as
 picked by definition; it does not separately confirm physical warehouse picking.

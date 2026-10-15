@@ -11,12 +11,11 @@
     <div class="workspace-header-actions">
       <button id="schedule-save" class="btn btn-sm btn-primary" type="button" disabled>Save Schedule</button>
       <span id="schedule-save-msg" class="schedule-save-msg" role="status" aria-live="polite"></span>
-      <a class="btn btn-outline-secondary" href="{{ url_for('main.so_review_list') }}">Review orders ({{ pending_so_count }})</a>
       <a class="btn btn-outline-secondary" href="{{ url_for('main.production_planning') }}">Refresh plan</a>
     </div>
   </header>
 
-  {% if pending_so_count %}<div class="alert alert-info">{{ pending_so_count }} SO(s) need review. Only approved, active SOs are used for planning and new WO generation.</div>{% endif %}
+  <div class="text-muted small mb-3">Orders and approvals are managed in MRP. MES reads the shared approved database; adjust production dates here and save the schedule.</div>
   {% if capacity_weeks or passed_lt_orders %}
     <div class="mb-4">
       <div class="d-flex justify-content-between align-items-end mb-2">
