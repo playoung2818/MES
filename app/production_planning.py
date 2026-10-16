@@ -30,9 +30,10 @@ def load_orders():
             rows.append({'QB Num': source['sales_order'], 'Customer': source.get('customer') or '',
                          'Customer PO': source.get('customer_po') or '', 'Terms': source.get('terms') or '',
                          'Item': item['item'], 'Qty': item['quantity'],
-                         'Lead Time': source.get('ship_date') or '', 'Inventory Site': site})
+                         'Lead Time': source.get('ship_date') or '', 'Inventory Site': site,
+                         'Notes': source.get('notes') or ''})
     frame = pd.DataFrame(rows, columns=['QB Num', 'Customer', 'Customer PO', 'Terms',
-                                       'Item', 'Qty', 'Lead Time', 'Inventory Site'])
+                                       'Item', 'Qty', 'Lead Time', 'Inventory Site', 'Notes'])
     frame['Lead Time'] = pd.to_datetime(frame['Lead Time'], errors='coerce', format='mixed')
     return frame
 
@@ -116,6 +117,7 @@ def build_plan(frame, today=None):
             production_date_str=production_date.isoformat() if production_date else '',
         )
         row.update(quantities[number])
+        row['notes'] = str(group.iloc[0].get('Notes') or '')
         if (override and override.is_finished_goods) or (production_date and production_date < today):
             finished.append(row)
         elif not production_date or production_date.weekday() >= 5:

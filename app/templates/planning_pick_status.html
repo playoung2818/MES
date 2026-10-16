@@ -6,3 +6,4 @@
     | Remaining: <strong>{{ o.remaining_units_str }}</strong>
   </span>
 </div>
+{% if o.notes %}<div class="order-notes" style="white-space:pre-wrap;overflow-wrap:anywhere"><strong>Notes:</strong> {{ o.notes }}</div>{% endif %}

@@ -44,6 +44,10 @@ Save work order
 - Weekly labor capacity (90 hours/week), family counts, large-order and review
   indicators; Nuvo / NRU / SEMIL / F = 1 hour/unit, POC = 0.5, regardless of
   customer. Other models need review. 
+- **Notes** from MRP carry from material review through production assignment into
+  `approved_work_orders.metadata_fields.notes`. They are displayed read-only on
+  scheduled, finished/past-date and unassigned SO cards. MES date adjustments
+  preserve the notes.
 - Day-by-day production schedule; date edits and finished-goods moves are staged
   until **Save Schedule**. Whole batches commit together, or roll back on error.
 - Placeholder 7/4 and 12/31 dates, missing dates, and future weekend dates appear

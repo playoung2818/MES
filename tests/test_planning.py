@@ -74,6 +74,26 @@ class PlanningTests(unittest.TestCase):
         self.assertEqual(ProductionOverride.query.count(), 0)
         self.assertEqual(PickedQtyOverride.query.count(), 0)
 
+    def test_mrp_notes_are_visible_and_preserved_when_mes_changes_dates(self):
+        source = db.session.get(ApprovedSO, 'SO1')
+        notes = 'Vendor confirmed shipment\n<script>keep as text</script>'
+        source.metadata_fields = dict(source.metadata_fields, notes=notes)
+        db.session.commit()
+        frame = load_orders()
+        self.assertEqual(frame.loc[frame['QB Num'].eq('SO1'), 'Notes'].iloc[0], notes)
+        html = self.client.get('/production_planning').text
+        self.assertIn('Notes:', html)
+        self.assertIn('&lt;script&gt;keep as text&lt;/script&gt;', html)
+        target = self.day + timedelta(days=1)
+        while target.weekday() >= 5:
+            target += timedelta(days=1)
+        response = self.client.post('/api/production_schedule', headers=self.headers(), json={
+            'assignments': [{'wo_number': 'SO1', 'production_date': target.isoformat()}]})
+        self.assertEqual(response.status_code, 200)
+        db.session.expire_all()
+        self.assertEqual(db.session.get(ApprovedSO, 'SO1').metadata_fields['notes'], notes)
+        self.assertIn('&lt;script&gt;keep as text&lt;/script&gt;', self.client.get('/production_planning').text)
+
     def test_order_colors_follow_picked_status(self):
         with db.engine.begin() as connection:
             connection.execute(text('CREATE TABLE wo_structured ("QB Num" TEXT, "Picked" TEXT)'))
