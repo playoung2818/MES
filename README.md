@@ -44,6 +44,11 @@ Save work order
 - Weekly labor capacity (90 hours/week), family counts, large-order and review
   indicators; Nuvo / NRU / SEMIL / F = 1 hour/unit, POC = 0.5, regardless of
   customer. Other models need review. 
+- Drop Ship SOs are excluded entirely when any source line uses inventory site
+  `Drop Ship` (case-insensitive, trimmed). The latest CLI snapshot is checked as
+  well as published items, so mixed-site SOs cannot appear or be scheduled even
+  if their previously published warehouse lines omitted the Drop Ship line.
+  Existing WO/history records are retained.
 - **Notes** from MRP carry from material review through production assignment into
   `approved_work_orders.metadata_fields.notes`. They are displayed read-only on
   scheduled, finished/past-date and unassigned SO cards. MES date adjustments

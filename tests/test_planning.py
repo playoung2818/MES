@@ -94,6 +94,22 @@ class PlanningTests(unittest.TestCase):
         self.assertEqual(db.session.get(ApprovedSO, 'SO1').metadata_fields['notes'], notes)
         self.assertIn('&lt;script&gt;keep as text&lt;/script&gt;', self.client.get('/production_planning').text)
 
+    def test_mixed_site_drop_ship_snapshot_is_excluded_everywhere(self):
+        source = db.session.get(ApprovedSO, 'SO1')
+        source.latest_snapshot = {'inventory_site': 'WH01S-NTA', 'items': [
+            {'id': 'cpu', 'item': 'CPU', 'quantity': 1, 'inventory_site': 'WH01S-NTA'},
+            {'id': 'system', 'item': 'System', 'quantity': 1, 'inventory_site': ' Drop ship '}]}
+        db.session.commit()
+        from app.approved_so import approved_orders
+        self.assertNotIn('SO1', approved_orders())
+        self.assertNotIn('SO1', set(load_orders()['QB Num']))
+        self.assertNotIn('data-wo="SO1"', self.client.get('/production_planning').text)
+        self.assertNotIn('Open order SO1', self.client.get('/').text)
+        response = self.client.post('/api/production_schedule', headers=self.headers(), json={
+            'assignments': [{'wo_number': 'SO1', 'production_date': self.day.isoformat()}]})
+        self.assertEqual(response.status_code, 400)
+        self.assertIsNone(db.session.get(ProductionOverride, 'SO1'))
+
     def test_order_colors_follow_picked_status(self):
         with db.engine.begin() as connection:
             connection.execute(text('CREATE TABLE wo_structured ("QB Num" TEXT, "Picked" TEXT)'))

@@ -17,10 +17,25 @@ def lock_review():
         db.session.execute(text('SELECT pg_advisory_xact_lock(26091003)'))
 
 
+def is_drop_ship_order(source):
+    source = source or {}
+    return (str(source.get('inventory_site') or '').strip().casefold() == 'drop ship'
+            or any(str(item.get('inventory_site') or '').strip().casefold() == 'drop ship'
+                   for item in source.get('items', []) or []))
+
+
 def approved_orders():
-    return {row.sales_order: row.to_source() for row in ApprovedSO.query.filter(
-        ApprovedSO.approved_at.isnot(None), ApprovedSO.is_active.is_(True),
-        ApprovedSO.google_present.is_(True)).all()}
+    orders = {}
+    for row in ApprovedSO.query.filter(
+            ApprovedSO.approved_at.isnot(None), ApprovedSO.is_active.is_(True),
+            ApprovedSO.google_present.is_(True)).all():
+        source = row.to_source()
+        # The published warehouse lines may omit a Drop Ship line still in the
+        # CLI snapshot. Check that snapshot too, excluding the entire SO.
+        snapshot = row.latest_snapshot or row.approved_snapshot or source
+        if not is_drop_ship_order(snapshot) and not is_drop_ship_order(source):
+            orders[row.sales_order] = source
+    return orders
 
 
 def signature(item):
