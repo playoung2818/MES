@@ -203,7 +203,7 @@ def generated_detail(wo_id):
         abort(404)
     approval = db.session.get(ApprovedSO, order.sales_order)
     return render_template('generated_detail.html', order=order, lines=order.items,
-                           workflow_notice=notice(approval, _read_approved_orders().get(order.sales_order)),
+                           workflow_notice='' if order.is_manual else notice(approval, _read_approved_orders().get(order.sales_order)),
                            sales_order=order.sales_order, **shipment_context([order]), **word_context(order))
 
 

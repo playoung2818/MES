@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 from flask import Flask
 from werkzeug.datastructures import MultiDict
-from app.models import db, SalesOrder
+from app.models import db, SalesOrder, ApprovedSO
 from app.routes import bp
 from test_serial_table import token
 
@@ -67,6 +67,36 @@ class ManualTests(unittest.TestCase):
         second = SalesOrder.query.filter_by(release_number=2).one()
         self.assertNotEqual(saved.document_number, second.document_number)
         self.reader.assert_not_called()
+
+    def test_manual_orders_ignore_source_presence_and_quantity_limits(self):
+        approval = ApprovedSO(sales_order='SO-MANUAL', items=[{'id': 'source-1', 'item': 'System', 'quantity': 1}],
+                              workflow_status='released_to_mes', google_present=False)
+        db.session.add(approval)
+        db.session.commit()
+        self.push()
+        saved = SalesOrder.query.one()
+        self.assertEqual(saved.items[0]['quantity'], 5)
+        self.form.setlist('quantity', ['8', '5'])
+        self.push(f'/wo/{saved.id}/manual')
+        db.session.refresh(saved)
+        self.assertEqual(saved.items[0]['quantity'], 8)
+        self.assertFalse(approval.google_present)
+        self.assertEqual(approval.workflow_status, 'released_to_mes')
+
+    def test_manual_wo_does_not_display_mrp_read_only_warning(self):
+        approval = ApprovedSO(sales_order='SO-MANUAL', items=[],
+                              workflow_status='needs_material_review', google_present=True)
+        db.session.add(approval)
+        db.session.commit()
+        response = self.push()
+        page = self.client.get(response.location)
+        self.assertIn('Manual work order saved to database.', page.text)
+        self.assertNotIn('Existing WO is read-only', page.text)
+        saved = SalesOrder.query.one()
+        for url in (f'/wo/{saved.id}/manual', '/generated', '/generated/SO-MANUAL'):
+            page = self.client.get(url)
+            self.assertEqual(page.status_code, 200)
+            self.assertNotIn('Existing WO is read-only', page.text)
 
     def test_changed_preview_invalid_qty_and_duplicate(self):
         response = self.client.post('/wo/new', data=self.form)

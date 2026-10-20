@@ -125,12 +125,17 @@ class WorkflowTests(unittest.TestCase):
         self.assertEqual(response.status_code,200,response.text)
         self.assertFalse(approved_orders()['SO1']['reconciliation_required'])
 
-    def test_manual_editor_cannot_bypass_mrp_ownership(self):
+    def test_manual_editor_allows_quick_order_without_mrp_release(self):
         approval=db.session.get(ApprovedSO,'SO1');approval.workflow_status='needs_material_review';approval.returned_from_mes=True
         db.session.commit()
         form={'action':'preview','sales_order':'SO1','customer':'Customer','customer_po':'',
               'item':['Nuvo-9000'],'quantity':['1'],'serials':['NA'],'notes':['']}
         response=self.client.post('/wo/new',data=form)
-        self.assertEqual(response.status_code,400)
-        self.assertIn('owned by MRP',response.text)
-        self.assertEqual(SalesOrder.query.count(),0)
+        self.assertEqual(response.status_code,200,response.text)
+        form.update(action='push',preview_token=token(response))
+        response=self.client.post('/wo/new',data=form)
+        self.assertEqual(response.status_code,302,response.text)
+        saved=SalesOrder.query.one()
+        self.assertTrue(saved.is_manual)
+        self.assertEqual(saved.sales_order,'SO1')
+        self.assertEqual(approval.workflow_status,'needs_material_review')

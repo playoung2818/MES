@@ -6,10 +6,10 @@ from flask import request, render_template, flash, redirect, url_for, abort, cur
 from werkzeug.datastructures import MultiDict
 from itsdangerous import BadData
 from .models import db, SalesOrder, ApprovedSO
-from .approved_so import lock_review, approved_orders
-from .so_workflow import refresh_reconciliation, notice
+from .approved_so import lock_review
+from .so_workflow import refresh_reconciliation
 from .document_numbers import lock_document_numbers, next_document_number
-from .wo_service import parse_items, validate, totals
+from .wo_service import parse_items, validate
 from .word_export import word_context
 
 
@@ -45,9 +45,8 @@ def manual_editor(wo_id, signer):
                  items=[dict(id=1, item='', quantity=1, serials=[], notes='')])
     data = dict(sales_order=saved.sales_order, customer=saved.customer, customer_po=saved.customer_po,
                 items=deepcopy(saved.items)) if saved else blank
-    approval = db.session.get(ApprovedSO, data['sales_order']) if data['sales_order'] else None
     context = dict(data=data, editing=saved,
-                   workflow_notice=notice(approval) if approval else '', **word_context(saved))
+                   workflow_notice='', **word_context(saved))
     if request.method == 'POST':
         try:
             payload = None
@@ -65,11 +64,8 @@ def manual_editor(wo_id, signer):
             lock_review()
             db.session.expire_all()
             approval = db.session.get(ApprovedSO, data['sales_order'])
-            if approval and (approval.workflow_status != 'released_to_mes' or not approval.google_present):
-                raise ValueError('This SO is owned by MRP or missing from source. Additional picking is blocked.')
-            if approval and not saved:
-                raise ValueError('For an approved SO, create the next release from its SO page, not a blank WO.')
-            source = approved_orders().get(data['sales_order']) if approval else None
+            # Blank WOs are operator-entered orders, independent of MRP ownership
+            # and source availability. Keep normal WO/serial validation below.
             if payload and payload['data'] != data:
                 raise ValueError('Inputs changed after preview. Generate the table again.')
             if payload:
@@ -80,12 +76,7 @@ def manual_editor(wo_id, signer):
                 return redirect(url_for('main.generated_detail', wo_id=existing.id))
             if payload and saved and (existing is None or str(existing.pushed_at) != payload['version']):
                 raise ValueError('WO changed in another session. Reload before revising.')
-            if source and source.get('reconciliation_required') and saved:
-                old = totals(saved.items, normalized=True)
-                if any(qty > old.get(name, 0) for name, qty in totals(data['items'], normalized=True).items()):
-                    raise ValueError('Reconciliation permits reductions, not additional picking.')
-            limits = totals(source['items'], normalized=True) if source else None
-            validate(data['items'], limits, [o for o in all_orders if o.sales_order == data['sales_order']], all_orders, wo_id)
+            validate(data['items'], None, [o for o in all_orders if o.sales_order == data['sales_order']], all_orders, wo_id)
             if payload:
                 now = datetime.now(timezone.utc).replace(tzinfo=None)
                 if not existing:
@@ -102,7 +93,7 @@ def manual_editor(wo_id, signer):
                     db.session.flush()
                     refresh_reconciliation(approval)
                 db.session.commit()
-                flash('Blank WO pushed to DB.', 'success')
+                flash('Manual work order saved to database.', 'success')
                 return redirect(url_for('main.generated_detail', wo_id=existing.id))
             token = signer.dumps(dict(mode='manual', id=saved.id if saved else str(uuid4()), edit_id=wo_id,
                                       version=str(saved.pushed_at) if saved else None, data=data))
