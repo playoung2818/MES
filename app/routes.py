@@ -11,7 +11,8 @@ from .document_numbers import lock_document_numbers, next_document_number
 from .importer import read_google_sheet
 from .wo_service import totals, allocated, new_order, parse_items, validate
 from .word_export import word_context
-from .approved_so import approved_orders, lock_review, differences
+from .approved_so import approved_orders, lock_review
+from .so_workflow import notice, refresh_reconciliation
 
 bp = Blueprint('main', __name__)
 from .planning_routes import register_routes
@@ -82,11 +83,11 @@ def so_detail(sales_order=None, wo_id=None):
     siblings = SalesOrder.mes_query().filter_by(sales_order=sales_order).order_by(SalesOrder.release_number).all()
     source = _read_approved_orders().get(sales_order)
     approval = db.session.get(ApprovedSO, sales_order)
-    if not saved and source and approval and differences(approval.approved_snapshot, approval.latest_snapshot):
-        flash('This SO has pending source changes. Review it in MRP before creating a new work order or next release.', 'warning')
-        return redirect(url_for('main.so_review_detail', sales_order=sales_order))
+    if not saved and source and (source.get('source_missing') or source.get('reconciliation_required')):
+        flash(notice(approval, source), 'warning')
+        return render_template('so_unavailable.html', sales_order=sales_order, releases=siblings), 409
     if not source and not saved:
-        flash('This SO is unapproved, inactive, or removed from the source; new WO generation is unavailable. Existing WOs can still be revised.', 'warning')
+        flash('This SO is unapproved, inactive, or removed from the source; new WO generation is unavailable. Existing WOs remain accessible as records.', 'warning')
         return render_template('so_unavailable.html', sales_order=sales_order, releases=siblings), 503
     if saved:
         order = SimpleNamespace(sales_order=sales_order, customer=saved.customer, customer_po=saved.customer_po,
@@ -101,9 +102,13 @@ def so_detail(sales_order=None, wo_id=None):
     target_id = saved.id if saved else str(uuid4())
     context = dict(sales_order=sales_order, order=order, lines=order.items, releases=siblings,
                    release_number=release_number, editing=saved, remaining=remaining,
-                   ship_date=source.get('ship_date') if source else None, **word_context(saved))
+                   ship_date=source.get('ship_date') if source else None,
+                   workflow_notice=notice(approval, source),
+                   workflow_conflicts=(source or {}).get('reconciliation_details') or {}, **word_context(saved))
     if request.method == 'POST':
         try:
+            if not approval or approval.workflow_status != 'released_to_mes' or not approval.google_present:
+                raise ValueError('SO is owned by MRP or missing from source. WO edits and additional picking are blocked.')
             if request.form.get('action') == 'push':
                 try:
                     payload = _signer().loads(request.form.get('preview_token', ''), max_age=3600)
@@ -119,8 +124,14 @@ def so_detail(sales_order=None, wo_id=None):
                 db.session.expire_all()
                 current_source = _read_approved_orders().get(sales_order)
                 current_approval = db.session.get(ApprovedSO, sales_order)
-                if not saved and current_approval and differences(current_approval.approved_snapshot, current_approval.latest_snapshot):
-                    raise ValueError('This SO has pending source changes. Review it in MRP before creating a new work order or next release.')
+                if not current_approval or current_approval.workflow_status != 'released_to_mes' or not current_approval.google_present:
+                    raise ValueError('SO returned to MRP or disappeared from source after preview. Picking/release is blocked.')
+                if not saved and current_source and current_source.get('reconciliation_required'):
+                    raise ValueError('Resolve WO reconciliation before creating another release.')
+                if saved and current_source and current_source.get('reconciliation_required'):
+                    old_totals = totals(saved.items, normalized=True)
+                    if any(qty > old_totals.get(name, 0) for name, qty in totals(items, normalized=True).items()):
+                        raise ValueError('While reconciliation is pending, existing WOs may only be reduced/reconciled, not increased.')
                 if payload.get('source_revision') != (current_source or {}).get('revision'):
                     raise ValueError('Approved SO changed after preview. Reload and generate the table again.')
                 if not saved and not current_source:
@@ -149,6 +160,8 @@ def so_detail(sales_order=None, wo_id=None):
                 current.customer_po = payload['customer_po']
                 current.items = items
                 current.pushed_at = now
+                db.session.flush()
+                refresh_reconciliation(current_approval)
                 db.session.commit()
                 flash(f'{current.document_number} / P{current.release_number} pushed to DB.', 'success')
                 return redirect(url_for('main.generated_detail', wo_id=current.id))
@@ -177,7 +190,10 @@ def so_detail(sales_order=None, wo_id=None):
 def generated_orders():
     q = request.args.get('q', '').strip()
     orders = _search(SalesOrder.mes_query(), q).order_by(SalesOrder.document_number.desc()).all()
-    return render_template('generated.html', orders=orders, q=q)
+    approvals = {a.sales_order: a for a in ApprovedSO.query.all()}
+    sources = _read_approved_orders()
+    return render_template('generated.html', orders=orders, q=q,
+                           workflow_notices={o.sales_order: notice(approvals.get(o.sales_order), sources.get(o.sales_order)) for o in orders})
 
 
 @bp.route('/generated/wo/<wo_id>')
@@ -185,7 +201,9 @@ def generated_detail(wo_id):
     order = db.session.get(SalesOrder, wo_id)
     if order is None or order.record_source != 'mes':
         abort(404)
+    approval = db.session.get(ApprovedSO, order.sales_order)
     return render_template('generated_detail.html', order=order, lines=order.items,
+                           workflow_notice=notice(approval, _read_approved_orders().get(order.sales_order)),
                            sales_order=order.sales_order, **shipment_context([order]), **word_context(order))
 
 
@@ -194,7 +212,9 @@ def generated_so(sales_order):
     orders = SalesOrder.mes_query().filter_by(sales_order=sales_order).order_by(SalesOrder.release_number).all()
     if not orders:
         abort(404)
-    return render_template('generated.html', orders=orders, q=sales_order)
+    approval = db.session.get(ApprovedSO, sales_order)
+    return render_template('generated.html', orders=orders, q=sales_order,
+                           workflow_notices={sales_order: notice(approval, _read_approved_orders().get(sales_order))})
 
 
 @bp.route('/sync-google', methods=['POST'])

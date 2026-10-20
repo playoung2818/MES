@@ -84,26 +84,40 @@ The SO is Picked after P1 even though some quantity is still unpicked.
 ### MRP-owned sales-order review
 
 The review module has moved to MRP at `/sales_orders`. MRP performs explicit
-Google-source sync, source diffs, manual item ordering and approval, material
+CLI database imports, item/ordered-quantity diffs, manual item ordering and approval, material
 review, and initial production planning. MES has no review or approval form.
 Set `MRP_BASE_URL` (default `http://localhost:5002`) to the MRP URL reachable by
 users' browsers so old review bookmarks redirect correctly.
 
-MRP CLI stages new SOs privately in `approved_work_orders` (`is_active=FALSE`).
-Material review records blockers; orders wait in Needs Production Planning while
-shipment updates are tracked. Only final production-date confirmation publishes
-the SO (`is_active=TRUE`) and writes its initial date to `production_overrides`.
-MES refreshes these database rows; there is no separate MES eligibility/approval action. SO source changes must be
-reviewed in MRP before new WO generation; existing WOs can still be revised.
+`approved_work_orders.workflow_status` is the single shared owner/status:
+`needs_material_review`, `needs_production_planning`, `released_to_mes`, `closed`.
+MES active SO lists/calendar read only `released_to_mes`. MRP shows only its two
+active stages, never completed history. Initial production-date assignment releases
+the SO to MES. Item/total-ordered-quantity changes return it to MRP's Needs Material
+Review with the **Returned from MES** badge. Existing WOs remain accessible but
+read-only while MRP owns the SO; new releases and additional picking are blocked,
+including stale preview pushes and linked manual-editor bypasses.
 
-Source snapshots remain previous/latest/approved with revision checks and stable
-item IDs. MRP rejects incomplete source syncs and approvals below saved WO
-allocations. Missing SOs are excluded without deletion; reappearing SOs require
-MRP reapproval. MES only adjusts production dates on Production Planning; WO
-execution, serials, shipments and finished-goods controls are unchanged.
+Revision approval in MRP returns the SO directly to MES, retaining its schedule,
+finished-goods status and WOs. Existing allocation conflicts or additional work
+on finished-goods SOs carry **WO reconciliation required**. New releases are
+blocked until reconciled. Existing WOs can explicitly be reduced/reconciled;
+no automatic rewrite or deletion occurs. Explicit calendar/finished-goods actions
+acknowledge finished-goods disposition, but do not erase allocation conflicts.
 
-**Source and scope:** planning and new WO generation both read approved, active,
-Google-present `public.approved_work_orders`. Planning excludes Drop Ship items. Picked quantities come
+Dates, item order/IDs and partial shipments do not trigger MRP reapproval.
+MES release limits account for imported external shipments without subtracting
+MES shipments twice. Missing source SOs keep their owner with a disposition
+warning and blocked new work; absence alone is not cancellation. Proven fully
+shipped SOs may close. History remains in the database only.
+
+Run the explicit MRP migration before starting upgraded MES:
+`python -m mrp_system.cli.setup_so_workflow` (preview), then `--apply` after
+inspection. This ALTERs existing tables only and backs up SO rows before apply;
+MES startup does not silently backfill workflow ownership.
+
+**Source and scope:** planning and new WO generation both read approved,
+MES-owned `public.approved_work_orders`. Drop Ship SOs are excluded entirely. Picked quantities come
 from `WO Details`. Neither page reads Google or `open_sales_orders` directly.
 The MRP-managed `open_sales_orders` table is left untouched. Scheduling remains
 per SO/QB number, not per partial-release UUID. Manual WOs without an approved

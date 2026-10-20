@@ -51,6 +51,14 @@ class ApprovedSO(db.Model):
     approved_at = db.Column(db.DateTime)
     source_revision = db.Column(db.Integer, nullable=False, default=0, server_default='0')
     revision = db.Column(db.Integer, nullable=False, default=0, server_default='0')
+    workflow_status = db.Column(db.String(40), nullable=False, default='needs_material_review', server_default='needs_material_review')
+    returned_from_mes = db.Column(db.Boolean, nullable=False, default=False, server_default=false())
+    approved_order_signature = db.Column(db.JSON)
+    mes_released_at = db.Column(db.DateTime(timezone=True))
+    review_incident_id = db.Column(db.Uuid)
+    material_review_id = db.Column(db.Uuid)
+    reconciliation_required = db.Column(db.Boolean, nullable=False, default=False, server_default=false())
+    reconciliation_details = db.Column(db.JSON, nullable=False, default=dict, server_default='{}')
 
     def to_source(self):
         return dict(self.metadata_fields or {}, sales_order=self.sales_order, customer=self.customer,

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}{{ sales_order }} | NEOUSYS MES{% endblock %}
 {% block content %}
+{% if workflow_notice %}<div class="alert alert-warning">{{ workflow_notice }}{% if workflow_conflicts %}<ul>{% for issue in workflow_conflicts.get('allocations', []) %}<li>{{ issue.item }}: allowed WO total {{ issue.ordered }}, allocated {{ issue.allocated }}</li>{% endfor %}{% for issue in workflow_conflicts.get('shipments', []) %}<li>{{ issue.item }}: source reports {{ issue.source_shipped }} shipped, MES WOs mark {{ issue.mes_shipped }} shipped. Reconcile shipment attribution; the ordered quantity has not been reduced.</li>{% endfor %}{% if workflow_conflicts.get('finished_goods') %}<li>Added requirements need an explicit finished-goods/production disposition on Production Planning.</li>{% endif %}</ul>{% endif %}</div>{% endif %}
 <div class="workspace-breadcrumb"><a href="{{ url_for('main.index') }}">Sales orders</a><span>/</span><span>{{ sales_order }}</span></div>
 <header class="workspace-header">
   <div><h1 class="workspace-title">{{ sales_order }}</h1><p class="workspace-description">{% if editing %}Revise {{ editing.document_number or 'work order' }}{% else %}Create work order{% endif %} · Release P{{ release_number }}</p></div>

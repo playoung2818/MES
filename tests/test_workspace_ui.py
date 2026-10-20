@@ -1,7 +1,8 @@
 import unittest
 from html import unescape
 from flask import Flask
-from app.models import db
+from app.models import db, ApprovedSO
+from datetime import datetime
 from app.routes import bp
 from unittest.mock import patch
 
@@ -18,6 +19,10 @@ class WorkspaceUITests(unittest.TestCase):
         self.client = self.app.test_client()
         self.source = dict(sales_order='SO1', customer='Customer', customer_po='HIDDEN-PO',
                            ship_date='2030-03-18', items=[dict(item='Hidden product', quantity=2)])
+        db.session.add(ApprovedSO(sales_order='SO1',items=self.source['items'],
+                                 workflow_status='released_to_mes',approved_at=datetime.now(),
+                                 google_present=True,is_active=True))
+        db.session.commit()
         self.mock = patch('app.routes._read_approved_orders', return_value={'SO1': self.source})
         self.mock.start()
 
@@ -55,8 +60,9 @@ class WorkspaceUITests(unittest.TestCase):
         self.assertIn('name="preview_token"', response.text)
         self.assertIn('value="push">Save work order', response.text)
         self.assertIn('id="generated-table"', response.text)
-        self.assertIn('data-copy-word="word-header"', response.text)
-        self.assertIn('data-copy-word="word-picking"', response.text)
+        self.assertIn('id="word-header"', response.text)
+        self.assertIn('id="word-picking"', response.text)
+        # Preview exports are read-only; copy actions appear on saved WOs.
 
     def test_shared_assets_and_manual_hooks(self):
         response = self.client.get('/wo/new')

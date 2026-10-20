@@ -44,13 +44,27 @@ class ApprovedSOTests(unittest.TestCase):
             return session['planning_csrf']
 
     def sync(self, source=None):
+        # Legacy snapshot helper supplies fixture data; production import is MRP CLI.
         sync_snapshots(self.result(source))
-        return db.session.get(ApprovedSO, 'SO1')
+        row = db.session.get(ApprovedSO, 'SO1')
+        from app.wo_service import totals
+        before = totals((row.approved_snapshot or {}).get('items', []), normalized=True)
+        after = totals((row.latest_snapshot or {}).get('items', []), normalized=True)
+        if row.workflow_status == 'closed' or (row.workflow_status == 'released_to_mes' and before != after):
+            row.workflow_status = 'needs_material_review'
+            row.returned_from_mes = True
+            db.session.commit()
+        return row
 
     def publish(self, row=None, reverse=False):
         row = row or db.session.get(ApprovedSO, 'SO1')
         ids = [item['id'] for item in row.latest_snapshot['items']]
         approve(row, ids[::-1] if reverse else ids, row.source_revision, row.revision)
+        from app.wo_service import totals
+        row.workflow_status = 'released_to_mes'  # Simulate the MRP handoff, not MES approval.
+        row.returned_from_mes = False
+        row.approved_order_signature = totals(row.latest_snapshot['items'], normalized=True)
+        db.session.commit()
         return row
 
     def test_sync_stages_only_and_generation_never_reads_google(self):
@@ -74,11 +88,11 @@ class ApprovedSOTests(unittest.TestCase):
         self.publish(self.sync())
         self.assertEqual(self.client.get('/so/SO1').status_code, 200)
         source = deepcopy(self.source)
-        source['terms'] = 'Net60'
+        source['items'][1]['quantity'] = 6
         self.sync(source)
         response = self.client.get('/so/SO1')
-        self.assertEqual(response.status_code, 302)
-        self.assertIn('/production_planning/orders/SO1', response.location)
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(db.session.get(ApprovedSO, 'SO1').workflow_status, 'needs_material_review')
         self.assertEqual(SalesOrder.query.count(), 0)
         self.publish()
         self.assertEqual(self.client.get('/so/SO1').status_code, 200)
@@ -161,6 +175,8 @@ class ApprovedSOTests(unittest.TestCase):
         other = deepcopy(self.source)
         other['sales_order'] = 'SO2'
         sync_snapshots({'orders': {'SO2': other}, 'skipped': 0, 'messages': []})
+        row.workflow_status = 'closed'  # Explicit disposition, not inferred from absence.
+        db.session.commit()
         self.assertNotIn('SO1', approved_orders())
         self.assertNotIn('SO1', list(load_orders()['QB Num']))
         self.assertFalse(row.google_present)
@@ -186,17 +202,18 @@ class ApprovedSOTests(unittest.TestCase):
         self.publish(row, reverse=True)
         self.assertIn('SO1', approved_orders())
 
-    def test_already_removed_rows_are_excluded_without_another_sync(self):
+    def test_missing_source_retains_mes_owner_but_blocks_new_work(self):
         row = self.publish(self.sync())
         row.google_present = False  # Simulate a removal under the previous policy.
         row.latest_snapshot = None
         db.session.commit()
         self.assertTrue(row.is_active)
-        self.assertNotIn('SO1', approved_orders())
-        self.assertEqual(self.client.get('/so/SO1').status_code, 503)
-        self.sync()  # Reappears: old active flag must not cause automatic activation.
-        self.assertFalse(row.is_active)
-        self.assertNotIn('SO1', approved_orders())
+        self.assertIn('SO1', approved_orders())
+        self.assertTrue(approved_orders()['SO1']['source_missing'])
+        self.assertEqual(self.client.get('/so/SO1').status_code, 409)
+        self.sync()  # Same ordered requirements returning do not require re-review.
+        self.assertIn('SO1', approved_orders())
+        self.assertEqual(row.workflow_status, 'released_to_mes')
 
     def test_conflicting_approval_and_allocation_reduction_are_blocked(self):
         row = self.publish(self.sync())
@@ -513,8 +530,13 @@ class ApprovedSOTests(unittest.TestCase):
             self.assertEqual(json.loads(backups[0].read_text(encoding='utf-8'))[0]['sales_order'], 'LEGACY')
             ensure_approved_so_schema(folder)
             self.assertEqual(len(list(Path(folder).glob('*.json'))), 1)
-        row = db.session.get(ApprovedSO, 'LEGACY')
-        self.assertEqual(row.items, [{'item': 'Part', 'quantity': 2}])
-        self.assertIsNone(row.approved_at)
-        self.assertFalse(row.is_active)
+        # Workflow backfill must be explicit, not an implicit MES startup migration.
+        from app.approved_so_schema import require_so_workflow_schema
+        with self.assertRaisesRegex(RuntimeError, 'setup_so_workflow'):
+            require_so_workflow_schema()
+        with db.engine.connect() as connection:
+            row = connection.execute(text('SELECT items,approved_at,is_active FROM approved_work_orders WHERE sales_order=\'LEGACY\'')).mappings().one()
+        self.assertEqual(json.loads(row['items']), [{'item':'Part','quantity':2}])
+        self.assertIsNone(row['approved_at'])
+        self.assertFalse(row['is_active'])
         self.assertIn('latest_snapshot', {column['name'] for column in inspect(db.engine).get_columns('approved_work_orders')})

@@ -3,7 +3,8 @@ from html import unescape
 import re
 from unittest.mock import patch
 from flask import Flask
-from app.models import db, SalesOrder
+from app.models import db, SalesOrder, ApprovedSO
+from datetime import datetime
 from app.routes import bp
 from app.serial_pruner import prune_and_sort_serials
 
@@ -24,6 +25,10 @@ class SerialTableTests(unittest.TestCase):
         self.client = self.app.test_client()
         self.sheet = {'SO1': {'sales_order': 'SO1', 'customer': 'Customer', 'customer_po': 'PO1',
                              'items': [{'item': 'Part', 'quantity': 10}]}}
+        db.session.add(ApprovedSO(sales_order='SO1',items=[{'item':'Part','quantity':10}],
+                                 workflow_status='released_to_mes',approved_at=datetime.now(),
+                                 google_present=True,is_active=True))
+        db.session.commit()
         self.mock = patch('app.routes._read_approved_orders', side_effect=lambda: self.sheet)
         self.mock.start()
 

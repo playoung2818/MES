@@ -26,13 +26,16 @@ def is_drop_ship_order(source):
 
 def approved_orders():
     orders = {}
+    from .so_workflow import execution_source
+    saved = defaultdict(list)
+    for wo in SalesOrder.mes_query().all():
+        saved[wo.sales_order].append(wo)
     for row in ApprovedSO.query.filter(
-            ApprovedSO.approved_at.isnot(None), ApprovedSO.is_active.is_(True),
-            ApprovedSO.google_present.is_(True)).all():
-        source = row.to_source()
+            ApprovedSO.approved_at.isnot(None), ApprovedSO.workflow_status == 'released_to_mes').all():
+        source = execution_source(row, saved[row.sales_order])
         # The published warehouse lines may omit a Drop Ship line still in the
         # CLI snapshot. Check that snapshot too, excluding the entire SO.
-        snapshot = row.latest_snapshot or row.approved_snapshot or source
+        snapshot = row.latest_snapshot or row.previous_snapshot or row.approved_snapshot or source
         if not is_drop_ship_order(snapshot) and not is_drop_ship_order(source):
             orders[row.sales_order] = source
     return orders

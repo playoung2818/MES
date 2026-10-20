@@ -6,7 +6,9 @@ from uuid import uuid4
 from urllib.parse import quote
 from flask import current_app, jsonify, render_template, request, session, redirect, abort
 from sqlalchemy.exc import SQLAlchemyError
-from .models import db, ProductionOverride
+from .models import db, ProductionOverride, ApprovedSO
+from .approved_so import lock_review
+from .so_workflow import refresh_reconciliation
 from .production_planning import PlanningDataError, load_orders, build_plan
 from .production_schedule import upsert as _upsert, parse_production_date
 
@@ -64,6 +66,8 @@ def register_routes(bp):
         if not isinstance(assignments, list) or not assignments or len(assignments) > 2000:
             return jsonify(ok=False, error='Provide a nonempty list of schedule changes (up to 2000).'), 400
         try:
+            lock_review()
+            db.session.expire_all()
             orders = load_orders()
             keys = set(orders['QB Num'])
             parsed, seen = [], set()
@@ -95,6 +99,14 @@ def register_routes(bp):
                                   schedule_updated_at=now, schedule_updated_by=request.remote_addr,
                                   finished_goods_updated_at=None, finished_goods_updated_by=None)
                 _upsert(ProductionOverride, values)
+                approval = db.session.get(ApprovedSO, number)
+                if approval:
+                    # This explicit MES action acknowledges the finished-goods
+                    # disposition; allocation conflicts still require WO revision.
+                    details = dict(approval.reconciliation_details or {})
+                    details['finished_goods'] = False
+                    approval.reconciliation_details = details
+                    refresh_reconciliation(approval)
             db.session.commit()
         except (PlanningDataError, SQLAlchemyError):
             db.session.rollback()

@@ -4,7 +4,9 @@ from uuid import uuid4
 from flask import current_app, request, session, abort, flash, redirect, url_for
 from itsdangerous import URLSafeTimedSerializer, BadData
 from sqlalchemy.exc import SQLAlchemyError
-from .models import db, SalesOrder
+from .models import db, SalesOrder, ApprovedSO
+from .approved_so import lock_review
+from .so_workflow import refresh_reconciliation
 
 
 def signer():
@@ -29,6 +31,7 @@ def register_shipment_routes(bp):
             abort(400)
         try:
             payload = signer().loads(request.form.get('shipment_token', ''), max_age=3600)
+            lock_review()
             order = SalesOrder.mes_query().filter_by(id=wo_id).populate_existing().with_for_update().first()
             if order is None:
                 abort(404)
@@ -36,6 +39,10 @@ def register_shipment_routes(bp):
                 raise ValueError('This WO changed. Reload before updating shipment status.')
             order.is_shipped = target == '1'
             order.shipment_updated_at = datetime.now(timezone.utc)
+            approval = db.session.get(ApprovedSO, order.sales_order)
+            if approval:
+                db.session.flush()
+                refresh_reconciliation(approval)
             db.session.commit()
             flash('WO marked shipped. It will no longer count as WIP on the next MRP run.' if order.is_shipped else
                   'WO marked not shipped. Its quantities will count as WIP on the next MRP run.', 'success')

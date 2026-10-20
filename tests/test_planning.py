@@ -39,7 +39,7 @@ class PlanningTests(unittest.TestCase):
         orders = {}
         for record in records:
             row = orders.setdefault(record['QB Num'], ApprovedSO(sales_order=record['QB Num'],
-                     customer=record['Name'], items=[], is_active=True, approved_at=datetime.now(),
+                     customer=record['Name'], items=[], is_active=True, workflow_status='released_to_mes', approved_at=datetime.now(),
                      synced_at=datetime.now(), google_present=True,
                      metadata_fields={'ship_date': record['Ship Date'], 'terms': record['Terms'],
                                       'inventory_site': record['Inventory Site']}))

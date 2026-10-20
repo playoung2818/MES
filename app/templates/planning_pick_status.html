@@ -1,3 +1,5 @@
+{% if o.source_missing %}<div class="text-warning small">Source missing — disposition required</div>{% endif %}
+{% if o.reconciliation_required %}<div class="text-warning small">WO reconciliation required</div>{% endif %}
 <div class="order-meta">
   WO Status:
   <span class="status-pill {% if o.wo_status == 'Picked' %}status-picked{% else %}status-na{% endif %}">{{ o.wo_status }}</span>

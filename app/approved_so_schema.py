@@ -17,6 +17,17 @@ COLUMNS = {
 }
 
 
+WORKFLOW_COLUMNS = {'workflow_status', 'returned_from_mes', 'approved_order_signature',
+                    'mes_released_at', 'review_incident_id', 'material_review_id',
+                    'reconciliation_required', 'reconciliation_details'}
+
+
+def require_so_workflow_schema():
+    missing = WORKFLOW_COLUMNS - {c['name'] for c in inspect(db.engine).get_columns(TABLE)}
+    if missing:
+        raise RuntimeError('Run MRP: python -m mrp_system.cli.setup_so_workflow --apply before starting MES. No implicit workflow migration is performed.')
+
+
 def _lock(connection):
     if db.engine.dialect.name == 'postgresql':
         connection.execute(text('SELECT pg_advisory_xact_lock(26091002)'))
@@ -42,7 +53,7 @@ def rename_approved_so_table(backup_dir=None):
         if existing == [TABLE]:
             return False
         required = {'sales_order', 'customer', 'customer_po', 'items'}
-        known = required | set(COLUMNS)
+        known = required | set(COLUMNS) | WORKFLOW_COLUMNS
         for name in existing:
             columns = {column['name'] for column in inspector.get_columns(name)}
             if (not required.issubset(columns) or not columns.issubset(known)

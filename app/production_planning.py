@@ -31,9 +31,11 @@ def load_orders():
                          'Customer PO': source.get('customer_po') or '', 'Terms': source.get('terms') or '',
                          'Item': item['item'], 'Qty': item['quantity'],
                          'Lead Time': source.get('ship_date') or '', 'Inventory Site': site,
-                         'Notes': source.get('notes') or ''})
+                         'Notes': source.get('notes') or '',
+                         'Source Missing': source.get('source_missing', False),
+                         'Reconciliation': source.get('reconciliation_required', False)})
     frame = pd.DataFrame(rows, columns=['QB Num', 'Customer', 'Customer PO', 'Terms',
-                                       'Item', 'Qty', 'Lead Time', 'Inventory Site', 'Notes'])
+                                       'Item', 'Qty', 'Lead Time', 'Inventory Site', 'Notes', 'Source Missing', 'Reconciliation'])
     frame['Lead Time'] = pd.to_datetime(frame['Lead Time'], errors='coerce', format='mixed')
     return frame
 
@@ -118,6 +120,8 @@ def build_plan(frame, today=None):
         )
         row.update(quantities[number])
         row['notes'] = str(group.iloc[0].get('Notes') or '')
+        row['source_missing'] = bool(group.iloc[0].get('Source Missing', False))
+        row['reconciliation_required'] = bool(group.iloc[0].get('Reconciliation', False))
         if (override and override.is_finished_goods) or (production_date and production_date < today):
             finished.append(row)
         elif not production_date or production_date.weekday() >= 5:
