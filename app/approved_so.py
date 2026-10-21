@@ -31,7 +31,8 @@ def approved_orders():
     for wo in SalesOrder.mes_query().all():
         saved[wo.sales_order].append(wo)
     for row in ApprovedSO.query.filter(
-            ApprovedSO.approved_at.isnot(None), ApprovedSO.workflow_status == 'released_to_mes').all():
+            ApprovedSO.approved_at.isnot(None), ApprovedSO.workflow_status == 'released_to_mes',
+            ApprovedSO.google_present.is_(True)).all():
         source = execution_source(row, saved[row.sales_order])
         # The published warehouse lines may omit a Drop Ship line still in the
         # CLI snapshot. Check that snapshot too, excluding the entire SO.

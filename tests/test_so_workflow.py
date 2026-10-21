@@ -67,13 +67,66 @@ class WorkflowTests(unittest.TestCase):
 
     def test_partial_shipping_overlap_is_not_an_order_reduction(self):
         self.single_product(7,6)
-        self.wo(7,False)
+        saved=self.wo(7,False)
         source=approved_orders()['SO1']
         self.assertEqual(source['items'][0]['quantity'],7)
         self.assertEqual(source['reconciliation_details']['allocations'],[])
-        self.assertTrue(source['reconciliation_details']['shipments'])
+        self.assertEqual(source['reconciliation_details']['shipments'],[])
+        self.assertFalse(source['reconciliation_required'])
         self.assertEqual(source['workflow_status'],'released_to_mes')
-        self.assertEqual(self.client.get('/so/SO1').status_code,409)
+        self.assertEqual(new_order(source,[saved]).items[0]['quantity'],0)
+        self.assertEqual(source['fulfillment'],[dict(item='nuvo-9000',ordered=7,allocated=7,shipped=6,remaining=1)])
+        self.assertEqual(self.client.get('/so/SO1').status_code,200)
+        page=self.client.get('/generated/wo/'+saved.id)
+        self.assertNotIn('WO reconciliation required',page.text)
+        self.assertIn('Remaining to ship',page.text)
+        self.assertEqual(db.session.get(SalesOrder,saved.id).items[0]['quantity'],7)
+        self.assertFalse(saved.is_shipped)
+        self.assertEqual(self.client.post('/wo/'+saved.id+'/edit',data=self.form(7)).status_code,200)
+
+    def test_partial_invoicing_does_not_allow_duplicate_release(self):
+        self.single_product(7,6)
+        saved=self.wo(2)
+        source=approved_orders()['SO1']
+        self.assertFalse(source['reconciliation_required'])
+        self.assertEqual(source['items'][0]['quantity'],2)
+        self.assertEqual(new_order(source,[saved]).items[0]['quantity'],0)
+        self.assertEqual(self.client.post('/so/SO1',data=self.form(1)).status_code,400)
+        self.assertEqual(SalesOrder.query.count(),1)
+
+    def test_fully_invoiced_order_retains_wo_history_without_new_work(self):
+        self.single_product(7,7)
+        saved=self.wo(7)
+        source=approved_orders()['SO1']
+        self.assertFalse(source['reconciliation_required'])
+        self.assertEqual(source['fulfillment'][0]['remaining'],0)
+        self.assertEqual(source['items'][0]['quantity'],7)
+        self.assertEqual(new_order(source,[saved]).items[0]['quantity'],0)
+
+    def test_invoicing_does_not_hide_real_overallocation(self):
+        self.single_product(7,6)
+        self.wo(8)
+        source=approved_orders()['SO1']
+        self.assertTrue(source['reconciliation_required'])
+        self.assertEqual(source['reconciliation_details']['allocations'],
+                         [dict(item='nuvo-9000',ordered=7,allocated=8)])
+
+    def test_invoicing_more_than_ordered_requires_reconciliation(self):
+        self.single_product(7,8)
+        self.wo(7)
+        source=approved_orders()['SO1']
+        self.assertTrue(source['reconciliation_required'])
+        self.assertEqual(source['reconciliation_details']['shipments'][0]['source_shipped'],8)
+
+    def test_partial_invoicing_across_multiple_open_releases_is_ambiguous(self):
+        self.single_product(7,6)
+        self.wo(3)
+        db.session.add(SalesOrder(sales_order='SO1',release_number=2,
+            items=[{'id':1,'item':'Nuvo-9000','quantity':4,'serials':[]}]))
+        db.session.commit()
+        source=approved_orders()['SO1']
+        self.assertTrue(source['reconciliation_required'])
+        self.assertIn('Assign invoiced shipments',source['reconciliation_details']['shipments'][0]['reason'])
 
     def test_mes_shipments_are_not_subtracted_twice(self):
         self.single_product(7,6)

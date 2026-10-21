@@ -202,15 +202,23 @@ class ApprovedSOTests(unittest.TestCase):
         self.publish(row, reverse=True)
         self.assertIn('SO1', approved_orders())
 
-    def test_missing_source_retains_mes_owner_but_blocks_new_work(self):
+    def test_missing_source_is_hidden_from_active_pages_but_retains_history(self):
         row = self.publish(self.sync())
         row.google_present = False  # Simulate a removal under the previous policy.
         row.latest_snapshot = None
         db.session.commit()
         self.assertTrue(row.is_active)
-        self.assertIn('SO1', approved_orders())
-        self.assertTrue(approved_orders()['SO1']['source_missing'])
-        self.assertEqual(self.client.get('/so/SO1').status_code, 409)
+        self.assertNotIn('SO1', approved_orders())
+        self.assertNotIn('Open order SO1', self.client.get('/').text)
+        self.assertNotIn('data-wo="SO1"', self.client.get('/production_planning').text)
+        self.assertEqual(self.client.get('/so/SO1').status_code, 503)
+        saved = SalesOrder(sales_order='SO1', is_manual=True,
+                           items=[{'id': 1, 'item': 'System', 'quantity': 1, 'serials': []}])
+        db.session.add(saved)
+        db.session.commit()
+        self.assertEqual(self.client.get('/generated/wo/' + saved.id).status_code, 200)
+        self.assertIn('SO1', self.client.get('/generated').text)
+        self.assertEqual(row.workflow_status, 'released_to_mes')
         self.sync()  # Same ordered requirements returning do not require re-review.
         self.assertIn('SO1', approved_orders())
         self.assertEqual(row.workflow_status, 'released_to_mes')

@@ -202,8 +202,10 @@ def generated_detail(wo_id):
     if order is None or order.record_source != 'mes':
         abort(404)
     approval = db.session.get(ApprovedSO, order.sales_order)
+    source = _read_approved_orders().get(order.sales_order) if not order.is_manual else None
     return render_template('generated_detail.html', order=order, lines=order.items,
-                           workflow_notice='' if order.is_manual else notice(approval, _read_approved_orders().get(order.sales_order)),
+                           fulfillment=(source or {}).get('fulfillment', []),
+                           workflow_notice='' if order.is_manual else notice(approval, source),
                            sales_order=order.sales_order, **shipment_context([order]), **word_context(order))
 
 

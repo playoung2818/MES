@@ -91,12 +91,14 @@ users' browsers so old review bookmarks redirect correctly.
 
 `approved_work_orders.workflow_status` is the single shared owner/status:
 `needs_material_review`, `needs_production_planning`, `released_to_mes`, `closed`.
-MES active SO lists/calendar read only `released_to_mes`. MRP shows only its two
+MES active SO lists/calendar read only `released_to_mes` orders still present in
+the current imported open-sales-order data (`google_present=true`). MRP shows only its two
 active stages, never completed history. Initial production-date assignment releases
 the SO to MES. Item/total-ordered-quantity changes return it to MRP's Needs Material
 Review with the **Returned from MES** badge. Existing WOs remain accessible but
-read-only while MRP owns the SO; new releases and additional picking are blocked,
-including stale preview pushes and linked manual-editor bypasses.
+read-only while MRP owns the SO; normal SO releases and additional picking are blocked,
+including stale preview pushes. Operator-entered manual WOs are independent of
+MRP ownership/source availability and retain normal quantity/serial validation.
 
 Revision approval in MRP returns the SO directly to MES, retaining its schedule,
 finished-goods status and WOs. Existing allocation conflicts or additional work
@@ -106,9 +108,18 @@ no automatic rewrite or deletion occurs. Explicit calendar/finished-goods action
 acknowledge finished-goods disposition, but do not erase allocation conflicts.
 
 Dates, item order/IDs and partial shipments do not trigger MRP reapproval.
-MES release limits account for imported external shipments without subtracting
-MES shipments twice. Missing source SOs keep their owner with a disposition
-warning and blocked new work; absence alone is not cancellation. Proven fully
+Imported invoiced quantities are proof of shipment. Allocation conflicts compare
+saved WO quantities with the original ordered totals, not the uninvoiced balance.
+A partial invoice overlapping one existing WO is not a reconciliation error.
+Release capacity preserves existing allocations but excludes invoiced quantities
+not already covered, without subtracting whole-WO MES shipments twice. For example,
+7 ordered / 7 allocated / 6 invoiced means 1 remaining to ship and 0 available for
+a new WO; saved quantities and serial history remain unchanged. The saved-WO detail
+page shows SO-level ordered, allocated, shipped/invoiced and remaining quantities.
+Invoices above the ordered total still flag reconciliation, as do partial invoices
+spanning multiple open WO releases that require shipment-to-release assignment. Missing source SOs are hidden from active SO lists and Production Planning, while
+retaining their owner, saved WOs and history. New normal SO releases remain blocked;
+absence alone is not cancellation. Proven fully
 shipped SOs may close. History remains in the database only.
 
 Run the explicit MRP migration before starting upgraded MES:
