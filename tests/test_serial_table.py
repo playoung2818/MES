@@ -27,7 +27,7 @@ class SerialTableTests(unittest.TestCase):
                              'items': [{'item': 'Part', 'quantity': 10}]}}
         db.session.add(ApprovedSO(sales_order='SO1',items=[{'item':'Part','quantity':10}],
                                  workflow_status='released_to_mes',approved_at=datetime.now(),
-                                 google_present=True,is_active=True))
+                                 source_present=True))
         db.session.commit()
         self.mock = patch('app.routes._read_approved_orders', side_effect=lambda: self.sheet)
         self.mock.start()

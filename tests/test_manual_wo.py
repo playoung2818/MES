@@ -70,7 +70,7 @@ class ManualTests(unittest.TestCase):
 
     def test_manual_orders_ignore_source_presence_and_quantity_limits(self):
         approval = ApprovedSO(sales_order='SO-MANUAL', items=[{'id': 'source-1', 'item': 'System', 'quantity': 1}],
-                              workflow_status='released_to_mes', google_present=False)
+                              workflow_status='released_to_mes', source_present=False)
         db.session.add(approval)
         db.session.commit()
         self.push()
@@ -80,12 +80,12 @@ class ManualTests(unittest.TestCase):
         self.push(f'/wo/{saved.id}/manual')
         db.session.refresh(saved)
         self.assertEqual(saved.items[0]['quantity'], 8)
-        self.assertFalse(approval.google_present)
+        self.assertFalse(approval.source_present)
         self.assertEqual(approval.workflow_status, 'released_to_mes')
 
     def test_manual_wo_does_not_display_mrp_read_only_warning(self):
         approval = ApprovedSO(sales_order='SO-MANUAL', items=[],
-                              workflow_status='needs_material_review', google_present=True)
+                              workflow_status='needs_material_review', source_present=True)
         db.session.add(approval)
         db.session.commit()
         response = self.push()
@@ -97,6 +97,27 @@ class ManualTests(unittest.TestCase):
             page = self.client.get(url)
             self.assertEqual(page.status_code, 200)
             self.assertNotIn('Existing WO is read-only', page.text)
+
+    def test_missing_source_shows_only_shipped_label_in_manual_wo_history(self):
+        approval = ApprovedSO(sales_order='SO-MANUAL', items=[],
+                              workflow_status='released_to_mes', source_present=False)
+        db.session.add(approval)
+        db.session.commit()
+        self.push()
+        saved = SalesOrder.query.one()
+        for url in (f'/generated/wo/{saved.id}', '/generated', '/generated/SO-MANUAL'):
+            page = self.client.get(url)
+            self.assertEqual(page.status_code, 200)
+            self.assertIn('>Shipped</div>', page.text)
+            self.assertNotIn('SO not in current open-sales-order import.', page.text)
+            self.assertNotIn('Existing WO is read-only', page.text)
+        db.session.refresh(saved)
+        self.assertFalse(saved.is_shipped)
+        self.assertEqual(self.client.get(f'/wo/{saved.id}/manual').status_code, 200)
+        approval.source_present = True
+        db.session.commit()
+        for url in (f'/generated/wo/{saved.id}', '/generated', '/generated/SO-MANUAL'):
+            self.assertNotIn('>Shipped</div>', self.client.get(url).text)
 
     def test_changed_preview_invalid_qty_and_duplicate(self):
         response = self.client.post('/wo/new', data=self.form)

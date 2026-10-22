@@ -1,16 +1,16 @@
-import json
-import tempfile
+"""Current MES eligibility and handoff guards; no independent SO approval API."""
 import unittest
 from copy import deepcopy
 from datetime import date, datetime
-from pathlib import Path
 from unittest.mock import patch
+from uuid import uuid4
+
 from flask import Flask
-from sqlalchemy import inspect, text
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import inspect
+
 from app.models import db, ApprovedSO, SalesOrder, ProductionOverride
 from app.routes import bp
-from app.approved_so import differences, review_items, sync_snapshots, approve, approved_orders
+from app.approved_so import approved_orders
 from app.production_planning import load_orders, labor_map
 from test_serial_table import token
 
@@ -27,229 +27,128 @@ class ApprovedSOTests(unittest.TestCase):
         self.client = self.app.test_client()
         self.source = {'sales_order': 'SO1', 'customer': 'Inficon', 'customer_po': 'PO1',
                        'ship_date': date.today().isoformat(), 'terms': 'Net30', 'inventory_site': 'WH01S-NTA',
-                       'items': [{'item': 'Cable', 'quantity': 10, 'configuration': 'Cable config'},
-                                 {'item': 'Nuvo-9000', 'quantity': 5}]}
+                       'items': [{'id': str(uuid4()), 'item': 'Cable', 'quantity': 10, 'configuration': 'Cable config'},
+                                 {'id': str(uuid4()), 'item': 'Nuvo-9000', 'quantity': 5}]}
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
         self.context.pop()
 
-    def result(self, source=None):
-        return {'orders': {'SO1': deepcopy(source or self.source)}, 'skipped': 0, 'messages': []}
-
-    def csrf(self):
-        self.client.get('/production_planning')
-        with self.client.session_transaction() as session:
-            return session['planning_csrf']
-
-    def sync(self, source=None):
-        # Legacy snapshot helper supplies fixture data; production import is MRP CLI.
-        sync_snapshots(self.result(source))
-        row = db.session.get(ApprovedSO, 'SO1')
-        from app.wo_service import totals
-        before = totals((row.approved_snapshot or {}).get('items', []), normalized=True)
-        after = totals((row.latest_snapshot or {}).get('items', []), normalized=True)
-        if row.workflow_status == 'closed' or (row.workflow_status == 'released_to_mes' and before != after):
-            row.workflow_status = 'needs_material_review'
-            row.returned_from_mes = True
-            db.session.commit()
-        return row
-
-    def publish(self, row=None, reverse=False):
-        row = row or db.session.get(ApprovedSO, 'SO1')
-        ids = [item['id'] for item in row.latest_snapshot['items']]
-        approve(row, ids[::-1] if reverse else ids, row.source_revision, row.revision)
-        from app.wo_service import totals
-        row.workflow_status = 'released_to_mes'  # Simulate the MRP handoff, not MES approval.
-        row.returned_from_mes = False
-        row.approved_order_signature = totals(row.latest_snapshot['items'], normalized=True)
+    def pending_fixture(self):
+        row = ApprovedSO(sales_order='SO1', items=[], latest_snapshot=deepcopy(self.source),
+                         source_present=True, source_revision=1, revision=0,
+                         workflow_status='needs_material_review', review_incident_id=uuid4(),
+                         synced_at=datetime.now())
+        db.session.add(row)
         db.session.commit()
         return row
 
-    def test_sync_stages_only_and_generation_never_reads_google(self):
-        row = self.sync()
-        self.assertIsNone(row.approved_at)
-        self.assertEqual(approved_orders(), {})
-        self.assertEqual(SalesOrder.query.count(), 0)
+    def handoff_fixture(self, row=None, reverse=False):
+        """Seed the result of MRP handoff directly, not a MES approval function."""
+        from app.wo_service import totals
+        row = row or self.pending_fixture()
+        row.customer = self.source['customer']
+        row.customer_po = self.source['customer_po']
+        row.items = deepcopy(row.latest_snapshot['items'])
+        if reverse:
+            row.items.reverse()
+        row.metadata_fields = {key: self.source[key] for key in ('ship_date', 'terms', 'inventory_site')}
+        row.approved_snapshot = deepcopy(row.latest_snapshot)
+        row.approved_order_signature = totals(row.items, normalized=True)
+        row.approved_at = datetime.now()
+        row.workflow_status = 'released_to_mes'
+        row.revision += 1
+        db.session.commit()
+        return row
+
+    def form(self):
+        return dict(action='preview', item_order='1,2', quantity_1='5', quantity_2='10',
+                    serials_1='NA', serials_2='NA', notes_1='', notes_2='Cable config')
+
+    def test_mrp_owned_orders_are_not_eligible_even_with_an_old_approval_timestamp(self):
+        row = self.pending_fixture()
+        row.approved_at = datetime.now()
+        db.session.commit()
+        for status in ('needs_material_review', 'needs_production_planning', 'closed'):
+            row.workflow_status = status
+            db.session.commit()
+            self.assertNotIn('SO1', approved_orders())
+            self.assertEqual(self.client.get('/so/SO1').status_code, 503)
+
+    def test_current_handoff_controls_generation_and_keeps_mrp_item_order(self):
+        row = self.pending_fixture()
         with patch('app.routes.read_google_sheet', side_effect=AssertionError('GET must not read Google')):
             self.assertEqual(self.client.get('/').status_code, 200)
             self.assertEqual(self.client.get('/so/SO1').status_code, 503)
-            self.assertEqual(self.client.get('/production_planning').status_code, 200)
-            self.publish(row, reverse=True)
-            response = self.client.get('/so/SO1')
-            self.assertEqual(response.status_code, 200)
+            self.handoff_fixture(row, reverse=True)
+            self.assertEqual(self.client.get('/so/SO1').status_code, 200)
         self.assertEqual([item['item'] for item in approved_orders()['SO1']['items']], ['Nuvo-9000', 'Cable'])
         self.assertEqual(list(load_orders()['Item']), ['Nuvo-9000', 'Cable'])
         self.assertEqual(labor_map(load_orders())['SO1']['qty'], 5)
         self.assertEqual(SalesOrder.query.count(), 0)
 
-    def test_changed_so_blocks_new_wo_until_reapproved(self):
-        self.publish(self.sync())
-        self.assertEqual(self.client.get('/so/SO1').status_code, 200)
-        source = deepcopy(self.source)
-        source['items'][1]['quantity'] = 6
-        self.sync(source)
-        response = self.client.get('/so/SO1')
-        self.assertEqual(response.status_code, 503)
-        self.assertEqual(db.session.get(ApprovedSO, 'SO1').workflow_status, 'needs_material_review')
-        self.assertEqual(SalesOrder.query.count(), 0)
-        self.publish()
-        self.assertEqual(self.client.get('/so/SO1').status_code, 200)
-
-    def test_each_sync_diff_and_unapproved_changes_keep_final_order(self):
-        row = self.publish(self.sync(), reverse=True)
-        ids = [item['id'] for item in row.items]
-        source = deepcopy(self.source)
-        source['items'][1]['quantity'] = 6
-        source['customer_po'] = 'PO2'
-        self.sync(source)
-        self.assertEqual(row.customer_po, 'PO1')
-        self.assertEqual(row.items[0]['quantity'], 5)
-        self.assertTrue(any('quantity' in change for change in differences(row.previous_snapshot, row.latest_snapshot)))
-        self.assertEqual([item['id'] for item in review_items(row)], ids)
-        self.sync(source)
-        self.assertEqual(differences(row.previous_snapshot, row.latest_snapshot), [])
-        self.assertTrue(differences(row.approved_snapshot, row.latest_snapshot))
-        approve(row, ids, row.source_revision, row.revision)
-        self.assertEqual(row.customer_po, 'PO2')
-        self.assertEqual([item['id'] for item in row.items], ids)
-        self.assertEqual(row.items[0]['quantity'], 6)
-
-    def test_configuration_change_keeps_unambiguous_identity_and_order(self):
-        row = self.publish(self.sync(), reverse=True)
-        ids = [item['id'] for item in row.items]
-        changed = deepcopy(self.source)
-        changed['items'][1]['configuration'] = 'Updated system config'
-        self.sync(changed)
-        self.assertEqual([item['id'] for item in review_items(row)], ids)
-        self.assertTrue(any('configuration' in change for change in differences(row.previous_snapshot, row.latest_snapshot)))
-        approve(row, ids, row.source_revision, row.revision)
-        response = self.client.get('/so/SO1')
-        self.assertIn('Updated system config', response.text)
-
-    def test_order_only_diff_does_not_overwrite_manual_order(self):
-        row = self.publish(self.sync(), reverse=True)
-        source = deepcopy(self.source)
-        source['items'].reverse()
-        self.sync(source)
-        changes = differences(row.previous_snapshot, row.latest_snapshot)
-        self.assertEqual(changes, ['Google item order changed (separate from item content)'])
-        self.assertEqual([item['item'] for item in row.items], ['Nuvo-9000', 'Cable'])
-
-    def test_added_item_is_appended_in_review_and_removed_item_disappears(self):
-        row = self.publish(self.sync(), reverse=True)
-        source = deepcopy(self.source)
-        source['items'].insert(0, {'item': 'New item', 'quantity': 1})
-        self.sync(source)
-        self.assertEqual([item['item'] for item in review_items(row)], ['Nuvo-9000', 'Cable', 'New item'])
-        source['items'] = [item for item in source['items'] if item['item'] != 'Cable']
-        self.sync(source)
-        self.assertEqual([item['item'] for item in review_items(row)], ['Nuvo-9000', 'New item'])
-        self.assertTrue(any('Removed item' in change for change in differences(row.approved_snapshot, row.latest_snapshot)))
-
-    def test_empty_or_malformed_sync_preserves_everything(self):
-        row = self.publish(self.sync())
-        before = deepcopy(row.latest_snapshot), deepcopy(row.items), row.source_revision
-        for result in ({'orders': {}}, dict(self.result(), skipped=1), dict(self.result(), messages=['missing columns'])):
-            with self.assertRaises(ValueError):
-                sync_snapshots(result)
-            db.session.rollback()
-        self.assertEqual((row.latest_snapshot, row.items, row.source_revision), before)
-        self.assertTrue(row.is_active)
-
-    def test_removal_automatically_excludes_and_reappearance_requires_approval(self):
-        row = self.publish(self.sync(), reverse=True)
-        ids = [item['id'] for item in row.items]
-        approved_before = deepcopy(row.approved_snapshot), deepcopy(row.items), row.approved_at
-        revision = row.revision
-        form = dict(action='preview', item_order='1,2', quantity_1='5', quantity_2='10',
-                    serials_1='NA', serials_2='NA', notes_1='', notes_2='Cable config')
-        preview = self.client.post('/so/SO1', data=form)
-        form.update(action='push', preview_token=token(preview))
-        saved = SalesOrder(sales_order='SO1', customer='Inficon', customer_po='PO1',
-                           items=[{'id': 1, 'item': 'Nuvo-9000', 'quantity': 2, 'serials': ['NA'], 'notes': ''}])
-        db.session.add(saved)
-        db.session.commit()
-        saved_before = deepcopy(saved.items), saved.pushed_at, saved.document_number
-        other = deepcopy(self.source)
-        other['sales_order'] = 'SO2'
-        sync_snapshots({'orders': {'SO2': other}, 'skipped': 0, 'messages': []})
-        row.workflow_status = 'closed'  # Explicit disposition, not inferred from absence.
+    def test_handoff_requires_approval_timestamp(self):
+        row = self.pending_fixture()
+        row.workflow_status = 'released_to_mes'
         db.session.commit()
         self.assertNotIn('SO1', approved_orders())
-        self.assertNotIn('SO1', list(load_orders()['QB Num']))
-        self.assertFalse(row.google_present)
-        self.assertFalse(row.is_active)
-        self.assertEqual(row.revision, revision + 1)
-        self.assertEqual((row.approved_snapshot, row.items, row.approved_at), approved_before)
+
+    def test_returned_revision_blocks_new_work_without_rewriting_published_content(self):
+        row = self.handoff_fixture()
+        original = deepcopy(row.items)
+        row.previous_snapshot = deepcopy(row.latest_snapshot)
+        incoming = deepcopy(row.latest_snapshot)
+        incoming['items'][1]['quantity'] = 6
+        row.latest_snapshot = incoming
+        row.workflow_status = 'needs_material_review'
+        row.returned_from_mes = True
+        db.session.commit()
+        self.assertNotIn('SO1', approved_orders())
         self.assertEqual(self.client.get('/so/SO1').status_code, 503)
-        self.assertEqual(self.client.post('/so/SO1', data=form).status_code, 503)
-        self.assertEqual(SalesOrder.query.count(), 1)
-        self.assertEqual((saved.items, saved.pushed_at, saved.document_number), saved_before)
-        self.assertEqual(self.client.get('/wo/' + saved.id + '/edit').status_code, 200)
-        self.assertNotIn('<td class="fw-semibold">SO1</td>', self.client.get('/production_planning/orders').text)
-        self.assertNotIn('Review orders (', self.client.get('/production_planning').text)
-        self.assertEqual(self.client.get('/production_planning/orders?status=all').status_code, 302)
-        detail = self.client.get('/production_planning/orders/SO1')
-        self.assertTrue(detail.location.endswith('/sales_orders/SO1'))
-        self.assertIsNotNone(db.session.get(ApprovedSO, 'SO1'))
-        self.sync()
-        self.assertEqual([item['id'] for item in review_items(row)], ids)
-        self.assertFalse(row.is_active)
-        self.assertNotIn('SO1', approved_orders())
-        self.assertTrue(self.client.get('/production_planning/orders?status=unapproved').location.endswith('/sales_orders'))
-        self.publish(row, reverse=True)
-        self.assertIn('SO1', approved_orders())
+        self.assertEqual(row.items, original)
 
-    def test_missing_source_is_hidden_from_active_pages_but_retains_history(self):
-        row = self.publish(self.sync())
-        row.google_present = False  # Simulate a removal under the previous policy.
-        row.latest_snapshot = None
-        db.session.commit()
-        self.assertTrue(row.is_active)
-        self.assertNotIn('SO1', approved_orders())
-        self.assertNotIn('Open order SO1', self.client.get('/').text)
-        self.assertNotIn('data-wo="SO1"', self.client.get('/production_planning').text)
-        self.assertEqual(self.client.get('/so/SO1').status_code, 503)
+    def test_missing_source_hides_active_order_but_preserves_owner_and_saved_wo(self):
+        row = self.handoff_fixture()
         saved = SalesOrder(sales_order='SO1', is_manual=True,
                            items=[{'id': 1, 'item': 'System', 'quantity': 1, 'serials': []}])
         db.session.add(saved)
         db.session.commit()
+        original = deepcopy(row.items), deepcopy(saved.items), row.revision
+        row.previous_snapshot = deepcopy(row.latest_snapshot)
+        row.latest_snapshot = None
+        row.source_present = False
+        db.session.commit()
+        self.assertNotIn('SO1', approved_orders())
+        self.assertNotIn('Open order SO1', self.client.get('/').text)
+        self.assertNotIn('data-wo="SO1"', self.client.get('/production_planning').text)
+        self.assertEqual(self.client.get('/so/SO1').status_code, 503)
         self.assertEqual(self.client.get('/generated/wo/' + saved.id).status_code, 200)
-        self.assertIn('SO1', self.client.get('/generated').text)
         self.assertEqual(row.workflow_status, 'released_to_mes')
-        self.sync()  # Same ordered requirements returning do not require re-review.
+        self.assertEqual((row.items, saved.items, row.revision), original)
+        row.source_present = True
+        row.latest_snapshot = deepcopy(self.source)
+        db.session.commit()
+        self.assertIn('SO1', approved_orders())
+
+    def test_date_only_change_does_not_remove_mes_ownership(self):
+        row = self.handoff_fixture()
+        incoming = deepcopy(row.latest_snapshot)
+        incoming['ship_date'] = '2030-12-31'
+        row.latest_snapshot = incoming
+        db.session.commit()
         self.assertIn('SO1', approved_orders())
         self.assertEqual(row.workflow_status, 'released_to_mes')
 
-    def test_conflicting_approval_and_allocation_reduction_are_blocked(self):
-        row = self.publish(self.sync())
-        old_source, old_revision = row.source_revision, row.revision
-        changed = deepcopy(self.source)
-        changed['items'][1]['quantity'] = 6
-        self.sync(changed)
-        with self.assertRaisesRegex(ValueError, 'changed in another session'):
-            approve(row, [item['id'] for item in row.latest_snapshot['items']], old_source, old_revision)
-        db.session.rollback()
-        db.session.add(SalesOrder(sales_order='SO1', items=[{'item': 'nuvo-9000', 'quantity': 7}]))
-        db.session.commit()
-        with self.assertRaisesRegex(ValueError, 'saved WOs allocate'):
-            self.publish(row)
-        db.session.rollback()
-        self.assertEqual(row.items[1]['quantity'], 5)
-
-    def test_preview_stale_after_so_approval_and_final_push(self):
-        row = self.publish(self.sync(), reverse=True)
-        form = dict(action='preview', item_order='1,2', quantity_1='5', quantity_2='10',
-                    serials_1='NA', serials_2='NA', notes_1='', notes_2='Cable config')
+    def test_preview_stale_after_mrp_publication_cannot_push(self):
+        row = self.handoff_fixture(reverse=True)
+        form = self.form()
         response = self.client.post('/so/SO1', data=form)
         self.assertEqual(response.status_code, 200)
         form.update(action='push', preview_token=token(response))
-        changed = deepcopy(self.source)
-        changed['customer_po'] = 'PO2'
-        self.sync(changed)
-        approve(row, [item['id'] for item in review_items(row)], row.source_revision, row.revision)
+        row.customer_po = 'PO2'
+        row.revision += 1
+        db.session.commit()
         response = self.client.post('/so/SO1', data=form)
         self.assertEqual(response.status_code, 400)
         self.assertIn('Approved SO changed after preview', response.text)
@@ -260,291 +159,64 @@ class ApprovedSOTests(unittest.TestCase):
         self.assertEqual(self.client.post('/so/SO1', data=form).status_code, 302)
         self.assertEqual([item['item'] for item in SalesOrder.query.one().items], ['Nuvo-9000', 'Cable'])
 
-    def test_review_forms_and_sync_endpoint_are_disabled_in_mes(self):
-        csrf = self.csrf()
-        with patch('app.routes.read_google_sheet', side_effect=AssertionError('MES must not sync source orders')):
-            for form in ({}, {'csrf_token': csrf}):
-                self.assertEqual(self.client.post('/sync-google', data=form).status_code, 410)
-                self.assertEqual(self.client.post('/production_planning/orders/SO1', data=form).status_code, 410)
-        self.assertEqual(ApprovedSO.query.count(), 0)
-        response = self.client.get('/production_planning/orders/SO1')
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.location.endswith('/sales_orders/SO1'))
-
-    def test_case_only_product_change_keeps_partial_allocation(self):
-        row = self.publish(self.sync(), reverse=True)
-        db.session.add(SalesOrder(sales_order='SO1', items=[{'id': 1, 'item': 'Nuvo-9000', 'quantity': 2, 'serials': []}]))
+    def test_case_insensitive_allocations_still_limit_new_picking(self):
+        row = self.handoff_fixture(reverse=True)
+        db.session.add(SalesOrder(sales_order='SO1', items=[{'id': 1, 'item': 'NUVO-9000', 'quantity': 2, 'serials': []}]))
         db.session.commit()
-        changed = deepcopy(self.source)
-        changed['items'][1]['item'] = 'NUVO-9000'
-        self.sync(changed)
-        approve(row, [item['id'] for item in review_items(row)], row.source_revision, row.revision)
-        response = self.client.get('/so/SO1')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('name="quantity_1" value="3"', response.text)
-        response = self.client.post('/so/SO1', data=dict(action='preview', item_order='1,2',
-                                   quantity_1='4', quantity_2='10', serials_1='NA', serials_2='NA'))
+        self.assertIn('name="quantity_1" value="3"', self.client.get('/so/SO1').text)
+        response = self.client.post('/so/SO1', data={**self.form(), 'quantity_1': '4'})
         self.assertEqual(response.status_code, 400)
         self.assertIn('exceeds remaining quantity 3', response.text)
+        self.assertEqual(row.workflow_status, 'released_to_mes')
 
-    def test_duplicate_lines_flagged_and_stale_review_form_rejected(self):
-        source = deepcopy(self.source)
-        source['items'].append(deepcopy(source['items'][0]))
-        row = self.sync(source)
-        csrf = self.csrf()
-        response = self.client.get('/production_planning/orders/SO1')
-        self.assertEqual(response.status_code, 302)
-        old_source_revision = row.source_revision
-        ids = ','.join(item['id'] for item in row.latest_snapshot['items'])
-        source['customer_po'] = 'Changed'
-        self.sync(source)
-        response = self.client.post('/production_planning/orders/SO1', data={
-            'csrf_token': csrf, 'source_revision': old_source_revision, 'revision': row.revision,
-            'item_order': ids, 'action': 'approve'})
-        self.assertEqual(response.status_code, 410)
-        self.assertIn('review moved to MRP', response.json['error'])
+    def test_disabled_legacy_posts_cannot_approve_sync_or_change_schedule(self):
+        row = self.pending_fixture()
+        db.session.add(ProductionOverride(wo_number='SO1', is_finished_goods=True))
+        db.session.commit()
+        before = deepcopy(row.latest_snapshot), row.revision, row.workflow_status
+        with patch('app.routes.read_google_sheet', side_effect=AssertionError('MES must not import SOs')):
+            for path in ('/sync-google', '/production_planning/orders/SO1'):
+                self.assertEqual(self.client.post(path, data={'action': 'approve'}).status_code, 410)
+        self.assertEqual((row.latest_snapshot, row.revision, row.workflow_status), before)
         self.assertIsNone(row.approved_at)
-
-    def review_form(self, row, production_date=''):
-        return {'csrf_token': self.csrf(), 'source_revision': row.source_revision,
-                'revision': row.revision, 'action': 'approve', 'production_date': production_date,
-                'item_order': ','.join(item['id'] for item in review_items(row))}
-
-    def next_weekday(self):
-        from datetime import timedelta
-        target = date.today()
-        while target.weekday() >= 5:
-            target += timedelta(days=1)
-        return target
-
-    def test_review_cannot_publish_so_or_set_production_in_mes(self):
-        row = self.sync()
-        response = self.client.get('/production_planning/orders/SO1')
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.location.endswith('/sales_orders/SO1'))
-        response = self.client.post('/production_planning/orders/SO1', data=self.review_form(row, self.next_weekday().isoformat()))
-        self.assertEqual(response.status_code, 410)
-        self.assertFalse(row.is_active)
-        self.assertIsNone(row.approved_at)
-        self.assertIsNone(db.session.get(ProductionOverride, 'SO1'))
+        self.assertTrue(db.session.get(ProductionOverride, 'SO1').is_finished_goods)
         self.assertEqual(SalesOrder.query.count(), 0)
+        self.assertTrue(self.client.get('/production_planning/orders/SO1').location.endswith('/sales_orders/SO1'))
 
-    def test_review_invalid_production_date_does_not_publish_so(self):
-        from datetime import timedelta
-        row = self.sync()
-        weekend = self.next_weekday()
-        while weekend.weekday() != 5:
-            weekend += timedelta(days=1)
-        for raw in ('invalid', weekend.isoformat(), (date.today()-timedelta(days=1)).isoformat()):
-            response = self.client.post('/production_planning/orders/SO1', data=self.review_form(row, raw))
-            self.assertEqual(response.status_code, 410)
-            self.assertIsNone(row.approved_at)
-            self.assertEqual(ProductionOverride.query.count(), 0)
-
-    def test_blank_review_date_preserves_finished_goods_schedule(self):
-        row = self.sync()
-        target = self.next_weekday()
-        db.session.add(ProductionOverride(wo_number='SO1', production_date=target, is_finished_goods=True))
-        db.session.commit()
-        response = self.client.get('/production_planning/orders/SO1')
-        self.assertEqual(response.status_code, 302)
-        response = self.client.post('/production_planning/orders/SO1', data=self.review_form(row))
-        self.assertEqual(response.status_code, 410)
-        schedule = db.session.get(ProductionOverride, 'SO1')
-        self.assertEqual(schedule.production_date, target)
-        self.assertTrue(schedule.is_finished_goods)
-
-    def test_disabled_review_cannot_change_finished_goods(self):
-        row = self.sync()
-        db.session.add(ProductionOverride(wo_number='SO1', is_finished_goods=True,
-                       finished_goods_updated_at=datetime.now(), finished_goods_updated_by='previous'))
-        db.session.commit()
-        response = self.client.post('/production_planning/orders/SO1',
-                                    data=self.review_form(row, self.next_weekday().isoformat()))
-        self.assertEqual(response.status_code, 410)
-        schedule = db.session.get(ProductionOverride, 'SO1')
-        self.assertTrue(schedule.is_finished_goods)
-        self.assertIsNotNone(schedule.finished_goods_updated_at)
-        self.assertEqual(schedule.finished_goods_updated_by, 'previous')
-
-    def test_review_date_and_so_publication_roll_back_together(self):
-        from sqlalchemy.exc import SQLAlchemyError
-        from app.approved_so import save_production_date
-        row = self.sync()
-        form = self.review_form(row, self.next_weekday().isoformat())
-        def save_then_fail(*args, **kwargs):
-            save_production_date(*args, **kwargs)
-            raise SQLAlchemyError('simulated schedule failure')
-        with patch('app.approved_so.save_production_date', side_effect=save_then_fail), patch.object(self.app.logger, 'exception'):
-            response = self.client.post('/production_planning/orders/SO1', data=form)
-        self.assertEqual(response.status_code, 410)
-        self.assertIsNone(row.approved_at)
-        self.assertFalse(row.is_active)
-        self.assertEqual(row.revision, 0)
-        self.assertEqual(ProductionOverride.query.count(), 0)
-
-    def test_review_reads_material_ready_date_without_modifying_source_table(self):
-        from app.material_readiness import load_material_readiness
-        row = self.sync()
-        response = self.client.get('/production_planning/orders/SO1')
-        self.assertEqual(response.status_code, 302)
-        self.assertFalse(inspect(db.engine).has_table('so_material_readiness'))
-        with db.engine.begin() as connection:
-            connection.execute(text('CREATE TABLE so_material_readiness ("QB Num" TEXT PRIMARY KEY, earliest_material_ready_date DATE)'))
-            connection.execute(text('INSERT INTO so_material_readiness VALUES (:so, :ready)'),
-                               [{'so': 'SO1', 'ready': '2030-03-18'}, {'so': 'SO2', 'ready': None}])
-        before = deepcopy(row.latest_snapshot), row.source_revision, row.revision
-        response = self.client.get('/production_planning/orders/SO1')
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.location.endswith('/sales_orders/SO1'))
-        self.assertEqual((row.latest_snapshot, row.source_revision, row.revision), before)
-        self.assertEqual(load_material_readiness('SO2')['message'], 'Not determined')
-        self.assertEqual(load_material_readiness('MISSING')['message'], 'No readiness record')
-        self.assertEqual(load_material_readiness("SO1' OR 1=1 --")['message'], 'No readiness record')
-        with db.engine.connect() as connection:
-            self.assertEqual(connection.execute(text('SELECT count(*) FROM so_material_readiness')).scalar(), 2)
-            self.assertEqual(connection.execute(text('SELECT earliest_material_ready_date FROM so_material_readiness WHERE "QB Num" = :so'),
-                                                {'so': 'SO1'}).scalar(), '2030-03-18')
-        with patch('app.material_readiness.inspect', side_effect=SQLAlchemyError('read failure')):
-            self.assertEqual(self.client.get('/production_planning/orders/SO1').status_code, 302)
-        with db.engine.begin() as connection:
-            connection.execute(text('DROP TABLE so_material_readiness'))
-
-    def test_review_summary_lt_sort_and_status_filters(self):
-        now = datetime.now()
-        def source(number, lt):
-            return dict(sales_order=number, customer='Customer', customer_po='', ship_date=lt, items=[])
-        approved = source('APP', '10/02/2030')
-        changed = source('CHANGE', '9/30/2030')
-        db.session.add_all([
-            ApprovedSO(sales_order='APP', items=[], latest_snapshot=approved, approved_snapshot=deepcopy(approved),
-                       approved_at=now, synced_at=now, google_present=True, is_active=True),
-            ApprovedSO(sales_order='NEW', items=[], latest_snapshot=source('NEW', '10/01/2030'),
-                       synced_at=now, google_present=True),
-            ApprovedSO(sales_order='CHANGE', items=[], latest_snapshot=changed,
-                       approved_snapshot=source('CHANGE', '9/29/2030'), approved_at=now,
-                       synced_at=now, google_present=True, is_active=True),
-            ApprovedSO(sales_order='LEGACY', items=[], metadata_fields={'ship_date': 'invalid'}),
-            ApprovedSO(sales_order='REMOVE', items=[], metadata_fields={'ship_date': '9/28/2030'},
-                       approved_snapshot=source('REMOVE', '9/28/2030'), approved_at=now,
-                       synced_at=now, google_present=False, is_active=True),
-            ApprovedSO(sales_order='RETIRE', items=[], approved_at=now, synced_at=now,
-                       google_present=False, is_active=False),
-        ])
-        db.session.commit()
-        import re
-        def so_ids(response):
-            return re.findall(r'<td class="fw-semibold">([^<]+)</td>', response.text)
-        response = self.client.get('/production_planning/orders?status=all')
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(response.location.endswith('/sales_orders'))
-        self.assertEqual(so_ids(self.client.get('/production_planning/orders')), [])
-        for status, number in [('approved', 'APP'), ('changed', 'CHANGE'), ('unapproved', 'NEW'),
-                               ('legacy', 'LEGACY'), ('removed', 'REMOVE'), ('retired', 'RETIRE')]:
-            response = self.client.get('/production_planning/orders?status=' + status)
-            self.assertEqual(response.status_code, 302)
-            self.assertTrue(response.location.endswith('/sales_orders'))
-        self.assertEqual(so_ids(self.client.get('/production_planning/orders?all=1')), [])
-        self.assertEqual(so_ids(self.client.get('/production_planning/orders?status=approved&q=APP')), [])
-        self.assertEqual(so_ids(self.client.get('/production_planning/orders?status=changed&q=APP')), [])
-        self.assertEqual(self.client.get('/production_planning/orders?status=invalid').status_code, 302)
-
-    def test_table_rename_preserves_approved_records_and_is_idempotent(self):
-        from app.approved_so_schema import rename_approved_so_table
-        self.publish(self.sync(), reverse=True)
-        with db.engine.begin() as connection:
-            before = [dict(row) for row in connection.execute(text('SELECT * FROM approved_work_orders')).mappings()]
-            connection.execute(text('ALTER TABLE approved_work_orders RENAME TO sales_order'))
-        db.session.expire_all()
-        with tempfile.TemporaryDirectory() as folder:
-            self.assertTrue(rename_approved_so_table(folder))
-            self.assertFalse(rename_approved_so_table(folder))
-            backups = list(Path(folder).glob('sales_order_before_rename_*.json'))
-            self.assertEqual(len(backups), 1)
-        with db.engine.connect() as connection:
-            after = [dict(row) for row in connection.execute(text('SELECT * FROM approved_work_orders')).mappings()]
-        self.assertEqual(before, after)
-        self.assertFalse(inspect(db.engine).has_table('sales_order'))
-        self.assertIn('SO1', approved_orders())
-
-    def test_intermediate_approved_sales_orders_name_migrates(self):
-        from app.approved_so_schema import rename_approved_so_table
-        self.publish(self.sync(), reverse=True)
-        with db.engine.begin() as connection:
-            before = [dict(row) for row in connection.execute(text('SELECT * FROM approved_work_orders')).mappings()]
-            connection.execute(text('ALTER TABLE approved_work_orders RENAME TO approved_sales_orders'))
-        db.session.expire_all()
-        with tempfile.TemporaryDirectory() as folder:
-            self.assertTrue(rename_approved_so_table(folder))
-            self.assertEqual(len(list(Path(folder).glob('approved_sales_orders_before_rename_*.json'))), 1)
-        self.assertFalse(inspect(db.engine).has_table('approved_sales_orders'))
-        with db.engine.connect() as connection:
-            after = [dict(row) for row in connection.execute(text('SELECT * FROM approved_work_orders')).mappings()]
-        self.assertEqual(before, after)
-        self.assertIn('SO1', approved_orders())
-
-    def test_table_rename_refuses_two_existing_names(self):
-        from app.approved_so_schema import rename_approved_so_table
-        with db.engine.begin() as connection:
-            connection.execute(text('CREATE TABLE sales_order (sales_order TEXT PRIMARY KEY)'))
-        with tempfile.TemporaryDirectory() as folder:
-            with self.assertRaisesRegex(RuntimeError, 'Unexpected approved-order table schema'):
-                rename_approved_so_table(folder)
-            self.assertEqual(list(Path(folder).iterdir()), [])
-        self.assertTrue(inspect(db.engine).has_table('sales_order'))
-        self.assertTrue(inspect(db.engine).has_table('approved_work_orders'))
-        with db.engine.begin() as connection:
-            connection.execute(text('DROP TABLE sales_order'))
-
-    def test_rename_cleans_only_recognized_empty_legacy_leftover(self):
-        from sqlalchemy import MetaData
-        from app.approved_so_schema import rename_approved_so_table
-        self.publish(self.sync())
-        ApprovedSO.__table__.to_metadata(MetaData(), name='sales_order').create(db.engine)
-        with tempfile.TemporaryDirectory() as folder:
-            self.assertFalse(rename_approved_so_table(folder))
-            self.assertEqual(len(list(Path(folder).glob('sales_order_before_empty_cleanup_*.json'))), 1)
-        self.assertFalse(inspect(db.engine).has_table('sales_order'))
-        self.assertIn('SO1', approved_orders())
-
-    def test_rename_never_merges_two_populated_tables(self):
-        from sqlalchemy import MetaData
-        from app.approved_so_schema import rename_approved_so_table
-        self.publish(self.sync())
-        ApprovedSO.__table__.to_metadata(MetaData(), name='sales_order').create(db.engine)
-        with db.engine.begin() as connection:
-            connection.execute(text("INSERT INTO sales_order (sales_order,items,metadata_fields) VALUES ('OTHER','[]','{}')"))
-        with tempfile.TemporaryDirectory() as folder:
-            with self.assertRaisesRegex(RuntimeError, 'Multiple approved-order tables contain data'):
-                rename_approved_so_table(folder)
-            self.assertEqual(list(Path(folder).iterdir()), [])
-        with db.engine.begin() as connection:
-            self.assertEqual(connection.execute(text('SELECT count(*) FROM sales_order')).scalar(), 1)
-            self.assertEqual(connection.execute(text('SELECT count(*) FROM approved_work_orders')).scalar(), 1)
-            connection.execute(text('DROP TABLE sales_order'))
-
-    def test_legacy_schema_backup_and_no_implicit_approval(self):
-        from app.approved_so_schema import ensure_approved_so_schema
-        db.session.remove()
-        db.drop_all()
-        with db.engine.begin() as connection:
-            connection.execute(text('CREATE TABLE sales_order (sales_order TEXT PRIMARY KEY, customer TEXT, customer_po TEXT, items JSON)'))
-            connection.execute(text('INSERT INTO sales_order VALUES (:so,:customer,:po,:items)'),
-                               {'so': 'LEGACY', 'customer': 'Customer', 'po': 'PO', 'items': json.dumps([{'item': 'Part', 'quantity': 2}])})
-        with tempfile.TemporaryDirectory() as folder:
-            ensure_approved_so_schema(folder)
-            backups = list(Path(folder).glob('*.json'))
-            self.assertEqual(len(backups), 1)
-            self.assertEqual(json.loads(backups[0].read_text(encoding='utf-8'))[0]['sales_order'], 'LEGACY')
-            ensure_approved_so_schema(folder)
-            self.assertEqual(len(list(Path(folder).glob('*.json'))), 1)
-        # Workflow backfill must be explicit, not an implicit MES startup migration.
+    def test_current_schema_does_not_require_legacy_activation_column(self):
         from app.approved_so_schema import require_so_workflow_schema
-        with self.assertRaisesRegex(RuntimeError, 'setup_so_workflow'):
-            require_so_workflow_schema()
-        with db.engine.connect() as connection:
-            row = connection.execute(text('SELECT items,approved_at,is_active FROM approved_work_orders WHERE sales_order=\'LEGACY\'')).mappings().one()
-        self.assertEqual(json.loads(row['items']), [{'item':'Part','quantity':2}])
-        self.assertIsNone(row['approved_at'])
-        self.assertFalse(row['is_active'])
-        self.assertIn('latest_snapshot', {column['name'] for column in inspect(db.engine).get_columns('approved_work_orders')})
+        require_so_workflow_schema()
+        self.assertNotIn('is_active', {column['name'] for column in inspect(db.engine).get_columns('sales_order_workflow')})
+        self.handoff_fixture()
+        self.assertIn('SO1', approved_orders())
+
+    def test_schema_validation_reports_missing_fields_without_migrating(self):
+        from app.approved_so_schema import require_so_workflow_schema
+        with patch('app.approved_so_schema.inspect') as schema:
+            schema.return_value.get_columns.return_value = [{'name': 'sales_order'}]
+            with self.assertRaisesRegex(RuntimeError, 'Incomplete shared SO workflow schema'):
+                require_so_workflow_schema()
+        self.assertEqual(ApprovedSO.query.count(), 0)
+
+    def test_old_workflow_table_blocks_startup_without_creating_replacement(self):
+        from app.approved_so_schema import require_current_table_name
+        with patch('app.approved_so_schema.inspect') as schema:
+            schema.return_value.get_table_names.return_value = ['approved_work_orders']
+            with self.assertRaisesRegex(RuntimeError, 'rename_sales_order_workflow'):
+                require_current_table_name()
+            schema.return_value.get_columns.assert_not_called()
+
+    def test_legacy_table_names_block_startup_without_migrating(self):
+        from app.approved_so_schema import require_current_table_name
+        with patch('app.approved_so_schema.inspect') as schema:
+            schema.return_value.get_table_names.return_value = ['sales_order']
+            with self.assertRaisesRegex(RuntimeError, 'Legacy SO table names'):
+                require_current_table_name()
+            schema.return_value.get_columns.assert_not_called()
+
+    def test_old_source_presence_name_still_requires_explicit_rename(self):
+        from app.approved_so_schema import require_so_workflow_schema
+        with patch('app.approved_so_schema.inspect') as schema:
+            schema.return_value.get_columns.return_value = [{'name': 'google_present'}]
+            with self.assertRaisesRegex(RuntimeError, 'rename_source_present'):
+                require_so_workflow_schema()

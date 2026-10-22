@@ -5,9 +5,10 @@ from copy import deepcopy
 from datetime import date, datetime, timedelta
 import os
 from flask import Flask
-from app.models import db, SalesOrder, ProductionOverride
+from app.models import db, ApprovedSO, SalesOrder, ProductionOverride
 from app.routes import bp
-from app.approved_so import sync_snapshots, approve
+from app.wo_service import totals
+from uuid import uuid4
 
 
 def create_fixture():
@@ -41,14 +42,28 @@ def create_fixture():
                                    ship_date=future.isoformat(), terms='Net30', inventory_site='WH01S-NTA',
                                    items=[dict(item=product, quantity=qty, configuration='Standard configuration'),
                                           dict(item='Cable kit', quantity=1, configuration='Include accessories')])
-        sync_snapshots(dict(orders=sources, skipped=0, messages=[]))
-        from app.models import ApprovedSO
-        for row in ApprovedSO.query.all():
-            approve(row, [item['id'] for item in row.latest_snapshot['items']], row.source_revision, row.revision)
-        # Include a pending review and a saved partial release in the real workflows.
-        changed = deepcopy(sources)
-        changed['SO-20261209']['customer_po'] = 'PO-UPDATED'
-        sync_snapshots(dict(orders=changed, skipped=0, messages=[]))
+        # Seed current MRP handoff output directly; MES has no approval/sync helper.
+        for number, source in sources.items():
+            for item in source['items']:
+                item['id'] = str(uuid4())
+            db.session.add(ApprovedSO(sales_order=number, customer=source['customer'],
+                customer_po=source['customer_po'], items=deepcopy(source['items']),
+                metadata_fields={key: source[key] for key in ('ship_date', 'terms', 'inventory_site')},
+                latest_snapshot=deepcopy(source), approved_snapshot=deepcopy(source),
+                approved_order_signature=totals(source['items'], normalized=True),
+                source_present=True, workflow_status='released_to_mes', approved_at=datetime.now(),
+                synced_at=datetime.now(), source_revision=1, revision=1))
+        db.session.flush()
+        # A genuine ordered-quantity amendment returns ownership to MRP.
+        row = db.session.get(ApprovedSO, 'SO-20261209')
+        changed = deepcopy(row.latest_snapshot)
+        changed['items'][0]['quantity'] += 1
+        row.previous_snapshot = deepcopy(row.latest_snapshot)
+        row.latest_snapshot = changed
+        row.workflow_status = 'needs_material_review'
+        row.returned_from_mes = True
+        row.review_incident_id = uuid4()
+        row.source_revision += 1
         db.session.add(SalesOrder(id='fixture-saved', sales_order='SO-20261209', release_number=1,
                                  customer='Atlas Automation', customer_po='PO-48102',
                                  document_number='WO-FIXTURE', generated_date=datetime.now(),

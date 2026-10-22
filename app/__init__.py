@@ -16,10 +16,9 @@ def create_app():
     app.register_blueprint(bp)
 
     with app.app_context():
-        from .approved_so_schema import rename_approved_so_table, ensure_approved_so_schema, require_so_workflow_schema
-        rename_approved_so_table()
+        from .approved_so_schema import require_current_table_name, require_so_workflow_schema
+        require_current_table_name()
         db.create_all()
-        ensure_approved_so_schema()
         require_so_workflow_schema()
         _ensure_schema()
         from .schema import migrate_multiple_wos

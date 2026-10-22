@@ -34,8 +34,8 @@ class SalesOrder(db.Model):
 
 
 class ApprovedSO(db.Model):
-    """Approved SO data plus bounded Google review snapshots."""
-    __tablename__ = 'approved_work_orders'
+    """Shared sales-order workflow, approved content and imported snapshots."""
+    __tablename__ = 'sales_order_workflow'
 
     sales_order = db.Column(db.String(80), primary_key=True)
     customer = db.Column(db.String(200))
@@ -45,8 +45,7 @@ class ApprovedSO(db.Model):
     previous_snapshot = db.Column(db.JSON)
     latest_snapshot = db.Column(db.JSON)
     approved_snapshot = db.Column(db.JSON)
-    google_present = db.Column(db.Boolean, nullable=False, default=False, server_default=false())
-    is_active = db.Column(db.Boolean, nullable=False, default=False, server_default=false())
+    source_present = db.Column(db.Boolean, nullable=False, default=False, server_default=false())
     synced_at = db.Column(db.DateTime)
     approved_at = db.Column(db.DateTime)
     source_revision = db.Column(db.Integer, nullable=False, default=0, server_default='0')

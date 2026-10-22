@@ -13,7 +13,8 @@ def production_item(item):
 
 def execution_source(approval, orders):
     source = approval.to_source()
-    source['items'] = deepcopy([i for i in source['items'] or [] if production_item(i)])
+    source['items'] = deepcopy([i for i in source['items'] or [] if production_item(i)
+                               and str(i.get('inventory_site') or source.get('inventory_site') or '').strip().casefold() != 'drop ship'])
     published, imported_shipped, mes_shipped, used = (defaultdict(int) for _ in range(4))
     for item in source['items']:
         published[item['item'].strip().casefold()] += int(item['quantity'])
@@ -75,7 +76,7 @@ def execution_source(approval, orders):
     details = dict(approval.reconciliation_details or {})
     details['allocations'] = conflicts
     details['shipments'] = shipping_issues
-    source.update(workflow_status=approval.workflow_status, source_missing=not approval.google_present,
+    source.update(workflow_status=approval.workflow_status, source_missing=not approval.source_present,
                   reconciliation_required=bool(conflicts or shipping_issues or details.get('finished_goods')),
                   reconciliation_details=details, fulfillment=fulfillment)
     return source
@@ -88,7 +89,7 @@ def notice(approval, source=None):
         return 'SO closed/excluded — existing WO retained as a record; new releases and picking are blocked.'
     if approval.workflow_status != MES:
         return 'SO under MRP review — Returned from MES. Existing WO is read-only; new releases and additional picking are blocked.' if approval.returned_from_mes else 'SO is not MES-owned. Existing WO is read-only.'
-    if not approval.google_present:
+    if not approval.source_present:
         return 'SO missing from current source — disposition required. New releases and picking are blocked.'
     if source and source.get('reconciliation_required'):
         details = source.get('reconciliation_details') or {}

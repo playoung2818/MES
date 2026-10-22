@@ -21,7 +21,7 @@ class WorkspaceUITests(unittest.TestCase):
                            ship_date='2030-03-18', items=[dict(item='Hidden product', quantity=2)])
         db.session.add(ApprovedSO(sales_order='SO1',items=self.source['items'],
                                  workflow_status='released_to_mes',approved_at=datetime.now(),
-                                 google_present=True,is_active=True))
+                                 source_present=True))
         db.session.commit()
         self.mock = patch('app.routes._read_approved_orders', return_value={'SO1': self.source})
         self.mock.start()

@@ -20,7 +20,7 @@ class PlanningDataError(Exception):
 
 
 def load_orders():
-    """Planning and WO generation share approved_work_orders data and item order."""
+    """Planning and WO generation share sales_order_workflow data and item order."""
     rows = []
     for source in approved_orders().values():
         for item in source['items']:

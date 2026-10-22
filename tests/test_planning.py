@@ -39,8 +39,8 @@ class PlanningTests(unittest.TestCase):
         orders = {}
         for record in records:
             row = orders.setdefault(record['QB Num'], ApprovedSO(sales_order=record['QB Num'],
-                     customer=record['Name'], items=[], is_active=True, workflow_status='released_to_mes', approved_at=datetime.now(),
-                     synced_at=datetime.now(), google_present=True,
+                     customer=record['Name'], items=[], workflow_status='released_to_mes', approved_at=datetime.now(),
+                     synced_at=datetime.now(), source_present=True,
                      metadata_fields={'ship_date': record['Ship Date'], 'terms': record['Terms'],
                                       'inventory_site': record['Inventory Site']}))
             row.items = row.items + [{'item': record['Item'], 'quantity': int(record['Qty(-)']),
@@ -94,21 +94,23 @@ class PlanningTests(unittest.TestCase):
         self.assertEqual(db.session.get(ApprovedSO, 'SO1').metadata_fields['notes'], notes)
         self.assertIn('&lt;script&gt;keep as text&lt;/script&gt;', self.client.get('/production_planning').text)
 
-    def test_mixed_site_drop_ship_snapshot_is_excluded_everywhere(self):
+    def test_mixed_site_drop_ship_snapshot_keeps_warehouse_order(self):
         source = db.session.get(ApprovedSO, 'SO1')
+        source.items = source.items + [{'id': 'system', 'item': 'System', 'quantity': 1, 'inventory_site': 'Drop Ship'}]
         source.latest_snapshot = {'inventory_site': 'WH01S-NTA', 'items': [
             {'id': 'cpu', 'item': 'CPU', 'quantity': 1, 'inventory_site': 'WH01S-NTA'},
             {'id': 'system', 'item': 'System', 'quantity': 1, 'inventory_site': ' Drop ship '}]}
         db.session.commit()
         from app.approved_so import approved_orders
-        self.assertNotIn('SO1', approved_orders())
-        self.assertNotIn('SO1', set(load_orders()['QB Num']))
-        self.assertNotIn('data-wo="SO1"', self.client.get('/production_planning').text)
-        self.assertNotIn('Open order SO1', self.client.get('/').text)
+        self.assertIn('SO1', approved_orders())
+        self.assertNotIn('System', [i['item'] for i in approved_orders()['SO1']['items']])
+        self.assertIn('SO1', set(load_orders()['QB Num']))
+        self.assertIn('data-wo="SO1"', self.client.get('/production_planning').text)
+        self.assertIn('Open order SO1', self.client.get('/').text)
         response = self.client.post('/api/production_schedule', headers=self.headers(), json={
             'assignments': [{'wo_number': 'SO1', 'production_date': self.day.isoformat()}]})
-        self.assertEqual(response.status_code, 400)
-        self.assertIsNone(db.session.get(ProductionOverride, 'SO1'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNotNone(db.session.get(ProductionOverride, 'SO1'))
 
     def test_order_colors_follow_picked_status(self):
         with db.engine.begin() as connection:

@@ -107,7 +107,7 @@ def so_detail(sales_order=None, wo_id=None):
                    workflow_conflicts=(source or {}).get('reconciliation_details') or {}, **word_context(saved))
     if request.method == 'POST':
         try:
-            if not approval or approval.workflow_status != 'released_to_mes' or not approval.google_present:
+            if not approval or approval.workflow_status != 'released_to_mes' or not approval.source_present:
                 raise ValueError('SO is owned by MRP or missing from source. WO edits and additional picking are blocked.')
             if request.form.get('action') == 'push':
                 try:
@@ -124,7 +124,7 @@ def so_detail(sales_order=None, wo_id=None):
                 db.session.expire_all()
                 current_source = _read_approved_orders().get(sales_order)
                 current_approval = db.session.get(ApprovedSO, sales_order)
-                if not current_approval or current_approval.workflow_status != 'released_to_mes' or not current_approval.google_present:
+                if not current_approval or current_approval.workflow_status != 'released_to_mes' or not current_approval.source_present:
                     raise ValueError('SO returned to MRP or disappeared from source after preview. Picking/release is blocked.')
                 if not saved and current_source and current_source.get('reconciliation_required'):
                     raise ValueError('Resolve WO reconciliation before creating another release.')
@@ -193,6 +193,7 @@ def generated_orders():
     approvals = {a.sales_order: a for a in ApprovedSO.query.all()}
     sources = _read_approved_orders()
     return render_template('generated.html', orders=orders, q=q,
+                           missing_source_orders={number for number, approval in approvals.items() if not approval.source_present},
                            workflow_notices={o.sales_order: notice(approvals.get(o.sales_order), sources.get(o.sales_order)) for o in orders})
 
 
@@ -204,6 +205,7 @@ def generated_detail(wo_id):
     approval = db.session.get(ApprovedSO, order.sales_order)
     source = _read_approved_orders().get(order.sales_order) if not order.is_manual else None
     return render_template('generated_detail.html', order=order, lines=order.items,
+                           source_missing=bool(approval and not approval.source_present),
                            fulfillment=(source or {}).get('fulfillment', []),
                            workflow_notice='' if order.is_manual else notice(approval, source),
                            sales_order=order.sales_order, **shipment_context([order]), **word_context(order))
@@ -216,6 +218,7 @@ def generated_so(sales_order):
         abort(404)
     approval = db.session.get(ApprovedSO, sales_order)
     return render_template('generated.html', orders=orders, q=sales_order,
+                           missing_source_orders={sales_order} if approval and not approval.source_present else set(),
                            workflow_notices={sales_order: notice(approval, _read_approved_orders().get(sales_order))})
 
 

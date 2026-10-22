@@ -12,7 +12,7 @@ MRP → Sync source, review differences and approve SO items
         ↓
 MRP → Review material blockers and confirm initial production plan
         ↓
-Shared approved_work_orders + production_overrides database
+Shared sales_order_workflow + production_overrides database
         ↓
 MES → Read approved orders; adjust production dates if needed
         ↓
@@ -27,7 +27,7 @@ Save work order
 
 ## Main behavior
 
-- Open SOs, new WO generation, and planning read approved, active `approved_work_orders` rows.
+- Open SOs, new WO generation, and planning read approved, active `sales_order_workflow` rows.
 - **Create a work order without a sales order** opens manual entry without a Google Sheet record or connection.
 - Google snapshot sync and SO approval happen only in **MRP** (`/sales_orders`).
 - MES reads the approved database directly; no second sync/approval is needed.
@@ -44,13 +44,11 @@ Save work order
 - Weekly labor capacity (90 hours/week), family counts, large-order and review
   indicators; Nuvo / NRU / SEMIL / F = 1 hour/unit, POC = 0.5, regardless of
   customer. Other models need review. 
-- Drop Ship SOs are excluded entirely when any source line uses inventory site
-  `Drop Ship` (case-insensitive, trimmed). The latest CLI snapshot is checked as
-  well as published items, so mixed-site SOs cannot appear or be scheduled even
-  if their previously published warehouse lines omitted the Drop Ship line.
-  Existing WO/history records are retained.
+- Drop Ship lines are excluded by inventory site (case-insensitive, trimmed).
+  Warehouse lines on the same SO remain eligible for production planning.
+  Pure Drop Ship SOs stay excluded; existing WO/history records are retained.
 - **Notes** from MRP carry from material review through production assignment into
-  `approved_work_orders.metadata_fields.notes`. They are displayed read-only on
+  `sales_order_workflow.metadata_fields.notes`. They are displayed read-only on
   scheduled, finished/past-date and unassigned SO cards. MES date adjustments
   preserve the notes.
 - Day-by-day production schedule; date edits and finished-goods moves are staged
@@ -89,10 +87,10 @@ review, and initial production planning. MES has no review or approval form.
 Set `MRP_BASE_URL` (default `http://localhost:5002`) to the MRP URL reachable by
 users' browsers so old review bookmarks redirect correctly.
 
-`approved_work_orders.workflow_status` is the single shared owner/status:
+`sales_order_workflow.workflow_status` is the single shared owner/status:
 `needs_material_review`, `needs_production_planning`, `released_to_mes`, `closed`.
 MES active SO lists/calendar read only `released_to_mes` orders still present in
-the current imported open-sales-order data (`google_present=true`). MRP shows only its two
+the current imported open-sales-order data (`source_present=true`). MRP shows only its two
 active stages, never completed history. Initial production-date assignment releases
 the SO to MES. Item/total-ordered-quantity changes return it to MRP's Needs Material
 Review with the **Returned from MES** badge. Existing WOs remain accessible but
@@ -122,13 +120,29 @@ retaining their owner, saved WOs and history. New normal SO releases remain bloc
 absence alone is not cancellation. Proven fully
 shipped SOs may close. History remains in the database only.
 
-Run the explicit MRP migration before starting upgraded MES:
-`python -m mrp_system.cli.setup_so_workflow` (preview), then `--apply` after
-inspection. This ALTERs existing tables only and backs up SO rows before apply;
-MES startup does not silently backfill workflow ownership.
+The shared SO table is now `sales_order_workflow`. Before starting upgraded MES/MRP,
+run from the MRP directory:
+`python -m mrp_system.cli.rename_sales_order_workflow` (preview), then `--apply`.
+This explicitly renames the existing `approved_work_orders` table, backs up its
+rows, and preserves all data, indexes, constraints and dependencies. No replacement
+table is created. The migration is idempotent and refuses conflicting table names.
+Restart both services after the rename and code update.
+
+The source-presence column is now `source_present`. For an existing database
+using the former name, first run from the MRP directory:
+`python -m mrp_system.cli.rename_source_present` (preview), then `--apply`.
+The rename backs up SO rows and preserves every flag value. MES refuses to
+silently add a replacement flag when the legacy column still exists.
+
+The one-time ownership backfill and independent SO approval/sync helpers have
+been removed. MES only validates the current shared SO schema: it does not infer
+ownership from legacy activation flags, add approval columns, or rename old SO
+tables. Provision/restore the current schema if validation reports missing fields.
+Normal MES eligibility uses `workflow_status`, `source_present`, and `approved_at`.
 
 **Source and scope:** planning and new WO generation both read approved,
-MES-owned `public.approved_work_orders`. Drop Ship SOs are excluded entirely. Picked quantities come
+MES-owned `public.sales_order_workflow`. Drop Ship lines are excluded while
+warehouse lines on mixed-site SOs remain eligible. Picked quantities come
 from `WO Details`. Neither page reads Google or `open_sales_orders` directly.
 The MRP-managed `open_sales_orders` table is left untouched. Scheduling remains
 per SO/QB number, not per partial-release UUID. Manual WOs without an approved
@@ -144,7 +158,7 @@ Schedule requests validate source keys/dates and require a session CSRF header.
 Existing shared tables are not replaced. This MES rule treats a saved WO as
 picked by definition; it does not separately confirm physical warehouse picking.
 
-The full-database backup below includes `approved_work_orders`, `WO Details`,
+The full-database backup below includes `sales_order_workflow`, `WO Details`,
 production schedules, and all other objects/data in the configured database.
 
 ## Copy into the Word template
@@ -174,27 +188,23 @@ The app reuses these existing tables; the approval workflow adds **no tables**:
 
 | Table | Purpose |
 |---|---|
-| `approved_work_orders` | Approved SO data/order plus bounded Google snapshots (not saved WO releases) |
+| `sales_order_workflow` | Shared SO workflow at every stage, reviewed content and bounded source snapshots (not saved WO releases) |
 | `WO Details` | Saved WO releases and serials |
 | `production_overrides` | Shared MRP production dates / finished goods |
 | `wo_picked_qty_overrides` | Legacy MRP table, ignored for MES picked quantities |
 
-The former `sales_order` or `approved_sales_orders` table is renamed to
-`approved_work_orders` on startup, before table creation, with a full JSON backup
-at `data/backups/*_before_rename_*.json`. This is a rename, not a second
-SO table: records, approvals, snapshots, and revisions are preserved. If both
-names exist, a recognized empty leftover is backed up and removed under a table
-lock. If both contain data (or the schema is unexpected), startup stops rather
-than guessing or merging records. Restart older app processes after upgrading
-so they do not recreate the legacy name.
+The current shared SO table must be named `sales_order_workflow`. Startup stops
+if it detects `approved_work_orders` (run the explicit rename above), or former
+`sales_order` or `approved_sales_orders` tables rather than
+renaming, merging, or creating another SO table alongside them. Historical
+upgrade backups remain available, but automatic legacy migration is removed.
 The SO-number column remains named `sales_order`; `open_sales_orders` is unchanged.
 
-On initial approval-workflow upgrades, legacy rows are backed up before adding
-review columns (`data/backups/*_before_approval_*.json`). Existing
-customer/PO/items are preserved, but legacy rows are **unapproved and inactive**
-until explicit review. Added columns: `metadata_fields` (ship date/terms/site),
-`previous_snapshot`, `latest_snapshot`, `approved_snapshot`, `google_present`,
-`is_active`, `synced_at`, `approved_at`, `source_revision`, and `revision`.
+Current review fields include `metadata_fields` (ship date/terms/site),
+`previous_snapshot`, `latest_snapshot`, `approved_snapshot`, `source_present`,
+`synced_at`, `approved_at`, `source_revision`, and `revision`. MES validates the
+current schema without adding missing approval columns or backfilling ownership.
+Restart both applications after code upgrades before removing retired columns.
 
 Saved WO model/table:
 
@@ -266,7 +276,7 @@ Quantity limits are aggregated by product across the SO; duplicate product lines
 share that limit. Approved SO Qty is assumed to be the original ordered quantity,
 not a shrinking unshipped balance. Allocation is not shipment confirmation.
 
-New SO-based releases require approved, active `approved_work_orders` data, not Google
+New SO-based releases require approved, active `sales_order_workflow` data, not Google
 access. Existing WOs remain independently revisable; without active approved
 limits, revisions cannot increase total allocated quantities. WO preview is
 read-only, and only **Save work order** saves the WO.

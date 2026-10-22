@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}{{ order.document_number or order.sales_order }} | NEOUSYS MES{% endblock %}
 {% block content %}
-{% if workflow_notice %}<div class="alert alert-warning">{{ workflow_notice }}</div>{% endif %}
+{% if source_missing %}<div class="text-info mb-3">Shipped</div>{% endif %}
 <div class="workspace-breadcrumb"><a href="{{ url_for('main.generated_orders') }}">Work orders</a><span>/</span><span>{{ order.sales_order }}</span></div>
 <header class="workspace-header">
   <div><h1 class="workspace-title"><span class="document-number-highlight">{{ order.document_number or 'Generated WO' }}</span> — P{{ order.release_number }}</h1><p class="workspace-description">Saved work order · {{ order.sales_order }}{% if order.is_manual %} · Manual entry{% endif %}</p></div>
