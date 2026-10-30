@@ -4,7 +4,7 @@ from copy import deepcopy
 from .models import db, SalesOrder
 
 MES = 'released_to_mes'
-NONPRODUCTION = {'shipping charge', 'forwarding charge', 'tariff (estimation)', 'tariff charge', 'engineer services'}
+NONPRODUCTION = {'shipping charge', 'forwarding charge', 'tariff (estimation)', 'tariff charge', 'engineer services', 'education discount'}
 
 
 def production_item(item):

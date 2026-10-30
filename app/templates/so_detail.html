@@ -45,6 +45,7 @@
 {% if show_table %}
 <section id="generated-table" class="card-lite mt-3" aria-label="Work order preview">
   <div class="compact-card-header"><span>Work order preview</span>{% if preview %}<span class="data-note">Not saved yet</span>{% endif %}</div>
+  {% include 'wo_preview_checks.html' %}
   {% include 'word_export.html' %}
   <div class="workspace-header-actions p-3 no-print"><button class="btn btn-primary" name="action" value="push">{{ 'Save revision' if editing else 'Save work order' }}</button></div>
 </section>

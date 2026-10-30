@@ -1,0 +1,24 @@
+{% if wo_checks %}
+<div id="wo-preview-checks" class="p-3 border-bottom no-print" role="region" aria-label="WO preview checks">
+  <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+    <strong>WO preview checks</strong>
+    <span class="badge text-bg-{{ 'danger' if wo_checks.critical_count else 'success' }}">{{ wo_checks.critical_count }} critical</span>
+    <span class="badge text-bg-{{ 'warning' if wo_checks.warning_count else 'secondary' }}">{{ wo_checks.warning_count }} warnings</span>
+    <span class="data-note">{{ wo_checks.matched_serials }} / {{ wo_checks.checked_serials }} serials match receiving log</span>
+  </div>
+  <p class="data-note mb-2">Checked {{ wo_checks.checked_at }} against the current imported SO and existing receiving log. Advisory only; review findings before saving. No reference data is imported or changed. NA and pre-installed items may need manual review.</p>
+  {% if wo_checks.findings %}
+  <div class="table-responsive"><table class="table table-sm" aria-label="WO check findings">
+    <thead><tr><th>Severity</th><th>Row</th><th>Item</th><th>Serial</th><th>Finding</th></tr></thead>
+    <tbody>{% for issue in wo_checks.findings %}<tr>
+      <td><span class="badge text-bg-{{ 'danger' if issue.severity == 'CRITICAL' else 'warning' }}">{{ issue.severity }}</span></td>
+      <td>{{ issue.row_index|default('—') }}</td><td>{{ issue.item|default('—') }}</td><td class="font-monospace">{{ issue.serial_number|default('—') }}</td>
+      <td><strong>{{ issue.error_type }}</strong> · {{ issue.message }}</td>
+    </tr>{% endfor %}</tbody>
+  </table></div>
+  {% else %}<p class="text-success mb-2">All preview checks passed.</p>{% endif %}
+  {% if wo_checks.matches %}<details class="mt-2"><summary>Successful checks ({{ wo_checks.matches|length }})</summary><ul class="mb-0">
+    {% for issue in wo_checks.matches %}<li>{% if issue.row_index is defined %}Row {{ issue.row_index }} · {{ issue.item }} · {{ issue.serial_number }}: {% endif %}{{ issue.message }}</li>{% endfor %}
+  </ul></details>{% endif %}
+</div>
+{% endif %}

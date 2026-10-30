@@ -97,7 +97,11 @@ def manual_editor(wo_id, signer):
                 return redirect(url_for('main.generated_detail', wo_id=existing.id))
             token = signer.dumps(dict(mode='manual', id=saved.id if saved else str(uuid4()), edit_id=wo_id,
                                       version=str(saved.pushed_at) if saved else None, data=data))
-            context.update(show_table=True, preview_token=token, **word_context(saved, preview=True))
+            from .wo_checks import preview_checks
+            checks = preview_checks(data['sales_order'], data['items'], {
+                item['id']: serials for item, serials in zip(data['items'], request.form.getlist('serials'))})
+            context.update(show_table=True, preview_token=token, wo_checks=checks,
+                           **word_context(saved, preview=True))
             return render_template('manual_wo.html', **context)
         except ValueError as exc:
             db.session.rollback()

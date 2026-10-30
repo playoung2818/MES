@@ -171,8 +171,11 @@ def so_detail(sales_order=None, wo_id=None):
                            customer=order.customer, customer_po=order.customer_po,
                            version=str(saved.pushed_at) if saved else None,
                            source_revision=source.get('revision') if source else None)
+            from .wo_checks import preview_checks
+            checks = preview_checks(sales_order, items, {
+                item['id']: request.form.get(f"serials_{item['id']}", '') for item in items})
             context.update(lines=items, show_table=True, preview=True, preview_token=_signer().dumps(payload),
-                           **word_context(saved, preview=True))
+                           wo_checks=checks, **word_context(saved, preview=True))
             return render_template('so_detail.html', **context)
         except ValueError as exc:
             db.session.rollback()

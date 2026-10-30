@@ -37,6 +37,20 @@ Save work order
 - One SO can have multiple independent WOs (P1, P2, ...), each with its own Document #.
 - Duplicate actual serial numbers across items or saved WOs are rejected. `NA` remains visible and is exempt.
 - The generated output is an HTML preview table shown on the SO page.
+- Every normal/manual WO preview and revision runs a read-only advisory checker
+  (`app/wo_checks.py`). It compares positive-quantity preview rows/item names with
+  the current imported `open_sales_orders` (excluding Drop Ship/service lines),
+  checks quantity versus real serial count, flags repeated entered serials, and
+  batches serial/part lookups against existing `receiving_log` rows. Parts ignore
+  case, hyphens and spaces; numeric serials ignore leading zeros without losing
+  precision. Latest receiving entry date/id wins. Zero-quantity omitted rows on
+  partial releases are warnings, not critical mismatches. Missing reference data
+  is explicitly unverified; absent manual SOs and NA/pre-installed units remain
+  reviewable. Critical/warning findings are shown beside the preview; successful
+  checks are collapsed. Findings are advisory and do not change existing save,
+  allocation or uniqueness rules. Checks run on preview only, not on push, and
+  are not embedded in copied Word content. No Google/Excel reads, receiving-log
+  imports, reference writes or new database tables are used.
 
 
 ## Production Planning
