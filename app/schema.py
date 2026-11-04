@@ -13,38 +13,38 @@ def ensure_wo_source_schema(connection=None):
         with db.engine.begin() as conn:
             ensure_wo_source_schema(conn)
         return
-    columns = {column['name'] for column in inspect(connection).get_columns('WO Details')}
+    columns = {column['name'] for column in inspect(connection).get_columns('wo_details')}
     if 'record_source' not in columns:
-        connection.execute(text("ALTER TABLE \"WO Details\" ADD COLUMN record_source VARCHAR(20) NOT NULL DEFAULT 'mes'"))
+        connection.execute(text("ALTER TABLE wo_details ADD COLUMN record_source VARCHAR(20) NOT NULL DEFAULT 'mes'"))
     if 'legacy_word_id' not in columns:
-        connection.execute(text('ALTER TABLE "WO Details" ADD COLUMN legacy_word_id INTEGER'))
-    connection.execute(text('CREATE UNIQUE INDEX IF NOT EXISTS uq_wo_legacy_word_id ON "WO Details" (legacy_word_id)'))
+        connection.execute(text('ALTER TABLE wo_details ADD COLUMN legacy_word_id INTEGER'))
+    connection.execute(text('CREATE UNIQUE INDEX IF NOT EXISTS uq_wo_legacy_word_id ON wo_details (legacy_word_id)'))
 
 
 def migrate_multiple_wos():
     with db.engine.begin() as conn:
         inspector = inspect(conn)
-        if 'id' in {c['name'] for c in inspector.get_columns('WO Details')}:
+        if 'id' in {c['name'] for c in inspector.get_columns('wo_details')}:
             return
         if conn.dialect.name == 'postgresql':
-            conn.execute(text('LOCK TABLE "WO Details" IN ACCESS EXCLUSIVE MODE'))
-        rows = [dict(r) for r in conn.execute(text('SELECT * FROM "WO Details"')).mappings()]
+            conn.execute(text('LOCK TABLE wo_details IN ACCESS EXCLUSIVE MODE'))
+        rows = [dict(r) for r in conn.execute(text('SELECT * FROM wo_details')).mappings()]
         backup = Path('data/backups')
         backup.mkdir(parents=True, exist_ok=True)
         path = backup / ('multiple_wos_' + datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S_%f') + '.json')
         path.write_text(json.dumps(rows, default=str, indent=2), encoding='utf-8')
         if conn.dialect.name == 'postgresql':
-            conn.execute(text('ALTER TABLE "WO Details" ADD COLUMN id VARCHAR(36)'))
-            conn.execute(text('ALTER TABLE "WO Details" ADD COLUMN release_number INTEGER NOT NULL DEFAULT 1'))
+            conn.execute(text('ALTER TABLE wo_details ADD COLUMN id VARCHAR(36)'))
+            conn.execute(text('ALTER TABLE wo_details ADD COLUMN release_number INTEGER NOT NULL DEFAULT 1'))
             for row in rows:
-                conn.execute(text('UPDATE "WO Details" SET id=:id WHERE sales_order=:so'),
+                conn.execute(text('UPDATE wo_details SET id=:id WHERE sales_order=:so'),
                              {'id': str(uuid4()), 'so': row['sales_order']})
-            pk = inspector.get_pk_constraint('WO Details')['name']
+            pk = inspector.get_pk_constraint('wo_details')['name']
             quoted = conn.dialect.identifier_preparer.quote(pk)
-            conn.execute(text(f'ALTER TABLE "WO Details" DROP CONSTRAINT {quoted}'))
-            conn.execute(text('ALTER TABLE "WO Details" ADD PRIMARY KEY (id)'))
-            conn.execute(text('ALTER TABLE "WO Details" ADD CONSTRAINT uq_wo_so_release UNIQUE (sales_order, release_number)'))
-            conn.execute(text('CREATE INDEX IF NOT EXISTS ix_wo_sales_order ON "WO Details" (sales_order)'))
+            conn.execute(text(f'ALTER TABLE wo_details DROP CONSTRAINT {quoted}'))
+            conn.execute(text('ALTER TABLE wo_details ADD PRIMARY KEY (id)'))
+            conn.execute(text('ALTER TABLE wo_details ADD CONSTRAINT uq_wo_so_release UNIQUE (sales_order, release_number)'))
+            conn.execute(text('CREATE INDEX IF NOT EXISTS ix_wo_sales_order ON wo_details (sales_order)'))
         elif conn.dialect.name == 'sqlite':
             # SQLite cannot replace a primary key with ALTER TABLE.
             new = SalesOrder.__table__.to_metadata(MetaData(), name='wo_details_upgrade')
@@ -57,11 +57,11 @@ def migrate_multiple_wos():
                     VALUES (:id, :so, 1, :customer, :po, :items, :pushed, :generated, :document)'''),
                     dict(id=str(uuid4()), so=row['sales_order'], customer=row['customer'], po=row['customer_po'],
                          items=row['items'], pushed=row['pushed_at'], generated=row['Generated Date'], document=row['Document #']))
-            conn.execute(text('DROP TABLE "WO Details"'))
-            conn.execute(text('ALTER TABLE wo_details_upgrade RENAME TO "WO Details"'))
-            conn.execute(text('CREATE INDEX ix_wo_sales_order ON "WO Details" (sales_order)'))
+            conn.execute(text('DROP TABLE wo_details'))
+            conn.execute(text('ALTER TABLE wo_details_upgrade RENAME TO wo_details'))
+            conn.execute(text('CREATE INDEX ix_wo_sales_order ON wo_details (sales_order)'))
         else:
             raise RuntimeError('Multiple-WO migration supports PostgreSQL and SQLite only.')
-        count = conn.execute(text('SELECT COUNT(*) FROM "WO Details"')).scalar_one()
+        count = conn.execute(text('SELECT COUNT(*) FROM wo_details')).scalar_one()
         if count != len(rows):
             raise RuntimeError('WO migration row count verification failed')

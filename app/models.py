@@ -6,7 +6,7 @@ db = SQLAlchemy()
 
 
 class SalesOrder(db.Model):
-    __tablename__ = "WO Details"
+    __tablename__ = "wo_details"
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid4()))
     sales_order = db.Column(db.String(80), nullable=False, index=True)

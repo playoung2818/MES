@@ -34,9 +34,9 @@ class DocumentTests(unittest.TestCase):
         db.init_app(app)
         with app.app_context():
             with db.engine.begin() as conn:
-                conn.execute(text('''CREATE TABLE "WO Details" (sales_order VARCHAR(80) PRIMARY KEY,
+                conn.execute(text('''CREATE TABLE wo_details (sales_order VARCHAR(80) PRIMARY KEY,
                     customer VARCHAR(200), customer_po VARCHAR(120), items JSON, pushed_at TIMESTAMP)'''))
-                conn.execute(text('''INSERT INTO "WO Details" (sales_order, items, pushed_at)
+                conn.execute(text('''INSERT INTO wo_details (sales_order, items, pushed_at)
                     VALUES ('SO-20261207', :items, '2026-09-29 10:00:00')'''),
                     {'items': '[{"id":1,"item":"Part","quantity":5,"serials":["ABC"],"notes":"Keep"}]'})
             _ensure_schema()

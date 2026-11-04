@@ -191,7 +191,7 @@ class PlanningTests(unittest.TestCase):
 
     def test_saved_partial_quantities_revisions_and_remaining_labor(self):
         from datetime import datetime
-        # A legacy override must not override the WO Details quantities.
+        # A legacy override must not override the wo_details quantities.
         db.session.add(PickedQtyOverride(wo_number='SO1', picked_qty=6, updated_at=datetime.now()))
         db.session.commit()
         self.assertEqual(self.row_for_so1()['wo_status'], 'NA')
@@ -224,7 +224,7 @@ class PlanningTests(unittest.TestCase):
         self.assertEqual(PickedQtyOverride.query.count(), 0)
         html = self.client.get('/production_planning').text
         self.assertNotIn('class="picked-qty-input"', html)
-        self.assertIn('Calculated from saved WO Details quantities', html)
+        self.assertIn('Calculated from saved wo_details quantities', html)
 
     def test_saved_quantities_are_clamped_per_product(self):
         db.session.add(SalesOrder(sales_order='SO1', items=[{'item': 'Nuvo-9000', 'quantity': 20}]))

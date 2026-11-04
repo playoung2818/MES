@@ -121,4 +121,4 @@ def register_routes(bp):
         payload = request.get_json(silent=True)
         if not isinstance(payload, dict):
             return jsonify(ok=False, error='Invalid request.'), 400
-        return jsonify(ok=False, error='Picked Qty is calculated from WO Details. Revise the saved WOs to change it.'), 409
+        return jsonify(ok=False, error='Picked Qty is calculated from wo_details. Revise the saved WOs to change it.'), 409

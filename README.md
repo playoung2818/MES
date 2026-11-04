@@ -74,7 +74,7 @@ Save work order
 
 ### Picked status and partial-WO rule
 
-- **Any saved WO in `WO Details` automatically marks its SO as Picked.**
+- **Any saved WO in `wo_details` automatically marks its SO as Picked.**
   Generating a preview does not count. Only **Save work order** creates a saved WO.
 - **Picked Qty is read-only**, calculated from the saved item quantities across
   all partial WOs for the same SO. 
@@ -157,7 +157,7 @@ Normal MES eligibility uses `workflow_status`, `source_present`, and `approved_a
 **Source and scope:** planning and new WO generation both read approved,
 MES-owned `public.sales_order_workflow`. Drop Ship lines are excluded while
 warehouse lines on mixed-site SOs remain eligible. Picked quantities come
-from `WO Details`. Neither page reads Google or `open_sales_orders` directly.
+from `wo_details`. Neither page reads Google or `open_sales_orders` directly.
 The MRP-managed `open_sales_orders` table is left untouched. Scheduling remains
 per SO/QB number, not per partial-release UUID. Manual WOs without an approved
 SO are not added to planning. Upstream PDF-viewer links are not imported.
@@ -166,13 +166,13 @@ SO are not added to planning. Upstream PDF-viewer links are not imported.
 changes also affect the MRP schedule. MES picked status and quantities now ignore
 `wo_structured.Picked` and `wo_picked_qty_overrides` entirely. Legacy overrides are
 preserved but cannot be edited from MES (`POST /api/wo_picked_qty` returns 409).
-Planning never inserts or modifies `WO Details`. Save quantity changes in the WO editor, then refresh planning. GET/reload only reads data. New or
+Planning never inserts or modifies `wo_details`. Save quantity changes in the WO editor, then refresh planning. GET/reload only reads data. New or
 upgraded installs require syncing and approving SOs in MRP before planning/generation.
 Schedule requests validate source keys/dates and require a session CSRF header.
 Existing shared tables are not replaced. This MES rule treats a saved WO as
 picked by definition; it does not separately confirm physical warehouse picking.
 
-The full-database backup below includes `sales_order_workflow`, `WO Details`,
+The full-database backup below includes `sales_order_workflow`, `wo_details`,
 production schedules, and all other objects/data in the configured database.
 
 ## Copy into the Word template
@@ -203,7 +203,7 @@ The app reuses these existing tables; the approval workflow adds **no tables**:
 | Table | Purpose |
 |---|---|
 | `sales_order_workflow` | Shared SO workflow at every stage, reviewed content and bounded source snapshots (not saved WO releases) |
-| `WO Details` | Saved WO releases and serials |
+| `wo_details` | Saved WO releases and serials |
 | `production_overrides` | Shared MRP production dates / finished goods |
 | `wo_picked_qty_overrides` | Legacy MRP table, ignored for MES picked quantities |
 
@@ -223,7 +223,7 @@ Restart both applications after code upgrades before removing retired columns.
 Saved WO model/table:
 
 ```python
-__tablename__ = "WO Details"
+__tablename__ = "wo_details"
 ```
 
 Model:
@@ -409,7 +409,7 @@ D:\OneDrive - neousys-tech\Share NTA Warehouse\Database Backup\postgres_latest.d
 ```
 
 This includes **every schema/table and all database objects** in the configured
-`postgres` database, not just WO Details. It does not include other databases or
+`postgres` database, not just wo_details. It does not include other databases or
 server-wide roles/tablespaces. Default is latest-file **overwrite**; optionally
 set `Mode` to `dated` for timestamped archives and `RetentionDays` retention.
 Dated copies are recommended for recovery from accidentally deleted/bad data.

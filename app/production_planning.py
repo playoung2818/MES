@@ -1,8 +1,8 @@
 """MRP production planning, adapted to the MES app's existing database.
 
 Source: playoung2818/MRP_System, commit f37fe90861187b8806cd6ac6fb3ea3fbb2694578.
-GETs read only. Schedule saves write shared MRP overrides, never WO Details.
-Picked status and quantities are derived exclusively from saved WO Details.
+GETs read only. Schedule saves write shared MRP overrides, never wo_details.
+Picked status and quantities are derived exclusively from saved wo_details.
 """
 from datetime import date, timedelta
 import pandas as pd
