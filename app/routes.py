@@ -103,6 +103,7 @@ def so_detail(sales_order=None, wo_id=None):
     context = dict(sales_order=sales_order, order=order, lines=order.items, releases=siblings,
                    release_number=release_number, editing=saved, remaining=remaining,
                    ship_date=source.get('ship_date') if source else None,
+                   mrp_notes=(approval.metadata_fields or {}).get('notes', '') if approval else '',
                    workflow_notice=notice(approval, source),
                    workflow_conflicts=(source or {}).get('reconciliation_details') or {}, **word_context(saved))
     if request.method == 'POST':

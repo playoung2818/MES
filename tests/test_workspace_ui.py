@@ -43,6 +43,20 @@ class WorkspaceUITests(unittest.TestCase):
             self.assertIn('href="/so/SO1"', self.client.get('/', query_string={'q': query}).text)
         self.assertNotIn('href="/so/SO1"', self.client.get('/?q=not-found').text)
 
+    def test_editor_displays_published_mrp_notes_as_read_only_text(self):
+        approval = db.session.get(ApprovedSO, 'SO1')
+        approval.metadata_fields = {'notes': 'Pre-configured IGN as Mode 3\n<script>alert(1)</script>'}
+        db.session.commit()
+        response = self.client.get('/so/SO1')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('aria-label="MRP notes"', response.text)
+        self.assertIn('Pre-configured IGN as Mode 3\n&lt;script&gt;alert(1)&lt;/script&gt;', response.text)
+        self.assertNotIn('<script>alert(1)</script>', response.text)
+        self.assertNotIn('name="mrp_notes"', response.text)
+
+    def test_editor_hides_empty_mrp_notes(self):
+        self.assertNotIn('aria-label="MRP notes"', self.client.get('/so/SO1').text)
+
     def test_editor_keeps_allocation_data_and_server_field_names(self):
         html = self.client.get('/so/SO1').text
         for text in ('HIDDEN-PO', '2030-03-18', 'Available for this WO: 2',
